@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.jpg";
 import dashboard from "../assets/dashboard.svg";
 import addVacancy from "../assets/add-vacancy.svg";
@@ -7,9 +7,35 @@ import profile from "../assets/profile.svg";
 import { Link, useLocation } from "react-router-dom";
 
 function Sidebar(props) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = (e) => {
+    console.log("btn clk");
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  useEffect(() => {
+    const closeSidebarOnClickOutside = (e) => {
+      console.log(isSidebarOpen);
+
+      if (isSidebarOpen && e.target.closest("#logo-sidebar") === null) {
+        console.log("out clk 3");
+        setIsSidebarOpen(!isSidebarOpen);
+      }
+    };
+
+    // if (isSidebarOpen) {
+    document.addEventListener("mousedown", closeSidebarOnClickOutside);
+    // }
+
+    return () => {
+      document.removeEventListener("mousedown", closeSidebarOnClickOutside);
+    };
+  }, [isSidebarOpen]);
   return (
     <div>
       <button
+        onClick={toggleSidebar}
         data-drawer-target="logo-sidebar"
         data-drawer-toggle="logo-sidebar"
         aria-controls="logo-sidebar"
@@ -33,7 +59,9 @@ function Sidebar(props) {
       </button>
       <aside
         id="logo-sidebar"
-        className="border-r-2 border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform -translate-x-full bg-white sm:translate-x-0 light:bg-gray-800 light:border-gray-700"
+        className={`${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } border-r-2 border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform bg-white sm:translate-x-0 light:bg-gray-800 light:border-gray-700`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white light:bg-gray-800">
