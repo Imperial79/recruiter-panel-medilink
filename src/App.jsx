@@ -3,6 +3,7 @@ import LoginPage from "./Pages/LoginPage";
 import DashboardPage from "./Pages/DashboardPage";
 import PostVacancy from "./Pages/PostVacancy";
 import ManageVacancy from "./Pages/ManageVacancy";
+import ManageProfile from "./Pages/ManageProfile";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/post-vacancy" element={<PostVacancy />} />
           <Route path="/manage-vacancy" element={<ManageVacancy />} />
+          <Route path="/manage-profile" element={<ManageProfile />} />
         </Routes>
       </BrowserRouter>
     </>

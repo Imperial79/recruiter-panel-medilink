@@ -1,18 +1,57 @@
-import React from "react";
-import MainContent from "../Components/MainContent";
+import React, { useState } from "react";
 import Sidebar from "../Components/Sidebar";
+import MainContent from "../Components/MainContent";
 import gallery from "../assets/gallery.svg";
+import { Link } from "react-router-dom";
 
-function PostVacancy() {
+function ManageProfile() {
+  const [image, setImage] = useState(gallery);
+
+  const handleClick = () => {
+    document.getElementById("imageInput").click();
+  };
+
+  const handleImageChange = (event) => {
+    setImage(URL.createObjectURL(event.target.files[0]));
+  };
   return (
     <div>
-      <Sidebar activeTab={1} />
+      <Sidebar activeTab={3} />
 
       <MainContent>
         <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl light:text-white">
-          Post Vacancy
+          Manage Profile
         </h1>
-        <CompanyCard />
+        <input
+          id="imageInput"
+          className="hidden"
+          type="file"
+          onChange={handleImageChange}
+        />
+        <button
+          onClick={handleClick}
+          className="md:mx-[60px] mx-[20px] mt-10 bg-gray-100 h-[100px] w-[100px] rounded-full"
+        >
+          {image && (
+            <img
+              id="imagePreview"
+              src={image}
+              alt=""
+              className={`h-full object-cover rounded-full ${
+                image != gallery ? "" : "p-5"
+              }`}
+            />
+          )}
+        </button>
+        <div>
+          <button
+            onClick={handleClick}
+            className="md:mx-[60px] mx-[20px] mt-2 font-semibold rounded-xl text-sm text-blue-700 "
+          >
+            Upload Image
+          </button>
+        </div>
+
         <div className="md:mx-[60px] mx-[20px] mt-[40px]">
           <form>
             <div class="grid md:grid-cols-2 md:gap-6">
@@ -146,7 +185,7 @@ function PostVacancy() {
                   for="floating_company"
                   class="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
-                  Company (Ex. Google)
+                  Bio
                 </label>
               </div>
             </div>
@@ -154,7 +193,7 @@ function PostVacancy() {
               type="submit"
               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center light:bg-blue-600 light:hover:bg-blue-700 light:focus:ring-blue-800"
             >
-              Submit
+              Update
             </button>
           </form>
         </div>
@@ -163,22 +202,4 @@ function PostVacancy() {
   );
 }
 
-export default PostVacancy;
-
-function CompanyCard() {
-  return (
-    <div className="md:mx-[60px] mx-[20px] bg-gray-100 rounded-2xl p-10 flex mt-10 items-center">
-      <div className="w-20 h-20 bg-black rounded-full mr-10">
-        <img
-          src="https://s3.amazonaws.com/cdn.designcrowd.com/blog/100-Famous-Brand%20Logos-From-The-Most-Valuable-Companies-of-2020/apple-logo.png"
-          alt=""
-          className="h-20 w-20 rounded-full"
-        />
-      </div>
-      <div>
-        <h1 className="text-lg font-medium">Company Name</h1>
-        <h1>Company Description</h1>
-      </div>
-    </div>
-  );
-}
+export default ManageProfile;

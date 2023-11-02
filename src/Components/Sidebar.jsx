@@ -3,24 +3,10 @@ import logo from "../assets/logo.jpg";
 import dashboard from "../assets/dashboard.svg";
 import addVacancy from "../assets/add-vacancy.svg";
 import manageVacancies from "../assets/manage-vacancies.svg";
+import profile from "../assets/profile.svg";
 import { Link, useLocation } from "react-router-dom";
 
 function Sidebar(props) {
-  // let [activeTab, setActiveTab] = useState(0);
-  // const location = useLocation();
-  // if (location.pathname === "/dashboard") {
-  //   handleActiveTab(0);
-  // } else if (location.pathname === "/post-vacancy") {
-  //   handleActiveTab(1);
-  // } else {
-  //   handleActiveTab(2);
-  // }
-
-  // function handleActiveTab(index) {
-  //   console.log(index);
-  //   setActiveTab = index;
-  // }
-
   return (
     <div>
       <button
@@ -56,13 +42,19 @@ function Sidebar(props) {
             <Link to="/dashboard">
               <li>
                 <div
-                  className={`inline-flex items-center w-full px-4 py-2 mt-1 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-teal-100 hover:text-gray-900 ${
+                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
                     props.activeTab == 0
-                      ? "bg-teal-300 border border-teal-700"
+                      ? "bg-blue-900 border border-blue-700 text-white"
                       : ""
                   }`}
                 >
-                  <img src={dashboard} alt="" className="h-7 w-7" />
+                  <img
+                    src={dashboard}
+                    alt=""
+                    className={`h-7 w-7 ${
+                      props.activeTab == 0 ? "invert-[1]" : ""
+                    }`}
+                  />
                   <span className="ml-4">Dashboard</span>
                 </div>
               </li>
@@ -71,13 +63,19 @@ function Sidebar(props) {
             <Link to="/post-vacancy">
               <li>
                 <div
-                  className={`inline-flex items-center w-full px-4 py-2 mt-1 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-teal-100 hover:text-gray-900 ${
+                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
                     props.activeTab == 1
-                      ? "bg-teal-300 border border-teal-700"
+                      ? "bg-blue-900 border border-blue-700 text-white"
                       : ""
                   }`}
                 >
-                  <img src={addVacancy} alt="" className="h-7 w-7" />
+                  <img
+                    src={addVacancy}
+                    alt=""
+                    className={`h-7 w-7 ${
+                      props.activeTab == 1 ? "invert-[1]" : ""
+                    }`}
+                  />
                   <span className="ml-4">Post Vacancy</span>
                 </div>
               </li>
@@ -86,14 +84,40 @@ function Sidebar(props) {
             <Link to="/manage-vacancy">
               <li>
                 <div
-                  className={`inline-flex items-center w-full px-4 py-2 mt-1 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-teal-100 hover:text-gray-900 ${
+                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
                     props.activeTab == 2
-                      ? "bg-teal-300 border border-teal-700"
+                      ? "bg-blue-900 border border-blue-700 text-white"
                       : ""
                   }`}
                 >
-                  <img src={manageVacancies} alt="" className="h-7 w-7" />
+                  <img
+                    src={manageVacancies}
+                    alt=""
+                    className={`h-7 w-7 ${
+                      props.activeTab == 2 ? "invert-[1]" : ""
+                    }`}
+                  />
                   <span className="ml-4">Manage Vacancy</span>
+                </div>
+              </li>
+            </Link>
+            <Link to="/manage-profile">
+              <li>
+                <div
+                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
+                    props.activeTab == 3
+                      ? "bg-blue-900 border border-blue-700 text-white"
+                      : ""
+                  }`}
+                >
+                  <img
+                    src={profile}
+                    alt=""
+                    className={`h-7 w-7 ${
+                      props.activeTab == 3 ? "invert-[1]" : ""
+                    }`}
+                  />
+                  <span className="ml-4">Manage Profile</span>
                 </div>
               </li>
             </Link>

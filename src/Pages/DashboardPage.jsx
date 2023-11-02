@@ -1,22 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import { Link } from "react-router-dom";
 import ContentCard from "../Components/ContentCard";
-import BarChart from "../Components/BarChart";
-import { UserData } from "../Components/Data";
 import MainContent from "../Components/MainContent";
 
 function DashboardPage() {
-  const [userData, setUserData] = useState({
-    labels: UserData.map((data) => data.year),
-    datasets: [
-      {
-        label: "Users Gained",
-        data: UserData.map((data) => data.userGain),
-      },
-    ],
-  });
-
   return (
     <div>
       <Sidebar activeTab={0} />
@@ -39,18 +27,7 @@ function DashboardPage() {
             <StatsCard label="Total Applicants" content="100" />
           </div>
           <div className="grid md:grid-cols-2 gap-4 mb-4">
-            {/* <ElementCard>
-              <div>
-                <p className="text-base font-normal text-gray-500 light:text-gray-400">
-                  Applicants data of 7 Days
-                </p>
-                <div className="leading-none text-sm font-medium text-gray-900 light:text-white space-y-2 mt-2">
-                  <h1>Applied Jobs: 10</h1>
-                  <h1>Placed Jobs: 20</h1>
-                </div>
-              </div>
-              <BarChart chartData={userData} />
-            </ElementCard> */}
+            <ElementCard></ElementCard>
 
             <ElementCard>
               <div className="flex justify-between items-center mb-3">
