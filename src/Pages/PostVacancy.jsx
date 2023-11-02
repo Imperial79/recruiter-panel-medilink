@@ -167,17 +167,22 @@ export default PostVacancy;
 
 function CompanyCard() {
   return (
-    <div className="md:mx-[60px] mx-[20px] bg-gray-100 rounded-2xl p-10 flex mt-10 items-center">
-      <div className="w-20 h-20 bg-black rounded-full mr-10">
-        <img
-          src="https://s3.amazonaws.com/cdn.designcrowd.com/blog/100-Famous-Brand%20Logos-From-The-Most-Valuable-Companies-of-2020/apple-logo.png"
-          alt=""
-          className="h-20 w-20 rounded-full"
-        />
-      </div>
-      <div>
-        <h1 className="text-lg font-medium">Company Name</h1>
-        <h1>Company Description</h1>
+    <div className="md:mx-[60px] mx-[20px] bg-gray-100 rounded-2xl p-10 flex flex-nowrap mt-10 items-center col-span-4">
+      {/* <div className="w-20 h-20 bg-white rounded-full mr-10"> */}
+      <img
+        src="https://s3.amazonaws.com/cdn.designcrowd.com/blog/100-Famous-Brand%20Logos-From-The-Most-Valuable-Companies-of-2020/apple-logo.png"
+        alt=""
+        className="h-20 w-20 mr-2 p-2 rounded-full"
+      />
+      {/* </div> */}
+      <div className="w-[90%]">
+        <h1 className="text-lg font-medium">Apple</h1>
+        <h1 className="max2lines">
+          A company description is an overview or summary of a business. It's an
+          important part of a business plan that often briefly describes an
+          organization's history, location, mission statement, management
+          personnel and, when appropriate, legal structure.
+        </h1>
       </div>
     </div>
   );
