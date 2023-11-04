@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../assets/logo.jpg";
 import dashboard from "../assets/dashboard.svg";
 import addVacancy from "../assets/add-vacancy.svg";
 import manageVacancies from "../assets/manage-vacancies.svg";
 import profile from "../assets/profile.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { dbObject } from "../Helper/Constants";
+import { Context } from "./ContextProvider";
 
 function Sidebar(props) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { setUser } = useContext(Context);
+  const navigator = useNavigate();
 
   const toggleSidebar = (e) => {
-    console.log("btn clk");
     setIsSidebarOpen(!isSidebarOpen);
   };
 
@@ -19,7 +22,6 @@ function Sidebar(props) {
       console.log(isSidebarOpen);
 
       if (isSidebarOpen && e.target.closest("#logo-sidebar") === null) {
-        console.log("out clk 3");
         setIsSidebarOpen(!isSidebarOpen);
       }
     };
@@ -32,6 +34,15 @@ function Sidebar(props) {
       document.removeEventListener("mousedown", closeSidebarOnClickOutside);
     };
   }, [isSidebarOpen]);
+
+  const logout = async () => {
+    const response = await dbObject.post("/users/logout.php");
+    console.log(response);
+    if (!response.data["error"]) {
+      setUser(null);
+      navigator("/");
+    }
+  };
   return (
     <div>
       <button
@@ -149,6 +160,26 @@ function Sidebar(props) {
                 </div>
               </li>
             </Link>
+
+            <li>
+              <button
+                onClick={logout}
+                className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
+                  props.activeTab == 3
+                    ? "bg-blue-900 border border-blue-700 text-white"
+                    : ""
+                }`}
+              >
+                <img
+                  src={profile}
+                  alt=""
+                  className={`h-7 w-7 ${
+                    props.activeTab == 3 ? "invert-[1]" : ""
+                  }`}
+                />
+                <span className="ml-4">Manage Profile</span>
+              </button>
+            </li>
           </ul>
         </div>
       </aside>

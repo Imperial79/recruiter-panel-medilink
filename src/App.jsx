@@ -4,19 +4,24 @@ import DashboardPage from "./Pages/DashboardPage";
 import PostVacancy from "./Pages/PostVacancy";
 import ManageVacancy from "./Pages/ManageVacancy";
 import ManageProfile from "./Pages/ManageProfile";
+import ContextProvider from "./Components/ContextProvider";
+import { useState } from "react";
 
 function App() {
+  // const [errorMsg, setErrorMsg] = useState("");
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/post-vacancy" element={<PostVacancy />} />
-          <Route path="/manage-vacancy" element={<ManageVacancy />} />
-          <Route path="/manage-profile" element={<ManageProfile />} />
-        </Routes>
-      </BrowserRouter>
+      {/* <ContextProvider> */}
+      {/* <BrowserRouter> */}
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/post-vacancy" element={<PostVacancy />} />
+        <Route path="/manage-vacancy" element={<ManageVacancy />} />
+        <Route path="/manage-profile" element={<ManageProfile />} />
+      </Routes>
+      {/* </BrowserRouter> */}
+      {/* </ContextProvider> */}
     </>
   );
 }
