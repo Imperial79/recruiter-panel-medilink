@@ -1,8 +1,10 @@
 import React from "react";
+import Alert from "./Alert";
 
 function MainContent(props) {
   return (
-    <div className="md:ml-64 md:p-[20px] p-[10px] pb-[20px]">
+    <div className="md:ml-64">
+      <Alert />
       {props.children}
     </div>
   );

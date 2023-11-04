@@ -6,6 +6,7 @@ import ManageVacancy from "./Pages/ManageVacancy";
 import ManageProfile from "./Pages/ManageProfile";
 import ContextProvider from "./Components/ContextProvider";
 import { useState } from "react";
+import Alert from "./Components/Alert";
 
 function App() {
   // const [errorMsg, setErrorMsg] = useState("");
@@ -13,6 +14,7 @@ function App() {
     <>
       {/* <ContextProvider> */}
       {/* <BrowserRouter> */}
+
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />

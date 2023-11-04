@@ -7,6 +7,11 @@ export const Context = React.createContext();
 function ContextProvider(props) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({
+    label: "",
+    content: "",
+    isDanger: false,
+  });
   const navigator = useNavigate();
 
   const auth = async () => {
@@ -38,7 +43,7 @@ function ContextProvider(props) {
   }, []);
 
   return (
-    <Context.Provider value={{ user, setUser, loading }}>
+    <Context.Provider value={{ user, setUser, loading, alert, setAlert }}>
       {props.children}
     </Context.Provider>
   );

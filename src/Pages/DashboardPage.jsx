@@ -1,24 +1,41 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import { Link } from "react-router-dom";
 import ContentCard from "../Components/ContentCard";
 import MainContent from "../Components/MainContent";
 import LineCh from "../Components/LineCh";
+import Alert from "../Components/Alert";
+import { Context } from "../Components/ContextProvider";
 
 function DashboardPage() {
+  const { alert, setAlert } = useContext(Context);
   return (
     <div>
       <Sidebar activeTab={0} />
 
       <MainContent>
-        <h1 className="px-4 mb-2 text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
-          Hello,{" "}
-          <span className="text-blue-600 light:text-blue-500">Vivek Verma</span>
-        </h1>
-
-        <p className="px-4 text-sm font-semibold md:text-xl text-gray-900">
-          {new Date().toDateString()}
-        </p>
+        <div className="m-5">
+          <h1 className="mb-2 text-xl font-semibold tracking-tight text-gray-900 md:text-3xl">
+            Hello,{" "}
+            <span className="text-blue-600 light:text-blue-500">
+              Vivek Verma
+            </span>
+          </h1>
+          <button
+            onClick={() => {
+              setAlert({
+                label: "Hello",
+                content: "Hey",
+                isDanger: false,
+              });
+            }}
+          >
+            Alert
+          </button>
+          <p className="text-sm font-semibold md:text-xl text-gray-900">
+            {new Date().toDateString()}
+          </p>
+        </div>
 
         <ContentCard>
           <div className="grid md:grid-cols-4 grid-cols-2 gap-4 mb-4">

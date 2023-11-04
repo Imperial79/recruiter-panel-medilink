@@ -4,6 +4,7 @@ import dashboard from "../assets/dashboard.svg";
 import addVacancy from "../assets/add-vacancy.svg";
 import manageVacancies from "../assets/manage-vacancies.svg";
 import profile from "../assets/profile.svg";
+import logoutIco from "../assets/logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { dbObject } from "../Helper/Constants";
 import { Context } from "./ContextProvider";
@@ -26,9 +27,7 @@ function Sidebar(props) {
       }
     };
 
-    // if (isSidebarOpen) {
     document.addEventListener("mousedown", closeSidebarOnClickOutside);
-    // }
 
     return () => {
       document.removeEventListener("mousedown", closeSidebarOnClickOutside);
@@ -72,7 +71,7 @@ function Sidebar(props) {
         id="logo-sidebar"
         className={`${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } border-r-2 border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform bg-white sm:translate-x-0 light:bg-gray-800 light:border-gray-700`}
+        } border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform bg-white sm:translate-x-0 light:bg-gray-800 light:border-gray-700`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white light:bg-gray-800">
@@ -140,7 +139,7 @@ function Sidebar(props) {
                 </div>
               </li>
             </Link>
-            <Link to="/manage-profile">
+            {/* <Link to="/manage-profile">
               <li>
                 <div
                   className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
@@ -159,25 +158,21 @@ function Sidebar(props) {
                   <span className="ml-4">Manage Profile</span>
                 </div>
               </li>
-            </Link>
-
-            <li>
+            </Link> */}
+            <SidebarBtn
+              to="/manage-profile"
+              index={3}
+              activeTab={props.activeTab}
+              image={profile}
+              label="Manage Profile"
+            />
+            <li className="fixed bottom-0 left-0 w-full px-2">
               <button
                 onClick={logout}
-                className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-                  props.activeTab == 3
-                    ? "bg-blue-900 border border-blue-700 text-white"
-                    : ""
-                }`}
+                className="inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg bg-red-500 hover:bg-red-400 text-white"
               >
-                <img
-                  src={profile}
-                  alt=""
-                  className={`h-7 w-7 ${
-                    props.activeTab == 3 ? "invert-[1]" : ""
-                  }`}
-                />
-                <span className="ml-4">Manage Profile</span>
+                <img src={logoutIco} alt="" className="h-7 w-7" />
+                <span className="ml-4">Log Out</span>
               </button>
             </li>
           </ul>
@@ -188,3 +183,25 @@ function Sidebar(props) {
 }
 
 export default Sidebar;
+
+function SidebarBtn(props) {
+  let isActive = props.activeTab === props.index;
+  return (
+    <Link to={props.to}>
+      <li>
+        <div
+          className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
+            isActive ? "bg-blue-900 border border-blue-700 text-white" : ""
+          }`}
+        >
+          <img
+            src={props.image}
+            alt=""
+            className={`h-7 w-7 ${isActive ? "invert-[1]" : ""}`}
+          />
+          <span className="ml-4">{props.label}</span>
+        </div>
+      </li>
+    </Link>
+  );
+}
