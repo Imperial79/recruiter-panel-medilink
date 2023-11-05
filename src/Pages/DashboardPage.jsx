@@ -8,7 +8,7 @@ import Alert from "../Components/Alert";
 import { Context } from "../Components/ContextProvider";
 
 function DashboardPage() {
-  const { alert, setAlert } = useContext(Context);
+  const { user } = useContext(Context);
   return (
     <div>
       <Sidebar activeTab={0} />
@@ -18,20 +18,9 @@ function DashboardPage() {
           <h1 className="mb-2 text-xl font-semibold tracking-tight text-gray-900 md:text-3xl">
             Hello,{" "}
             <span className="text-blue-600 light:text-blue-500">
-              Vivek Verma
+              {user.companyName}
             </span>
           </h1>
-          <button
-            onClick={() => {
-              setAlert({
-                label: "Hello",
-                content: "Hey",
-                isDanger: false,
-              });
-            }}
-          >
-            Alert
-          </button>
           <p className="text-sm font-semibold md:text-xl text-gray-900">
             {new Date().toDateString()}
           </p>

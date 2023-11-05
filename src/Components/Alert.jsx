@@ -3,11 +3,11 @@ import { Context } from "./ContextProvider";
 
 function Alert() {
   const { alert, setAlert } = useContext(Context);
-  const label = alert["label"];
+  const label = alert["isDanger"] ? "Oops!" : "Success!";
   const content = alert["content"];
   const isDanger = alert["isDanger"];
 
-  if (label !== "") {
+  if (content !== "") {
     setTimeout(() => {
       setAlert({
         label: "",
@@ -18,14 +18,12 @@ function Alert() {
   }
   return (
     <div
-      className={`z-50 fixed top-[100px] md:left-10 w-full ${
-        label === "" ? "hidden" : ""
-      }`}
+      className={`z-50 fixed top-[100px] md:left-10 w-full ${content === "" ? "hidden" : ""
+        }`}
     >
       <div
-        className={`md:mx-[100px] mx-5 shadow-xl flex items-center p-4 mb-4 text-sm ${
-          isDanger ? "bg-red-800" : "bg-green-600"
-        } rounded-lg text-white`}
+        className={`md:mx-[100px] mx-5 shadow-xl flex items-center p-4 mb-4 text-sm ${isDanger ? "bg-red-800" : "bg-green-600"
+          } rounded-lg text-white`}
         role="alert"
       >
         <svg

@@ -2,17 +2,18 @@ import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import recruiter from "../assets/recruiter.svg";
 import logo from "../assets/logo.jpg";
-import googleLogo from "../assets/google.png";
 import { dbObject } from "../Helper/Constants.jsx";
 import { Context } from "../Components/ContextProvider.jsx";
 
 function LoginPage() {
-  const { setAlert } = useContext(Context);
+  const { setAlert, setParameter, _id, setUser } = useContext(Context);
 
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
   let otp = "";
-  let action = "";
+
+  const [action, setAction] = useState("");
   const navigator = useNavigate();
+
 
   const handleInputChange = (e, index) => {
     const inputValue = e.target.value;
@@ -31,27 +32,29 @@ function LoginPage() {
   };
 
   const sendOTP = async () => {
-    const phone = document.getElementById("user-phone");
     const formData = new FormData();
-    formData.append("phone", phone.value);
+    formData.append("phone", _id("user-phone").value);
 
     const response = await dbObject.post("/sms-service/send-otp.php", formData);
     console.log(response);
 
     if (!response.data["error"]) {
+      setAction(response.data['response']);
       setAlert({
-        label: "Success!",
+
         content: response.data["message"],
         isDanger: response.data["error"],
       });
     } else {
       setAlert({
-        label: "Oops!",
+
         content: response.data["message"],
         isDanger: response.data["error"],
       });
     }
   };
+
+
 
   const login = async () => {
     if (otp.length === 4) {
@@ -61,24 +64,24 @@ function LoginPage() {
       formData.append("otp", otp);
 
       const response = await dbObject.post("/users/login.php", formData);
-      console.log(response);
+      // console.log(response);
 
-      if (!response.data["error"]) {
+      if (!response.data.error) {
+        setUser(response.data.response)
+        navigator("/dashboard")
         setAlert({
-          label: "Success!",
           content: response.data["message"],
-          isDanger: response.data["error"],
+          isDanger: response.data.error,
         });
+
       } else {
         setAlert({
-          label: "Oops!",
           content: response.data["message"],
-          isDanger: response.data["error"],
+          isDanger: response.data.error,
         });
       }
     } else {
       setAlert({
-        label: "Oops!",
         content: "Enter OTP to proceed",
         isDanger: true,
       });
@@ -144,7 +147,28 @@ function LoginPage() {
             </button>
 
             <button
-              onClick={login}
+              onClick={() => {
+                console.log(action);
+                if (action === 'Register') {
+                  setParameter({
+                    origin: "login",
+                    body: {
+                      phone: _id("user-phone").value,
+                      otp: otp,
+                    }
+                  })
+                  navigator("/register");
+                } else if (action === "Login") {
+                  login();
+                } else {
+                  setAlert(
+                    {
+                      content: "Get OTP to verify",
+                      isDanger: true,
+                    }
+                  )
+                }
+              }}
               type="button"
               className="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
             >

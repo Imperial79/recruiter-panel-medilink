@@ -8,9 +8,12 @@ function ContextProvider(props) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({
-    label: "",
     content: "",
     isDanger: false,
+  });
+  const [parameter, setParameter] = useState({
+    origin: "",
+    body: {},
   });
   const navigator = useNavigate();
 
@@ -23,7 +26,7 @@ function ContextProvider(props) {
       //   setUser(response.data);
       console.log(response.data["message"]);
       if (!response.data["error"]) {
-        setUser(response.data["response"]);
+        setUser(response.data.response);
         navigator("/dashboard");
       } else {
         navigator("/");
@@ -38,12 +41,18 @@ function ContextProvider(props) {
     console.log("leaving Auth");
   };
 
+
+  const _id = (el) => {
+    return document.getElementById(el);
+  }
+
+
   useEffect(() => {
     auth();
   }, []);
 
   return (
-    <Context.Provider value={{ user, setUser, loading, alert, setAlert }}>
+    <Context.Provider value={{ user, setUser, loading, alert, setAlert, _id, parameter, setParameter }}>
       {props.children}
     </Context.Provider>
   );
