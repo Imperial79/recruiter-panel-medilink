@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import recruiter from "../assets/recruiter.svg";
 import logo from "../assets/logo.jpg";
@@ -7,10 +7,11 @@ import { dbObject } from "../Helper/Constants.jsx";
 import { Context } from "../Components/ContextProvider.jsx";
 
 function LoginPage() {
-  // const contextData = useContext(Context);
+  const { setAlert } = useContext(Context);
 
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
   let otp = "";
+  let action = "";
   const navigator = useNavigate();
 
   const handleInputChange = (e, index) => {
@@ -21,33 +22,69 @@ function LoginPage() {
     } else if (inputValue.length === 0 && index > 0) {
       inputRefs[index - 1].current.focus();
     }
-    otp += inputValue;
+    if (inputValue === "") {
+      otp = otp.slice(0, -1);
+    } else {
+      otp += inputValue;
+    }
+    console.log(otp);
+  };
 
-    if (otp.length === 4) {
-      register();
+  const sendOTP = async () => {
+    const phone = document.getElementById("user-phone");
+    const formData = new FormData();
+    formData.append("phone", phone.value);
+
+    const response = await dbObject.post("/sms-service/send-otp.php", formData);
+    console.log(response);
+
+    if (!response.data["error"]) {
+      setAlert({
+        label: "Success!",
+        content: response.data["message"],
+        isDanger: response.data["error"],
+      });
+    } else {
+      setAlert({
+        label: "Oops!",
+        content: response.data["message"],
+        isDanger: response.data["error"],
+      });
     }
   };
 
-  const register = async () => {
+  const login = async () => {
     if (otp.length === 4) {
       const phone = document.getElementById("user-phone");
-
       const formData = new FormData();
       formData.append("phone", phone.value);
       formData.append("otp", otp);
-      formData.append("fcmToken", "");
 
       const response = await dbObject.post("/users/login.php", formData);
+      console.log(response);
+
       if (!response.data["error"]) {
-        navigator("/dashboard");
-        console.log(response);
+        setAlert({
+          label: "Success!",
+          content: response.data["message"],
+          isDanger: response.data["error"],
+        });
       } else {
-        console.log(response.data["message"]);
+        setAlert({
+          label: "Oops!",
+          content: response.data["message"],
+          isDanger: response.data["error"],
+        });
       }
     } else {
-      console.log("Otp field is not filled properly");
+      setAlert({
+        label: "Oops!",
+        content: "Enter OTP to proceed",
+        isDanger: true,
+      });
     }
   };
+
   return (
     <>
       <div className="pt-10 md:px-10 md:pb-10 text-black ">
@@ -100,32 +137,18 @@ function LoginPage() {
             </div>
 
             <button
-              onClick={register}
-              type="button"
-              className="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+              onClick={sendOTP}
+              className="text-blue-700 font-medium mt-5 hover:bg-gray-100 px-3 py-1 rounded-full"
             >
               Send OTP
             </button>
 
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 text-neutral-600 bg-white">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
             <button
-              type="submit"
-              className="mt-5 text-black bg-gray-200 hover:bg-black hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+              onClick={login}
+              type="button"
+              className="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
             >
-              <div className="flex justify-center gap-2">
-                <img src={googleLogo} alt="" className="h-5" />
-                <h1 className="">Sign in with Google</h1>
-              </div>
+              Proceed
             </button>
           </div>
         </div>
