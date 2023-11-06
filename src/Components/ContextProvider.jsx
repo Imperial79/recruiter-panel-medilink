@@ -22,8 +22,6 @@ function ContextProvider(props) {
     try {
       setLoading("true");
       const response = await dbObject.post("/users/auth.php");
-      // if (!response.data["error"]) {
-      //   setUser(response.data);
       console.log(response.data["message"]);
       if (!response.data["error"]) {
         setUser(response.data.response);
@@ -31,8 +29,6 @@ function ContextProvider(props) {
       } else {
         navigator("/");
       }
-      // }
-      // console.log("In auth");
 
       setLoading(false);
     } catch (error) {

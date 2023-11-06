@@ -14,7 +14,6 @@ function LoginPage() {
   const [action, setAction] = useState("");
   const navigator = useNavigate();
 
-
   const handleInputChange = (e, index) => {
     const inputValue = e.target.value;
 
@@ -39,22 +38,18 @@ function LoginPage() {
     console.log(response);
 
     if (!response.data["error"]) {
-      setAction(response.data['response']);
+      setAction(response.data["response"]);
       setAlert({
-
         content: response.data["message"],
         isDanger: response.data["error"],
       });
     } else {
       setAlert({
-
         content: response.data["message"],
         isDanger: response.data["error"],
       });
     }
   };
-
-
 
   const login = async () => {
     if (otp.length === 4) {
@@ -67,13 +62,12 @@ function LoginPage() {
       // console.log(response);
 
       if (!response.data.error) {
-        setUser(response.data.response)
-        navigator("/dashboard")
+        setUser(response.data.response);
+        navigator("/dashboard");
         setAlert({
           content: response.data["message"],
           isDanger: response.data.error,
         });
-
       } else {
         setAlert({
           content: response.data["message"],
@@ -149,24 +143,22 @@ function LoginPage() {
             <button
               onClick={() => {
                 console.log(action);
-                if (action === 'Register') {
+                if (action === "Register") {
                   setParameter({
                     origin: "login",
                     body: {
                       phone: _id("user-phone").value,
                       otp: otp,
-                    }
-                  })
+                    },
+                  });
                   navigator("/register");
                 } else if (action === "Login") {
                   login();
                 } else {
-                  setAlert(
-                    {
-                      content: "Get OTP to verify",
-                      isDanger: true,
-                    }
-                  )
+                  setAlert({
+                    content: "Get OTP to verify",
+                    isDanger: true,
+                  });
                 }
               }}
               type="button"

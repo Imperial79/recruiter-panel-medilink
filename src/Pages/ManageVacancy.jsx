@@ -1,16 +1,17 @@
 import React from "react";
 import Sidebar from "../Components/Sidebar";
 import MainContent from "../Components/MainContent";
+import IsAuthTag from "../Components/IsAuthTag";
 
 function ManageVacancy() {
   return (
-    <div>
+    <IsAuthTag>
       <Sidebar activeTab={2} />
 
       <MainContent>
         <h1>Manage Vacancy</h1>
       </MainContent>
-    </div>
+    </IsAuthTag>
   );
 }
 
