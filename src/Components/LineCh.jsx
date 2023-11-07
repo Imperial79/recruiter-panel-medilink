@@ -18,6 +18,7 @@ function LineCh() {
           {
             name: "Series 1",
             data: [45, 52, 38, 45, 19, 23, 2],
+            color: "#1A56DB",
           },
         ],
         fill: {
@@ -45,7 +46,6 @@ function LineCh() {
       var chart = new ApexCharts(chartRef.current, options);
       chart.render();
     } else {
-      console.log("Chart ref is null or already rendered");
     }
   }, []);
 

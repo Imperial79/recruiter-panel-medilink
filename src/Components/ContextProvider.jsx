@@ -6,7 +6,7 @@ export const Context = React.createContext();
 
 function ContextProvider(props) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const [alert, setAlert] = useState({
     content: "",
     isDanger: false,
@@ -19,8 +19,8 @@ function ContextProvider(props) {
 
   const auth = async () => {
     console.log("inside Auth");
+    setAuthLoading(true);
     try {
-      setLoading("true");
       const response = await dbObject.post("/users/auth.php");
       console.log(response.data["message"]);
       if (!response.data["error"]) {
@@ -29,26 +29,35 @@ function ContextProvider(props) {
       } else {
         navigator("/");
       }
-
-      setLoading(false);
     } catch (error) {
       console.log(error);
     }
+    setAuthLoading(false);
     console.log("leaving Auth");
   };
 
-
   const _id = (el) => {
     return document.getElementById(el);
-  }
-
+  };
 
   useEffect(() => {
     auth();
   }, []);
 
   return (
-    <Context.Provider value={{ user, setUser, loading, alert, setAlert, _id, parameter, setParameter }}>
+    <Context.Provider
+      value={{
+        user,
+        setUser,
+        alert,
+        setAlert,
+        _id,
+        parameter,
+        setParameter,
+        auth,
+        authLoading,
+      }}
+    >
       {props.children}
     </Context.Provider>
   );

@@ -8,31 +8,30 @@ import { Context } from "../Components/ContextProvider.jsx";
 function LoginPage() {
   const { setAlert, setParameter, _id, setUser } = useContext(Context);
 
-  const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
-  let otp = "";
+  // const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  // let otp = "";
 
   const [action, setAction] = useState("");
   const navigator = useNavigate();
 
-  const handleInputChange = (e, index) => {
-    const inputValue = e.target.value;
+  // const handleInputChange = (e, index) => {
+  //   const inputValue = e.target.value;
 
-    if (inputValue.length === 1 && index < 3) {
-      inputRefs[index + 1].current.focus();
-    } else if (inputValue.length === 0 && index > 0) {
-      inputRefs[index - 1].current.focus();
-    }
-    if (inputValue === "") {
-      otp = otp.slice(0, -1);
-    } else {
-      otp += inputValue;
-    }
-    console.log(otp);
-  };
+  //   if (inputValue.length === 1 && index < 3) {
+  //     inputRefs[index + 1].current.focus();
+  //   } else if (inputValue.length === 0 && index > 0) {
+  //     inputRefs[index - 1].current.focus();
+  //   }
+  //   if (inputValue === "") {
+  //     otp = otp.slice(0, -1);
+  //   } else {
+  //     otp += inputValue;
+  //   }
+  // };
 
   const sendOTP = async () => {
     const formData = new FormData();
-    formData.append("phone", _id("user-phone").value);
+    formData.append("phone", _id("phone").value);
 
     const response = await dbObject.post("/sms-service/send-otp.php", formData);
     console.log(response);
@@ -52,14 +51,12 @@ function LoginPage() {
   };
 
   const login = async () => {
-    if (otp.length === 4) {
-      const phone = document.getElementById("user-phone");
+    if (_id("otp").value.length === 5) {
       const formData = new FormData();
-      formData.append("phone", phone.value);
-      formData.append("otp", otp);
+      formData.append("phone", _id("phone").value);
+      formData.append("otp", _id("otp").value);
 
       const response = await dbObject.post("/users/login.php", formData);
-      // console.log(response);
 
       if (!response.data.error) {
         setUser(response.data.response);
@@ -105,21 +102,40 @@ function LoginPage() {
             <div className="mt-5 relative z-0 w-full mb-6 group">
               <input
                 type="phone"
-                name="user-phone"
-                id="user-phone"
+                name="phone"
+                id="phone"
+                maxLength={10}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
               />
               <label
-                htmlFor="user-phone"
+                htmlFor="phone"
                 className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
               >
                 Phone
               </label>
             </div>
 
-            <div className="flex space-x-4 items-center justify-center">
+            <div className="mt-5 relative z-0 w-full mb-4 group">
+              <input
+                type="text"
+                name="otp"
+                id="otp"
+                maxLength={5}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer tracking-[10px]"
+                placeholder=" "
+                required
+              />
+              <label
+                htmlFor="otp"
+                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >
+                OTP
+              </label>
+            </div>
+
+            {/* <div className="flex space-x-4 items-center justify-center">
               {inputRefs.map((inputRef, index) => (
                 <input
                   key={index}
@@ -131,23 +147,22 @@ function LoginPage() {
                   onChange={(e) => handleInputChange(e, index)}
                 />
               ))}
-            </div>
+            </div> */}
 
             <button
               onClick={sendOTP}
-              className="text-blue-700 font-medium mt-5 hover:bg-gray-100 px-3 py-1 rounded-full"
+              className="text-blue-700 font-medium hover:text-blue-400 hover:underline rounded-full"
             >
               Send OTP
             </button>
 
             <button
               onClick={() => {
-                console.log(action);
                 if (action === "Register") {
                   setParameter({
                     origin: "login",
                     body: {
-                      phone: _id("user-phone").value,
+                      phone: _id("phone").value,
                       otp: otp,
                     },
                   });
@@ -162,7 +177,7 @@ function LoginPage() {
                 }
               }}
               type="button"
-              className="mt-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+              className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
             >
               Proceed
             </button>

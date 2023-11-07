@@ -1,12 +1,10 @@
 import React from "react";
 import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
-import gallery from "../assets/gallery.svg";
-import IsAuthTag from "../Components/IsAuthTag";
 
 function PostVacancy() {
   return (
-    <IsAuthTag>
+    <div>
       <Sidebar activeTab={1} />
 
       <MainContent>
@@ -160,7 +158,7 @@ function PostVacancy() {
           </form>
         </div>
       </MainContent>
-    </IsAuthTag>
+    </div>
   );
 }
 

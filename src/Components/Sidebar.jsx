@@ -20,8 +20,6 @@ function Sidebar(props) {
 
   useEffect(() => {
     const closeSidebarOnClickOutside = (e) => {
-      console.log(isSidebarOpen);
-
       if (isSidebarOpen && e.target.closest("#logo-sidebar") === null) {
         setIsSidebarOpen(!isSidebarOpen);
       }
@@ -36,7 +34,6 @@ function Sidebar(props) {
 
   const logout = async () => {
     const response = await dbObject.post("/users/logout.php");
-    console.log(response);
     if (!response.data["error"]) {
       setUser(null);
       navigator("/");
