@@ -74,88 +74,30 @@ function Sidebar(props) {
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white light:bg-gray-800">
           <img src={logo} alt="" className="w-[150px] mx-auto" />
           <ul className="space-y-2 font-medium mt-[20px]">
-            <Link to="/dashboard">
-              <li>
-                <div
-                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-                    props.activeTab == 0
-                      ? "bg-blue-900 border border-blue-700 text-white"
-                      : ""
-                  }`}
-                >
-                  <img
-                    src={dashboard}
-                    alt=""
-                    className={`h-7 w-7 ${
-                      props.activeTab == 0 ? "invert-[1]" : ""
-                    }`}
-                  />
-                  <span className="ml-4">Dashboard</span>
-                </div>
-              </li>
-            </Link>
+            <SidebarBtn
+              to="/dashboard"
+              index={0}
+              activeTab={props.activeTab}
+              image={dashboard}
+              label="Dashboard"
+            />
 
-            <Link to="/post-vacancy">
-              <li>
-                <div
-                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-                    props.activeTab == 1
-                      ? "bg-blue-900 border border-blue-700 text-white"
-                      : ""
-                  }`}
-                >
-                  <img
-                    src={addVacancy}
-                    alt=""
-                    className={`h-7 w-7 ${
-                      props.activeTab == 1 ? "invert-[1]" : ""
-                    }`}
-                  />
-                  <span className="ml-4">Post Vacancy</span>
-                </div>
-              </li>
-            </Link>
+            <SidebarBtn
+              to="/post-vacancy"
+              index={1}
+              activeTab={props.activeTab}
+              image={addVacancy}
+              label="Post Vacancy"
+            />
 
-            <Link to="/manage-vacancy">
-              <li>
-                <div
-                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-                    props.activeTab == 2
-                      ? "bg-blue-900 border border-blue-700 text-white"
-                      : ""
-                  }`}
-                >
-                  <img
-                    src={manageVacancies}
-                    alt=""
-                    className={`h-7 w-7 ${
-                      props.activeTab == 2 ? "invert-[1]" : ""
-                    }`}
-                  />
-                  <span className="ml-4">Manage Vacancy</span>
-                </div>
-              </li>
-            </Link>
-            {/* <Link to="/manage-profile">
-              <li>
-                <div
-                  className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-                    props.activeTab == 3
-                      ? "bg-blue-900 border border-blue-700 text-white"
-                      : ""
-                  }`}
-                >
-                  <img
-                    src={profile}
-                    alt=""
-                    className={`h-7 w-7 ${
-                      props.activeTab == 3 ? "invert-[1]" : ""
-                    }`}
-                  />
-                  <span className="ml-4">Manage Profile</span>
-                </div>
-              </li>
-            </Link> */}
+            <SidebarBtn
+              to="/manage-vacancy"
+              index={2}
+              activeTab={props.activeTab}
+              image={manageVacancies}
+              label="Manage Vacancy"
+            />
+
             <SidebarBtn
               to="/manage-profile"
               index={3}
@@ -163,6 +105,7 @@ function Sidebar(props) {
               image={profile}
               label="Manage Profile"
             />
+
             <li className="fixed bottom-0 left-0 w-full px-2">
               <button
                 onClick={logout}
@@ -187,14 +130,16 @@ function SidebarBtn(props) {
     <Link to={props.to}>
       <li>
         <div
-          className={`inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-blue-100 hover:text-gray-900 ${
-            isActive ? "bg-blue-900 border border-blue-700 text-white" : ""
+          className={`group inline-flex items-center w-full px-4 py-[8px] my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline  ${
+            isActive
+              ? "bg-blue-900 border border-blue-700 text-white drop-shadow-xl"
+              : "hover:bg-blue-100 hover:text-gray-900"
           }`}
         >
           <img
             src={props.image}
             alt=""
-            className={`h-7 w-7 ${isActive ? "invert-[1]" : ""}`}
+            className={`h-6 w-6 ${isActive ? "invert" : ""}`}
           />
           <span className="ml-4">{props.label}</span>
         </div>

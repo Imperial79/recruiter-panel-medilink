@@ -8,7 +8,7 @@ import { dbObject } from "../Helper/Constants";
 
 function ManageProfile() {
   const [image, setImage] = useState(gallery);
-  const { user, authLoading, _id } = useContext(Context);
+  const { user, authLoading, _id, setAlert, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [textField, setTextField] = useState({
     companyName: user != null ? user.companyName : "",
@@ -39,17 +39,23 @@ function ManageProfile() {
   const updateProfile = async () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append(companyName, _id("companyName"));
-    formData.append(pocName, _id("pocName"));
-    formData.append(email, _id("email"));
-    formData.append(phone, _id("phone"));
-    formData.append(gstin, _id("gstin"));
-    formData.append(website, _id("website"));
-    formData.append(address, _id("address"));
-    formData.append(bio, _id("bio"));
-    const response = await dbObject("/users/update-profile.php", formData);
+    formData.append("companyName", _id("companyName").value);
+    formData.append("pocName", _id("pocName").value);
+    formData.append("email", _id("email").value);
+    formData.append("website", _id("website").value);
+    formData.append("address", _id("address").value);
+    formData.append("bio", _id("bio").value);
 
-    console.log(response);
+    const response = await dbObject.post("/users/update-profile.php", formData);
+
+    // console.log(response);
+    if (!response.data.error) {
+      setUser(response.data.response);
+    }
+    setAlert({
+      content: response.data.message,
+      isDanger: response.data.error,
+    });
     setLoading(false);
   };
 
@@ -62,7 +68,7 @@ function ManageProfile() {
           <Sidebar activeTab={3} />
           <MainContent loading={loading}>
             <div>
-              <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl light:text-white">
+              <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
                 Manage Profile
               </h1>
               <input

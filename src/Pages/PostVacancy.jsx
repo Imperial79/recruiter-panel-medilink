@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
+import { Context } from "../Components/ContextProvider";
 
 function PostVacancy() {
+  const { user } = useContext(Context);
+
   return (
     <div>
       <Sidebar activeTab={1} />
 
       <MainContent>
-        <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl light:text-white">
+        <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
           Post Vacancy
         </h1>
-        <CompanyCard />
+        <CompanyCard data={user} />
         <div className="md:mx-[60px] mx-[20px] mt-[40px]">
           <form>
             <div className="grid md:grid-cols-2 md:gap-6">
@@ -164,24 +167,19 @@ function PostVacancy() {
 
 export default PostVacancy;
 
-function CompanyCard() {
+function CompanyCard({ data }) {
   return (
-    <div className="md:mx-[60px] mx-[20px] bg-gray-100 rounded-2xl p-10 flex flex-nowrap mt-10 items-center col-span-4">
-      {/* <div className="w-20 h-20 bg-white rounded-full mr-10"> */}
+    <div className="md:mx-[60px] mx-[20px] bg-gray-100 rounded-2xl p-5 flex flex-nowrap mt-10 items-center col-span-4">
       <img
-        src="https://s3.amazonaws.com/cdn.designcrowd.com/blog/100-Famous-Brand%20Logos-From-The-Most-Valuable-Companies-of-2020/apple-logo.png"
+        src={data.image}
         alt=""
         className="h-20 w-20 mr-2 p-2 rounded-full"
       />
-      {/* </div> */}
-      <div className="w-[90%]">
-        <h1 className="text-lg font-medium">Apple</h1>
-        <h1 className="max2lines">
-          A company description is an overview or summary of a business. It's an
-          important part of a business plan that often briefly describes an
-          organization's history, location, mission statement, management
-          personnel and, when appropriate, legal structure.
-        </h1>
+
+      <div className="">
+        <h1 className="text-lg font-medium">{data.companyName}</h1>
+        <h1 className="text-sm font-medium">GSTIN: {data.gstin}</h1>
+        <h1 className="max2lines">{data.bio}</h1>
       </div>
     </div>
   );
