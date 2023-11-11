@@ -18,12 +18,14 @@ function Alert() {
   }
   return (
     <div
-      className={`z-50 fixed top-[100px] md:left-10 w-full ${content === "" ? "hidden" : ""
-        }`}
+      className={`z-50 fixed top-[100px] md:left-10 w-full ${
+        content === "" ? "hidden" : ""
+      }`}
     >
       <div
-        className={`md:mx-[100px] mx-5 shadow-xl flex items-center p-4 mb-4 text-sm ${isDanger ? "bg-red-800" : "bg-green-600"
-          } rounded-lg text-white`}
+        className={` md:mx-[100px] mx-5 shadow-xl flex items-center p-4 mb-4 text-sm ${
+          isDanger ? "bg-red-800" : "bg-green-600"
+        } rounded-lg text-white`}
         role="alert"
       >
         <svg
