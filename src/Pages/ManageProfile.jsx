@@ -47,8 +47,6 @@ function ManageProfile() {
     formData.append("bio", _id("bio").value);
 
     const response = await dbObject.post("/users/update-profile.php", formData);
-
-    // console.log(response);
     if (!response.data.error) {
       setUser(response.data.response);
     }
@@ -97,7 +95,11 @@ function ManageProfile() {
               </div>
 
               <div className="md:mx-[60px] mx-[20px] mt-[40px]">
-                <form>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
                   <div className="grid md:grid-cols-2 md:gap-6">
                     <div className="relative z-0 w-full mb-6 group">
                       <input
@@ -264,7 +266,6 @@ function ManageProfile() {
                   </div>
                   <button
                     onClick={() => {
-                      console.log(textField);
                       updateProfile();
                     }}
                     type="button"

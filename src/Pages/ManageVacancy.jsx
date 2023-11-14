@@ -1,17 +1,52 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import MainContent from "../Components/MainContent";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
+import { dbObject } from "../Helper/Constants";
 
 function ManageVacancy() {
   const { user, authLoading } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("Active");
+  const [pageNo, setPageNo] = useState("0");
+  const [totalRecords, setTotalRecords] = useState("0");
+  const [dataList, setDataList] = useState([]);
 
   const toggleDrop = () => {
     setShowDrop(!showDrop);
   };
+
+  const setStatusBtn = (status) => {
+    setSelectedStatus(status);
+    toggleDrop();
+    fetchVacancies();
+  };
+
+  const fetchVacancies = async () => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("status", selectedStatus);
+      formData.append("pageNo", pageNo);
+      const response = await dbObject.post(
+        "/vacancy/list-vacancy.php",
+        formData
+      );
+      if (!response.data.error) {
+        setDataList(response.data.response.dataList);
+        setTotalRecords(response.data.response.totalRecords);
+        console.log(totalRecords);
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchVacancies();
+  }, []);
 
   return (
     <>
@@ -26,20 +61,21 @@ function ManageVacancy() {
             </h1>
 
             <div className="md:px-[60px] px-[20px] mt-10">
-              <div class="relative overflow-x-auto sm:rounded-lg">
-                <div class="p-2 flex items-center justify-between flex-column flex-wrap md:flex-row pb-4 bg-white light:bg-gray-900">
+              <div className="relative overflow-x-auto sm:rounded-lg">
+                <div className="p-2 flex items-center justify-between flex-column flex-wrap md:flex-row pb-4 bg-white light:bg-gray-900">
                   <div>
                     <button
                       id="dropdownActionButton"
                       onClick={toggleDrop}
                       data-dropdown-toggle="dropdownAction"
-                      class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:bg-gray-700 light:hover:border-gray-600 light:focus:ring-gray-700"
+                      className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:bg-gray-700 light:hover:border-gray-600 light:focus:ring-gray-700"
                       type="button"
                     >
-                      <span class="sr-only">Action button</span>
-                      Action
+                      <span className="sr-only">Action button</span>
+
+                      {selectedStatus}
                       <svg
-                        class="w-2.5 h-2.5 ms-2.5"
+                        className="w-2.5 h-2.5 ms-2.5"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -56,56 +92,57 @@ function ManageVacancy() {
                     </button>
                     <div
                       id="dropdownAction"
-                      class={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
+                      className={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
                         showDrop ? "absolute" : "hidden"
                       }`}
                     >
                       <ul
-                        class="py-1 text-sm text-gray-700 light:text-gray-200"
+                        className="py-1 text-sm text-gray-700 light:text-gray-200"
                         aria-labelledby="dropdownActionButton"
                       >
                         <li>
-                          <a
-                            href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
+                          <button
+                            onClick={() => {
+                              setStatusBtn("Active");
+                            }}
+                            className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
                           >
-                            Reward
-                          </a>
+                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+                            Active
+                          </button>
                         </li>
                         <li>
-                          <a
-                            href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
+                          <button
+                            onClick={() => {
+                              setStatusBtn("Expired");
+                            }}
+                            className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
                           >
-                            Promote
-                          </a>
+                            <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2"></div>
+                            Expired
+                          </button>
                         </li>
                         <li>
-                          <a
-                            href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
+                          <button
+                            onClick={() => {
+                              setStatusBtn("Cancelled");
+                            }}
+                            className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
                           >
-                            Activate account
-                          </a>
+                            <div className="h-2.5 w-2.5 rounded-full bg-yellow-500 me-2"></div>
+                            Cancelled
+                          </button>
                         </li>
                       </ul>
-                      <div class="py-1">
-                        <a
-                          href="#"
-                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 light:hover:bg-gray-600 light:text-gray-200 light:hover:text-white"
-                        >
-                          Delete User
-                        </a>
-                      </div>
                     </div>
                   </div>
-                  <label for="table-search" class="sr-only">
+                  <label htmlFor="table-search" className="sr-only">
                     Search
                   </label>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                       <svg
-                        class="w-4 h-4 text-gray-500 light:text-gray-400"
+                        className="w-4 h-4 text-gray-500 light:text-gray-400"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -123,36 +160,77 @@ function ManageVacancy() {
                     <input
                       type="text"
                       id="table-search-users"
-                      class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:ring-blue-500 light:focus:border-blue-500"
+                      className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:ring-blue-500 light:focus:border-blue-500"
                       placeholder="Search for users"
                     />
                   </div>
                 </div>
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
-                  <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                      <th scope="col" class="px-6 py-3 text-start">
-                        Name
+                      <th scope="col" className="px-6 py-3 text-start">
+                        Profile
                       </th>
-                      <th scope="col" class="px-6 py-3 text-center">
-                        Position
+                      <th scope="col" className="px-6 py-3 text-center">
+                        Amount/Term
                       </th>
-                      <th scope="col" class="px-6 py-3 text-center">
+                      <th scope="col" className="px-6 py-3 text-center">
+                        Timeline
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center">
                         Status
                       </th>
-                      <th scope="col" class="px-6 py-3 text-end">
+                      <th scope="col" className="px-6 py-3 text-end">
                         Action
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <TableData />
-                    <TableData />
-                    <TableData />
-                    <TableData />
+                    {dataList.map((data, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
+                      >
+                        <TableData data={data} />
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
+
+              <nav
+                className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+                aria-label="Table navigation"
+              >
+                <span className="text-sm font-normal text-gray-500 light:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                  Showing{" "}
+                  <span className="font-semibold text-gray-900 light:text-white">
+                    1-10
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-semibold text-gray-900 light:text-white">
+                    1000
+                  </span>
+                </span>
+                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+                    >
+                      Previous
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+                    >
+                      Next
+                    </a>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </MainContent>
         </div>
@@ -163,32 +241,57 @@ function ManageVacancy() {
 
 export default ManageVacancy;
 
-function TableData() {
+function TableData({ data }) {
   return (
-    <tr class="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600">
+    <>
       <th
         scope="row"
-        class="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
+        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
-        <div class="text-start">
-          <div class="text-base font-semibold">Neil Sims</div>
-          <div class="font-normal text-gray-500">neil.sims@flowbite.com</div>
+        <div className="text-start">
+          <div className="text-base font-semibold">{data.position}</div>
+          <div className="font-normal text-gray-500">{data.salary}</div>
+          <div className="font-normal text-gray-500">{data.experience}</div>
         </div>
       </th>
-      <td class="px-6 py-4 text-center">React Developer</td>
-      <td class="px-6 py-4">
-        <div class="flex items-center justify-center">
-          <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
+      <td
+        scope="row"
+        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
+      >
+        <div className="text-center">
+          <div className="text-sm font-medium">
+            {"Term: " + data.term + " days"}
+          </div>
+          <div className="text-sm font-medium">{"Paid: ₹ " + data.amount}</div>
         </div>
       </td>
-      <td class="px-6 py-4 text-end">
+      <td
+        scope="row"
+        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
+      >
+        <div className="text-center">
+          <div className="text-sm font-semibold text-green-600">
+            {data.postDate}
+          </div>
+          <div className="text-sm font-normal text-red-600">
+            {data.expireDate}
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-4">
+        <div className="flex items-center justify-center">
+          <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
+          {data.status}
+        </div>
+      </td>
+      <td className="px-6 py-4 text-end">
         <a
           href="#"
-          class="font-medium text-blue-600 light:text-blue-500 hover:underline"
+          className="font-medium text-blue-600 light:text-blue-500 hover:underline"
         >
-          Edit user
+          Edit
         </a>
       </td>
-    </tr>
+    </>
   );
 }

@@ -18,22 +18,17 @@ function ContextProvider(props) {
   const navigator = useNavigate();
 
   const auth = async () => {
-    console.log("inside Auth");
     setAuthLoading(true);
     try {
       const response = await dbObject.post("/users/auth.php");
-      console.log(response.data["message"]);
       if (!response.data["error"]) {
         setUser(response.data.response);
         navigator("/dashboard");
       } else {
         navigator("/");
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
     setAuthLoading(false);
-    console.log("leaving Auth");
   };
 
   const _id = (el) => {

@@ -34,7 +34,6 @@ function LoginPage() {
     formData.append("phone", _id("phone").value);
 
     const response = await dbObject.post("/sms-service/send-otp.php", formData);
-    console.log(response);
 
     if (!response.data["error"]) {
       setAction(response.data["response"]);

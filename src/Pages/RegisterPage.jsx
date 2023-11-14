@@ -10,7 +10,6 @@ const RegisterPage = () => {
     useContext(Context);
   const navigator = useNavigate();
   const register = async () => {
-    console.log(parameter);
     try {
       let formData = new FormData();
       formData.append("companyName", _id("companyName").value);
@@ -23,7 +22,6 @@ const RegisterPage = () => {
       formData.append("bio", _id("bio").value);
       formData.append("otp", parameter.body.otp);
       const response = await dbObject.post("/users/register.php", formData);
-      console.log(response);
       if (!response.data.error) {
         setUser(response.data.response);
         navigator("/dashboard");
@@ -32,9 +30,7 @@ const RegisterPage = () => {
         content: response.data["message"],
         isDanger: response.data["error"],
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

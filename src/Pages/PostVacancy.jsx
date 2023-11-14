@@ -61,20 +61,18 @@ function PostVacancy() {
       formData.append("specialRemark", _id("specialRemarks").value);
       formData.append("term", termList[selectedIndex].term);
       formData.append("txnId", "");
-
-      console.log(formData);
       const response = await dbObject.post(
         "/vacancy/post-vacancy.php",
         formData
       );
-      console.log(response);
       if (!response.data.error) {
-        const inputElements = document.querySelectorAll("input, textarea");
+        // const inputElements = document.querySelectorAll("input, textarea");
+        // // Iterate through each input and textarea element and set its value to an empty string
+        // inputElements.forEach((input) => {
+        //   input.value = "";
+        // });
 
-        // Iterate through each input and textarea element and set its value to an empty string
-        inputElements.forEach((input) => {
-          input.value = "";
-        });
+        _id("post-vacancy-form").reset();
       }
       setLoading(false);
       setAlert({
@@ -82,7 +80,6 @@ function PostVacancy() {
         isDanger: response.data.error,
       });
     } catch (error) {
-      console.log(error);
       setLoading(false);
       setAlert({
         content: "Fields are empty",
@@ -104,186 +101,195 @@ function PostVacancy() {
           Post Vacancy
         </h1>
         <CompanyCard data={user ?? {}} />
-
-        <div className="md:mx-[60px] mx-[20px] mt-[40px]">
-          <div className="grid md:grid-cols-3 md:gap-6">
-            <div className="relative z-0 w-full mb-6 group">
-              <input
-                type="text"
-                name="position"
-                id="position"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="position"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Position
-              </label>
-            </div>
-            <div className="relative z-0 w-full mb-6 group">
-              <input
-                type="text"
-                name="salary"
-                id="salary"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="salary"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Salary
-              </label>
-            </div>
-            <div className="relative z-0 w-full mb-6 group">
-              <input
-                type="text"
-                name="experience"
-                id="experience"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="experience"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Experience
-              </label>
-            </div>
-          </div>
-          <div className="relative z-0 w-full mb-6 group">
-            <textarea
-              type="email"
-              name="requirements"
-              id="requirements"
-              className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              htmlFor="requirements"
-              className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Requirements
-            </label>
-          </div>
-
-          <div className="grid md:grid-cols-2 md:gap-6">
-            <div className="relative z-0 w-full mb-6 group">
-              <textarea
-                type="text"
-                name="ppoc"
-                id="ppoc"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="ppoc"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Preferred Point of Contact
-              </label>
+        <form
+          id="post-vacancy-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            postVacancy();
+          }}
+        >
+          <div className="md:mx-[60px] mx-[20px] mt-[40px]">
+            <div className="grid md:grid-cols-3 md:gap-6">
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="position"
+                  id="position"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="position"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Position
+                </label>
+              </div>
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="salary"
+                  id="salary"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="salary"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Salary
+                </label>
+              </div>
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="experience"
+                  id="experience"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="experience"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Experience
+                </label>
+              </div>
             </div>
             <div className="relative z-0 w-full mb-6 group">
               <textarea
-                type="text"
-                name="specialRemarks"
-                id="specialRemarks"
+                type="email"
+                name="requirements"
+                id="requirements"
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
               />
               <label
-                htmlFor="specialRemarks"
+                htmlFor="requirements"
                 className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
               >
-                Special Remarks
+                Requirements
               </label>
             </div>
-          </div>
 
-          <div className="md:flex justify-between items-center">
-            <div>
-              <button
-                id="dropdownDefaultButton"
-                data-dropdown-toggle="dropdown"
-                onClick={toggleDrop}
-                className="flex justify-between items-center py-2.5 px-0 w-[160px] text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
-                type="button"
-              >
-                {selectedIndex == null
-                  ? "Choose Plan"
-                  : termList[selectedIndex].title}
-                <svg
-                  className="w-2.5 h-2.5 ml-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 10 6"
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <div className="relative z-0 w-full mb-6 group">
+                <textarea
+                  type="text"
+                  name="ppoc"
+                  id="ppoc"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="ppoc"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 4 4 4-4"
-                  />
-                </svg>
-              </button>
-              <div
-                id="dropdown"
-                className={`${
-                  isDropOpen ? "absolute" : "hidden"
-                }  z-10 bg-white divide-y divide-gray-100 rounded-lg shadow md:w-56 w-[70%]`}
-              >
-                <ul
-                  className="py-2 text-sm text-gray-700 light:text-gray-200"
-                  aria-labelledby="dropdownDefaultButton"
+                  Preferred Point of Contact
+                </label>
+              </div>
+              <div className="relative z-0 w-full mb-6 group">
+                <textarea
+                  type="text"
+                  name="specialRemarks"
+                  id="specialRemarks"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="specialRemarks"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                 >
-                  {termList.map((data, index) => (
-                    <li key={data.id}>
-                      <DropdownButton
-                        onClick={() => {
-                          onSelectPlan(index);
-                        }}
-                        label={data.title}
-                        term={data.term + " days"}
-                      />
-                    </li>
-                  ))}
-                </ul>
+                  Special Remarks
+                </label>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-10 md:mt-0 mt-5">
+            <div className="md:flex justify-between items-center">
               <div>
-                <h1 className="text-sm">Expires On</h1>
-                <h1 className="font-semibold">{expireDate}</h1>
+                <button
+                  id="dropdownDefaultButton"
+                  data-dropdown-toggle="dropdown"
+                  onClick={toggleDrop}
+                  className="flex justify-between items-center py-2.5 px-0 w-[160px] text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
+                  type="button"
+                >
+                  {selectedIndex == null
+                    ? "Choose Plan"
+                    : termList[selectedIndex].title}
+                  <svg
+                    className="w-2.5 h-2.5 ml-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id="dropdown"
+                  className={`${
+                    isDropOpen ? "absolute" : "hidden"
+                  }  z-10 bg-white divide-y divide-gray-100 rounded-lg shadow md:w-56 w-[70%]`}
+                >
+                  <ul
+                    className="py-2 text-sm text-gray-700 light:text-gray-200"
+                    aria-labelledby="dropdownDefaultButton"
+                  >
+                    {termList.map((data, index) => (
+                      <li key={data.id}>
+                        <DropdownButton
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onSelectPlan(index);
+                          }}
+                          label={data.title}
+                          term={data.term + " days"}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
-              <div className="text-end">
-                <h1 className="text-sm">Net Payable</h1>
-                <h1 className="font-semibold">₹ {amount}</h1>
+              <div className="grid grid-cols-2 gap-10 md:mt-0 mt-5">
+                <div>
+                  <h1 className="text-sm">Expires On</h1>
+                  <h1 className="font-semibold">{expireDate}</h1>
+                </div>
+
+                <div className="text-end">
+                  <h1 className="text-sm">Net Payable</h1>
+                  <h1 className="font-semibold">₹ {amount}</h1>
+                </div>
               </div>
             </div>
-          </div>
-          <br />
+            <br />
 
-          <div className="flex justify-end">
-            <button
-              onClick={postVacancy}
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center light:bg-blue-600 light:hover:bg-blue-700 light:focus:ring-blue-800 mt-5"
-            >
-              Proceed to pay
-            </button>
+            <div className="flex justify-end">
+              <button
+                // onClick={postVacancy}
+                type="submit"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center light:bg-blue-600 light:hover:bg-blue-700 light:focus:ring-blue-800 mt-5"
+              >
+                Proceed to pay
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
       </MainContent>
     </div>
   );
