@@ -7,7 +7,7 @@ import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 
 function ManageProfile() {
-  const [image, setImage] = useState(gallery);
+  const [imagePreview, setImagePreview] = useState(null);
   const { user, authLoading, _id, setAlert, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [textField, setTextField] = useState({
@@ -26,7 +26,7 @@ function ManageProfile() {
   };
 
   const handleImageChange = (event) => {
-    setImage(URL.createObjectURL(event.target.files[0]));
+    setImagePreview(URL.createObjectURL(event.target.files[0]));
   };
 
   const handleInputChange = (e) => {
@@ -81,21 +81,18 @@ function ManageProfile() {
                 onClick={handleClick}
                 className="md:mx-[60px] mx-[20px] mt-10 bg-gray-100 h-[100px] w-[100px] rounded-lg"
               >
-                {image && (
-                  <img
-                    id="imagePreview"
-                    src={user.image}
-                    alt=""
-                    className="h-full object-cover"
-                  />
-                )}
+                <img
+                  id="imagePreview"
+                  src={imagePreview ?? user.image}
+                  className="h-full object-cover rounded-lg"
+                />
               </button>
               <div>
                 <button
                   onClick={handleClick}
                   className="md:mx-[60px] mx-[20px] mt-2 font-semibold rounded-xl text-sm text-blue-700 "
                 >
-                  Upload Image
+                  Choose Image
                 </button>
               </div>
 

@@ -41,52 +41,86 @@ function DashboardPage() {
                 <ElementCard>
                   <LineCh />
                 </ElementCard>
-                {/* <div className="grid md:grid-cols-2 gap-4 mb-4 mt-6"> */}
-                {/* <ElementCard> */}
-                <div className="mt-10">
-                  <div className="flex justify-between items-center mb-3">
-                    <p className="font-medium text-[15px] text-black">
-                      Recent Vacancies
-                    </p>
-                    <a
-                      href="add-user.php"
-                      className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:text-white light:hover:bg-gray-700"
-                    >
-                      Post Vacancy
-                    </a>
-                  </div>
-                  <div className="relative overflow-x-auto md:rounded-lg">
-                    <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
-                      <thead className="text-xs text-gray-700 uppercase bg-blue-100 light:bg-gray-700 light:text-gray-400 text-center">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            #
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            position
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            salary
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            expires in
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <TableRow />
-                        <TableRow />
-                        <TableRow />
-                        <TableRow />
-                      </tbody>
-                    </table>
-                  </div>
+                <div className="grid md:grid-cols-2 md:gap-4 gap-0 mb-4">
+                  <ElementCard>
+                    <div className="flex justify-between items-center mb-3">
+                      <p className="font-medium text-[15px] text-black">
+                        Recent Vacancies
+                      </p>
+                      <a
+                        href="add-user.php"
+                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:text-white light:hover:bg-gray-700"
+                      >
+                        Post Vacancy
+                      </a>
+                    </div>
+                    <div className="relative overflow-x-auto md:rounded-lg">
+                      <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-start">
+                              #
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-start">
+                              position
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              salary
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-end">
+                              expires in
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <TableRow />
+                          <TableRow />
+                          <TableRow />
+                          <TableRow />
+                        </tbody>
+                      </table>
+                    </div>
+                  </ElementCard>
+                  <ElementCard>
+                    <div className="flex justify-between items-center mb-3">
+                      <p className="font-medium text-[15px] text-black">
+                        Recent Vacancies
+                      </p>
+                      <a
+                        href="add-user.php"
+                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:text-white light:hover:bg-gray-700"
+                      >
+                        Post Vacancy
+                      </a>
+                    </div>
+                    <div className="relative overflow-x-auto md:rounded-lg">
+                      <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-start">
+                              #
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-start">
+                              position
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              salary
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-end">
+                              expires in
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <TableRow />
+                          <TableRow />
+                          <TableRow />
+                          <TableRow />
+                        </tbody>
+                      </table>
+                    </div>
+                  </ElementCard>
                 </div>
-
-                {/* </ElementCard> */}
-
-                {/* </div> */}
-                {/* </div> */}
               </ContentCard>
             </div>
           </MainContent>
@@ -103,15 +137,15 @@ function TableRow() {
     <tr className="bg-white border-b light:bg-gray-900 light:border-gray-700 text-center">
       <th
         scope="row"
-        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap light:text-white"
+        className="text-start px-6 py-4 font-medium text-gray-900 whitespace-nowrap light:text-white"
       >
         1234
       </th>
-      <td className="px-6 py-4">Avishek Verma</td>
+      <td className="px-6 py-4 text-start">Avishek Verma</td>
 
       <td className="px-6 py-4">BCA</td>
       <td className="px-6 py-4">
-        <h1 className="font-medium text-blue-600 light:text-blue-500">
+        <h1 className="font-medium text-blue-600 light:text-blue-500 text-end">
           2 Days
         </h1>
       </td>
@@ -121,7 +155,7 @@ function TableRow() {
 
 function ElementCard({ children }) {
   return (
-    <div className="bg-white rounded-[20px] drop-shadow-md light:bg-gray-800 p-2 md:p-6">
+    <div className="mb-5 items-center justify-center rounded-[26px] shadow-2xl hover:shadow-lg duration-150 transition-all shadow-gray-300 bg-white text-white light:bg-gray-800 md:p-5 p-3">
       {children}
     </div>
   );

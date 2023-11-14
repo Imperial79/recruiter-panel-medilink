@@ -6,7 +6,7 @@ function MainContent(props) {
     <div className="md:ml-64 md:mt-[30px] pb-[20px]">
       <div className="relative">
         <div
-          className={`absolute w-full z-50 h-full bg-white opacity-75 ${
+          className={`absolute w-full z-50 h-screen bg-white opacity-75 ${
             props.loading ? "" : "hidden"
           }`}
         >

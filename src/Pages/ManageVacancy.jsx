@@ -27,7 +27,7 @@ function ManageVacancy() {
 
             <div className="md:px-[60px] px-[20px] mt-10">
               <div class="relative overflow-x-auto sm:rounded-lg">
-                <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white light:bg-gray-900">
+                <div class="p-2 flex items-center justify-between flex-column flex-wrap md:flex-row pb-4 bg-white light:bg-gray-900">
                   <div>
                     <button
                       id="dropdownActionButton"
@@ -131,16 +131,16 @@ function ManageVacancy() {
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 text-start">
                         Name
                       </th>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 text-center">
                         Position
                       </th>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 text-center">
                         Status
                       </th>
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 text-end">
                         Action
                       </th>
                     </tr>
@@ -170,18 +170,18 @@ function TableData() {
         scope="row"
         class="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
-        <div class="">
+        <div class="text-start">
           <div class="text-base font-semibold">Neil Sims</div>
           <div class="font-normal text-gray-500">neil.sims@flowbite.com</div>
         </div>
       </th>
-      <td class="px-6 py-4">React Developer</td>
+      <td class="px-6 py-4 text-center">React Developer</td>
       <td class="px-6 py-4">
-        <div class="flex items-center">
+        <div class="flex items-center justify-center">
           <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
         </div>
       </td>
-      <td class="px-6 py-4">
+      <td class="px-6 py-4 text-end">
         <a
           href="#"
           class="font-medium text-blue-600 light:text-blue-500 hover:underline"
