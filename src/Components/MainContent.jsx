@@ -3,11 +3,15 @@ import Loading from "../Components/Loading";
 
 function MainContent(props) {
   return (
-    <div className="md:ml-64 md:mt-[30px] pb-[20px]">
+    <div
+      className={`md:ml-64 lg:ml-64 md:mt-[30px] pb-[20px] ${
+        props.loading ? "overflow-hidden" : ""
+      }`}
+    >
       <div className="relative">
         <div
-          className={`absolute w-full z-50 h-screen bg-white opacity-75 ${
-            props.loading ? "" : "hidden"
+          className={`w-full z-50 h-screen bg-white opacity-75 ${
+            props.loading ? "absolute" : "hidden"
           }`}
         >
           <Loading />

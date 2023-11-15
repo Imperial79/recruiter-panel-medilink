@@ -6,13 +6,14 @@ import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 
 function ManageVacancy() {
-  const { user, authLoading } = useContext(Context);
+  const { user, authLoading, _id } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Active");
   const [pageNo, setPageNo] = useState("0");
   const [totalRecords, setTotalRecords] = useState("0");
   const [dataList, setDataList] = useState([]);
+  const [searchKey, setSearchKey] = useState("");
 
   const toggleDrop = () => {
     setShowDrop(!showDrop);
@@ -21,7 +22,6 @@ function ManageVacancy() {
   const setStatusBtn = (status) => {
     setSelectedStatus(status);
     toggleDrop();
-    fetchVacancies();
   };
 
   const fetchVacancies = async () => {
@@ -30,6 +30,7 @@ function ManageVacancy() {
       const formData = new FormData();
       formData.append("status", selectedStatus);
       formData.append("pageNo", pageNo);
+      formData.append("searchKey", searchKey);
       const response = await dbObject.post(
         "/vacancy/list-vacancy.php",
         formData
@@ -37,7 +38,6 @@ function ManageVacancy() {
       if (!response.data.error) {
         setDataList(response.data.response.dataList);
         setTotalRecords(response.data.response.totalRecords);
-        console.log(totalRecords);
       }
       setLoading(false);
     } catch (error) {
@@ -46,7 +46,7 @@ function ManageVacancy() {
   };
   useEffect(() => {
     fetchVacancies();
-  }, []);
+  }, [selectedStatus, pageNo]);
 
   return (
     <>
@@ -72,8 +72,18 @@ function ManageVacancy() {
                       type="button"
                     >
                       <span className="sr-only">Action button</span>
-
-                      {selectedStatus}
+                      <div className="flex items-center justify-center">
+                        <div
+                          className={`h-2.5 w-2.5 rounded-full me-2 ${
+                            selectedStatus == "Active"
+                              ? "bg-green-500"
+                              : selectedStatus == "Expired"
+                              ? "bg-red-500"
+                              : "bg-yellow-600"
+                          }`}
+                        ></div>{" "}
+                        {selectedStatus}
+                      </div>
                       <svg
                         className="w-2.5 h-2.5 ms-2.5"
                         aria-hidden="true"
@@ -83,16 +93,16 @@ function ManageVacancy() {
                       >
                         <path
                           stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="m1 1 4 4 4-4"
                         />
                       </svg>
                     </button>
                     <div
                       id="dropdownAction"
-                      className={`z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
+                      className={`z-30 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
                         showDrop ? "absolute" : "hidden"
                       }`}
                     >
@@ -136,7 +146,7 @@ function ManageVacancy() {
                       </ul>
                     </div>
                   </div>
-                  <label htmlFor="table-search" className="sr-only">
+                  <label htmlFor="searchKey" className="sr-only">
                     Search
                   </label>
                   <div className="relative">
@@ -150,18 +160,26 @@ function ManageVacancy() {
                       >
                         <path
                           stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                         />
                       </svg>
                     </div>
                     <input
                       type="text"
-                      id="table-search-users"
+                      id="searchKey"
+                      onChange={(e) => {
+                        setSearchKey(e.target.value);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          fetchVacancies();
+                        }
+                      }}
                       className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 light:bg-gray-700 light:border-gray-600 light:placeholder-gray-400 light:text-white light:focus:ring-blue-500 light:focus:border-blue-500"
-                      placeholder="Search for users"
+                      placeholder="Search for vacancies"
                     />
                   </div>
                 </div>
@@ -205,29 +223,35 @@ function ManageVacancy() {
                 <span className="text-sm font-normal text-gray-500 light:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
                   Showing{" "}
                   <span className="font-semibold text-gray-900 light:text-white">
-                    1-10
+                    {dataList.length}
                   </span>{" "}
                   of{" "}
                   <span className="font-semibold text-gray-900 light:text-white">
-                    1000
+                    {totalRecords}
                   </span>
                 </span>
                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                   <li>
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => {
+                        if (pageNo > 0) {
+                          setPageNo(pageNo - 1);
+                        }
+                      }}
                       className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
                     >
                       Previous
-                    </a>
+                    </button>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => {
+                        setPageNo(pageNo + 1);
+                      }}
                       className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
                     >
                       Next
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </nav>
@@ -280,7 +304,15 @@ function TableData({ data }) {
       </td>
       <td className="px-6 py-4">
         <div className="flex items-center justify-center">
-          <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
+          <div
+            className={`h-2.5 w-2.5 rounded-full me-2 ${
+              data.status == "Active"
+                ? "bg-green-500"
+                : data.status == "Expired"
+                ? "bg-red-500"
+                : "bg-yellow-600"
+            }`}
+          ></div>{" "}
           {data.status}
         </div>
       </td>

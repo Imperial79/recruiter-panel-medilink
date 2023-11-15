@@ -25,8 +25,35 @@ function ManageProfile() {
     document.getElementById("imageInput").click();
   };
 
+  async function uploadImage() {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("mediaFile", _id("imageInput").files[0]);
+      formData.append("recruiterId", user.id);
+      const response = await dbObject.post(
+        "https://media.shapon.tech/recruiter-upload-image.php",
+        formData
+      );
+      setLoading(false);
+      setAlert({
+        content: "Image updated successfully!",
+        isDanger: false,
+      });
+    } catch (error) {
+      setLoading(false);
+      setAlert({
+        content: "Sorry for inconvenience! Please try again.",
+        isDanger: true,
+      });
+    }
+  }
+
   const handleImageChange = (event) => {
-    setImagePreview(URL.createObjectURL(event.target.files[0]));
+    if (event.target.files.length > 0) {
+      setImagePreview(URL.createObjectURL(event.target.files[0]));
+      uploadImage();
+    }
   };
 
   const handleInputChange = (e) => {
@@ -73,11 +100,12 @@ function ManageProfile() {
                 id="imageInput"
                 className="hidden"
                 type="file"
+                accept=".jpeg, .jpg, .png, .webp"
                 onChange={handleImageChange}
               />
               <button
                 onClick={handleClick}
-                className="md:mx-[60px] mx-[20px] mt-10 bg-gray-100 h-[100px] w-[100px] rounded-lg"
+                className="md:mx-[60px] justify-center flex mx-auto mt-10 bg-gray-100 h-[100px] w-[100px] rounded-lg"
               >
                 <img
                   id="imagePreview"
@@ -88,7 +116,7 @@ function ManageProfile() {
               <div>
                 <button
                   onClick={handleClick}
-                  className="md:mx-[60px] mx-[20px] mt-2 font-semibold rounded-xl text-sm text-blue-700 "
+                  className="md:mx-[60px] justify-center flex mx-auto mt-2 font-semibold rounded-xl text-sm text-blue-700 "
                 >
                   Choose Image
                 </button>
