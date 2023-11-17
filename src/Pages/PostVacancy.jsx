@@ -3,6 +3,7 @@ import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
 import { dbObject } from "../Helper/Constants";
+import useRazorpay from "react-razorpay";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
@@ -10,6 +11,12 @@ function PostVacancy() {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [termList, setTermList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [Razorpay, isLoaded] = useRazorpay();
+
+  // const razorpayInst = new Razorpay({
+  //   key: "rzp_test_WMPfCKyrzLx2p1",
+  //   key_secret: "8fS4S8hZOF3Y7XfaESLQg7K9",
+  // });
 
   const [amount, setAmount] = useState("0");
   const currentDate = new Date();
@@ -47,6 +54,63 @@ function PostVacancy() {
     if (!response.data.error) {
       setTermList(response.data.response);
     }
+  };
+
+  async function createOrder() {
+    const formData = new FormData();
+    formData.append("amount", amount);
+    formData.append("receipt", "hsakjsjha");
+    const response = await dbObject.post(
+      "/razorpay/create-order.php",
+      formData
+    );
+
+    console.log(response);
+    return response.data.response;
+  }
+
+  const handlePayment = async () => {
+    const options = {
+      key: "rzp_test_WMPfCKyrzLx2p1", // Enter the Key ID generated from the Dashboard
+      amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Medilink",
+      description:
+        termList[selectedIndex].title +
+        " for " +
+        termList[selectedIndex].term +
+        " days",
+      image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
+      order_id: await createOrder(),
+      handler: function (response) {
+        console.log(response.razorpay_payment_id);
+        console.log(response.razorpay_order_id);
+        console.log(response.razorpay_signature);
+        postVacancy();
+      },
+      prefill: {
+        name: user.fullname,
+        email: user.email,
+        contact: user.phone,
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    const rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", function (response) {
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+    });
+    rzp1.open();
   };
 
   const postVacancy = async () => {
@@ -105,7 +169,8 @@ function PostVacancy() {
           id="post-vacancy-form"
           onSubmit={(e) => {
             e.preventDefault();
-            postVacancy();
+            // postVacancy();
+            handlePayment();
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">

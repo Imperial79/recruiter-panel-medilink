@@ -4,7 +4,7 @@ import Loading from "../Components/Loading";
 function MainContent(props) {
   return (
     <div
-      className={`md:ml-64 lg:ml-64 md:mt-[30px] pb-[20px] ${
+      className={`md:ml-64 lg:ml-64 sm:ml-0 md:mt-[30px] pb-[20px] ${
         props.loading ? "overflow-hidden" : ""
       }`}
     >

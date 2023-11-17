@@ -111,18 +111,22 @@ function DashboardPage() {
                     </p>
 
                     <ul className="text-blue-600 cursor-pointer">
-                      <li className="hover:underline hover:font-medium mb-5">
-                        1. Website
-                      </li>
-                      <li className="hover:underline hover:font-medium mb-5">
-                        2. Change Password
-                      </li>
-                      <li className="hover:underline hover:font-medium mb-5">
-                        3. Privacy policy
-                      </li>
-                      <li className="hover:underline hover:font-medium mb-5">
-                        4. Terms & Conditions
-                      </li>
+                      <div className="md:grid md:grid-cols-2 gap-4">
+                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
+                          Website
+                        </li>
+                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
+                          Change Password
+                        </li>
+                      </div>
+                      <div className="md:grid md:grid-cols-2 gap-4">
+                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
+                          Privacy policy
+                        </li>
+                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
+                          Terms & Conditions
+                        </li>
+                      </div>
                     </ul>
                   </ElementCard>
                 </div>
@@ -188,7 +192,7 @@ function TableData({ data }) {
 
 function ElementCard({ children }) {
   return (
-    <div className="mb-5 items-center justify-center rounded-[26px] shadow-2xl hover:shadow-lg duration-150 transition-all shadow-gray-300 bg-white text-black light:bg-gray-800 md:p-5 p-3">
+    <div className="mb-5 overflow-x-auto items-center justify-center rounded-[26px] shadow-2xl hover:shadow-lg duration-150 transition-all shadow-gray-300 bg-white text-black light:bg-gray-800 md:p-5 p-3">
       {children}
     </div>
   );
