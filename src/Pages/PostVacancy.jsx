@@ -71,8 +71,8 @@ function PostVacancy() {
 
   const handlePayment = async () => {
     const options = {
-      key: "rzp_test_WMPfCKyrzLx2p1", // Enter the Key ID generated from the Dashboard
-      amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      key: "rzp_test_WMPfCKyrzLx2p1",
+      amount: amount,
       currency: "INR",
       name: "Medilink",
       description:
