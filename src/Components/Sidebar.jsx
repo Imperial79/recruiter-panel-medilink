@@ -106,7 +106,8 @@ function Sidebar(props) {
               label="Manage Profile"
             />
 
-            <li className="fixed bottom-0 left-0 w-full px-2">
+            <hr />
+            <li className="w-full ">
               <button
                 onClick={logout}
                 className="inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg bg-red-500 hover:bg-red-400 text-white"

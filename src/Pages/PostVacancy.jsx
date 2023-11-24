@@ -4,6 +4,7 @@ import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
 import { dbObject } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
+import FullScreenLoading from "../Components/FullScreenLoading";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
@@ -59,7 +60,7 @@ function PostVacancy() {
   async function createOrder() {
     const formData = new FormData();
     formData.append("amount", amount);
-    formData.append("receipt", "hsakjsjha");
+    formData.append("receipt", termList[selectedIndex].term + " days");
     const response = await dbObject.post(
       "/razorpay/create-order.php",
       formData
@@ -70,72 +71,73 @@ function PostVacancy() {
   }
 
   const handlePayment = async () => {
-    const options = {
-      key: "rzp_test_WMPfCKyrzLx2p1",
-      amount: amount,
-      currency: "INR",
-      name: "Medilink",
-      description:
-        termList[selectedIndex].title +
-        " for " +
-        termList[selectedIndex].term +
-        " days",
-      image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
-      order_id: await createOrder(),
-      handler: function (response) {
-        console.log(response.razorpay_payment_id);
-        console.log(response.razorpay_order_id);
-        console.log(response.razorpay_signature);
-        postVacancy();
-      },
-      prefill: {
-        name: user.fullname,
-        email: user.email,
-        contact: user.phone,
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-    const rzp1 = new Razorpay(options);
-    rzp1.on("payment.failed", function (response) {
-      alert(response.error.code);
-      alert(response.error.description);
-      alert(response.error.source);
-      alert(response.error.step);
-      alert(response.error.reason);
-      alert(response.error.metadata.order_id);
-      alert(response.error.metadata.payment_id);
-    });
-    rzp1.open();
-  };
-
-  const postVacancy = async () => {
     try {
       setLoading(true);
-      const formData = new FormData();
-      formData.append("position", _id("position").value);
-      formData.append("salary", _id("salary").value);
-      formData.append("experience", _id("experience").value);
-      formData.append("requirements", _id("requirements").value);
-      formData.append("ppoc", _id("ppoc").value);
-      formData.append("specialRemark", _id("specialRemarks").value);
-      formData.append("term", termList[selectedIndex].term);
-      formData.append("txnId", "");
+      const options = {
+        key: "rzp_test_WMPfCKyrzLx2p1",
+        amount: amount,
+        currency: "INR",
+        name: "Medilink",
+        description:
+          termList[selectedIndex].title +
+          " for " +
+          termList[selectedIndex].term +
+          " days",
+        image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
+        order_id: await createOrder(),
+        handler: function (response) {
+          // console.log(response.razorpay_signature);
+          const formData = new FormData();
+          formData.append("position", _id("position").value);
+          formData.append("salary", _id("salary").value);
+          formData.append("experience", _id("experience").value);
+          formData.append("requirements", _id("requirements").value);
+          formData.append("ppoc", _id("ppoc").value);
+          formData.append("specialRemark", _id("specialRemarks").value);
+          formData.append("term", termList[selectedIndex].term);
+          formData.append("amount", termList[selectedIndex].amount);
+          formData.append("orderId", response.razorpay_order_id);
+          formData.append("paymentId", response.razorpay_payment_id);
+          postVacancy(formData);
+        },
+        prefill: {
+          name: user.fullname,
+          email: user.email,
+          contact: user.phone,
+        },
+        notes: {
+          address: "Razorpay Corporate Office",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.on("payment.failed", function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+      });
+      rzp1.open();
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const postVacancy = async (formData) => {
+    try {
+      setLoading(true);
+
       const response = await dbObject.post(
         "/vacancy/post-vacancy.php",
         formData
       );
       if (!response.data.error) {
-        // const inputElements = document.querySelectorAll("input, textarea");
-        // // Iterate through each input and textarea element and set its value to an empty string
-        // inputElements.forEach((input) => {
-        //   input.value = "";
-        // });
-
         _id("post-vacancy-form").reset();
       }
       setLoading(false);
@@ -157,10 +159,10 @@ function PostVacancy() {
   }, []);
 
   return (
-    <div>
+    <FullScreenLoading isLoading={loading}>
       <Sidebar activeTab={1} />
 
-      <MainContent loading={loading}>
+      <MainContent>
         <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
           Post Vacancy
         </h1>
@@ -169,8 +171,22 @@ function PostVacancy() {
           id="post-vacancy-form"
           onSubmit={(e) => {
             e.preventDefault();
-            // postVacancy();
-            handlePayment();
+            if (parseInt(termList[selectedIndex].amount) == 0) {
+              const formData = new FormData();
+              formData.append("position", _id("position").value);
+              formData.append("salary", _id("salary").value);
+              formData.append("experience", _id("experience").value);
+              formData.append("requirements", _id("requirements").value);
+              formData.append("ppoc", _id("ppoc").value);
+              formData.append("specialRemark", _id("specialRemarks").value);
+              formData.append("term", termList[selectedIndex].term);
+              formData.append("amount", termList[selectedIndex].amount);
+              formData.append("orderId", "NULL");
+              formData.append("paymentId", "NULL");
+              postVacancy(formData);
+            } else {
+              handlePayment();
+            }
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
@@ -346,7 +362,6 @@ function PostVacancy() {
 
             <div className="flex justify-end">
               <button
-                // onClick={postVacancy}
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center light:bg-blue-600 light:hover:bg-blue-700 light:focus:ring-blue-800 mt-5"
               >
@@ -356,7 +371,7 @@ function PostVacancy() {
           </div>
         </form>
       </MainContent>
-    </div>
+    </FullScreenLoading>
   );
 }
 

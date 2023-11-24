@@ -7,6 +7,7 @@ import LineCh from "../Components/LineCh";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
+import FullScreenLoading from "../Components/FullScreenLoading";
 
 function DashboardPage() {
   const { user, authLoading } = useContext(Context);
@@ -34,9 +35,9 @@ function DashboardPage() {
       {authLoading ? (
         <AuthLoading />
       ) : (
-        <div>
+        <FullScreenLoading isLoading={loading}>
           <Sidebar activeTab={0} />
-          <MainContent loading={loading}>
+          <MainContent>
             <div>
               <div className="m-5">
                 <h1 className="mb-2 text-xl font-semibold tracking-tight text-gray-900 md:text-3xl">
@@ -133,7 +134,7 @@ function DashboardPage() {
               </ContentCard>
             </div>
           </MainContent>
-        </div>
+        </FullScreenLoading>
       )}
     </>
   );

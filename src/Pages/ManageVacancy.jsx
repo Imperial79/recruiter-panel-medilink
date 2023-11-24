@@ -4,6 +4,7 @@ import MainContent from "../Components/MainContent";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
+import FullScreenLoading from "../Components/FullScreenLoading";
 
 function ManageVacancy() {
   const { user, authLoading, _id } = useContext(Context);
@@ -53,9 +54,9 @@ function ManageVacancy() {
       {authLoading ? (
         <AuthLoading />
       ) : (
-        <div>
+        <FullScreenLoading isLoading={loading}>
           <Sidebar activeTab={2} />
-          <MainContent loading={loading}>
+          <MainContent>
             <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
               Manage Vacancy
             </h1>
@@ -102,7 +103,7 @@ function ManageVacancy() {
                     </button>
                     <div
                       id="dropdownAction"
-                      className={`z-30 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
+                      className={`z-50 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 light:bg-gray-700 light:divide-gray-600 ${
                         showDrop ? "absolute" : "hidden"
                       }`}
                     >
@@ -146,6 +147,7 @@ function ManageVacancy() {
                       </ul>
                     </div>
                   </div>
+
                   <label htmlFor="searchKey" className="sr-only">
                     Search
                   </label>
@@ -183,7 +185,7 @@ function ManageVacancy() {
                     />
                   </div>
                 </div>
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
+                <table className="mb-16 w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-start">
@@ -257,7 +259,7 @@ function ManageVacancy() {
               </nav>
             </div>
           </MainContent>
-        </div>
+        </FullScreenLoading>
       )}
     </>
   );
@@ -266,6 +268,8 @@ function ManageVacancy() {
 export default ManageVacancy;
 
 function TableData({ data }) {
+  const postDate = new Date(data.postDate).toLocaleDateString();
+  const expireDate = new Date(data.expireDate).toLocaleDateString();
   return (
     <>
       <th
@@ -294,12 +298,8 @@ function TableData({ data }) {
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
         <div className="text-center">
-          <div className="text-sm font-semibold text-green-600">
-            {data.postDate}
-          </div>
-          <div className="text-sm font-normal text-red-600">
-            {data.expireDate}
-          </div>
+          <div className="text-sm font-semibold text-green-600">{postDate}</div>
+          <div className="text-sm font-normal text-red-600">{expireDate}</div>
         </div>
       </td>
       <td className="px-6 py-4">
