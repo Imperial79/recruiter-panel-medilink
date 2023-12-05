@@ -8,7 +8,6 @@ import FullScreenLoading from "../Components/FullScreenLoading";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
-  const [isDropOpen, setDropOpen] = useState(false);
   const [termList, setTermList] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [subRoleList, setSubRoleList] = useState(["Choose Sub Role"]);
@@ -76,6 +75,7 @@ function PostVacancy() {
 
   const fetchSubs = async () => {
     const response = await dbObject.get("/vacancy/fetch-subscriptions.php");
+    console.log(response.data);
     if (!response.data.error) {
       setTermList(response.data.response);
     }
@@ -98,7 +98,7 @@ function PostVacancy() {
     try {
       setLoading(true);
       const options = {
-        key: "rzp_test_WMPfCKyrzLx2p1",
+        key: "rzp_test_AI98lLWhXjQG7i",
         amount: amount,
         currency: "INR",
         name: "Medilink",
@@ -112,12 +112,16 @@ function PostVacancy() {
         handler: function (response) {
           // console.log(response.razorpay_signature);
           const formData = new FormData();
-          formData.append("position", _id("position").value);
+          formData.append("mediaFile", _id("attachment").files[0]);
+          formData.append("roleId", roleList[dropdownData.role].id);
+          formData.append("subRole", dropdownData.subRole);
+          formData.append("experience", dropdownData.experience);
           formData.append("salary", _id("salary").value);
-          formData.append("experience", _id("experience").value);
+          formData.append("opening", _id("opening").value);
           formData.append("requirements", _id("requirements").value);
           formData.append("ppoc", _id("ppoc").value);
-          formData.append("specialRemark", _id("specialRemarks").value);
+          formData.append("specialRemark", _id("specialRemark").value);
+          formData.append("tags", _id("tags").value);
           formData.append("term", termList[dropdownData.term].term);
           formData.append("amount", termList[dropdownData.term].amount);
           formData.append("orderId", response.razorpay_order_id);
@@ -198,12 +202,16 @@ function PostVacancy() {
             e.preventDefault();
             if (parseInt(termList[dropdownData.term].amount) == 0) {
               const formData = new FormData();
-              formData.append("position", _id("position").value);
+              formData.append("mediaFile", _id("attachment").files[0]);
+              formData.append("roleId", roleList[dropdownData.role].id);
+              formData.append("subRole", dropdownData.subRole);
+              formData.append("experience", dropdownData.experience);
               formData.append("salary", _id("salary").value);
-              formData.append("experience", _id("experience").value);
+              formData.append("opening", _id("opening").value);
               formData.append("requirements", _id("requirements").value);
               formData.append("ppoc", _id("ppoc").value);
-              formData.append("specialRemark", _id("specialRemarks").value);
+              formData.append("specialRemark", _id("specialRemark").value);
+              formData.append("tags", _id("tags").value);
               formData.append("term", termList[dropdownData.term].term);
               formData.append("amount", termList[dropdownData.term].amount);
               formData.append("orderId", "NULL");
@@ -460,15 +468,15 @@ function PostVacancy() {
             <div className="relative z-0 w-full mb-6 group">
               {/* Special Remarks */}
               <textarea
-                name="specialRemarks"
-                id="specialRemarks"
+                name="specialRemark"
+                id="specialRemark"
                 rows={4}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
               />
               <label
-                htmlFor="specialRemarks"
+                htmlFor="specialRemark"
                 className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
               >
                 Special Remarks

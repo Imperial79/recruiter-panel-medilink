@@ -189,6 +189,9 @@ function ManageVacancy() {
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-start">
+                        Role
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center">
                         Profile
                       </th>
                       <th scope="col" className="px-6 py-3 text-center">
@@ -277,11 +280,18 @@ function TableData({ data }) {
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
         <div className="text-start">
-          <div className="text-base font-semibold">{data.position}</div>
-          <div className="font-normal text-gray-500">{data.salary}</div>
-          <div className="font-normal text-gray-500">{data.experience}</div>
+          <div className="text-base font-semibold">{data.roleTitle}</div>
+          <div className="font-normal text-gray-500">{data.subRole}</div>
         </div>
       </th>
+      <td
+        scope="row"
+        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white text-center"
+      >
+        <div className="font-normal text-gray-500">Salary: {data.salary}</div>
+        <div className="font-normal text-gray-500">Exp: {data.experience}</div>
+        <div className="font-normal text-gray-500">Opening: {data.opening}</div>
+      </td>
       <td
         scope="row"
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
@@ -316,7 +326,13 @@ function TableData({ data }) {
           {data.status}
         </div>
       </td>
-      <td className="px-6 py-4 text-end">
+      <td className="px-6 py-4 text-end space-x-2">
+        <a
+          href="#"
+          className="font-medium text-blue-600 light:text-blue-500 hover:underline "
+        >
+          View
+        </a>
         <a
           href="#"
           className="font-medium text-blue-600 light:text-blue-500 hover:underline"
