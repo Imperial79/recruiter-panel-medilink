@@ -119,7 +119,7 @@ function LoginPage() {
             <Loading />
           </div>
           <form
-            action=""
+           
             onSubmit={(e) => {
               e.preventDefault();
 
@@ -159,7 +159,7 @@ function LoginPage() {
 
                   <div className="mt-5 relative z-0 w-full mb-6 group">
                     <input
-                      type="number"
+                      type="text"
                       name="phone"
                       id="phone"
                       maxLength={10}
@@ -177,7 +177,7 @@ function LoginPage() {
 
                   <div className="mt-5 relative z-0 w-full mb-4 group">
                     <input
-                      type="number"
+                      type="text"
                       name="otp"
                       id="otp"
                       maxLength={5}

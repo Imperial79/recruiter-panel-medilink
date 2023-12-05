@@ -40,24 +40,18 @@ function DashboardPage() {
           <MainContent>
             <div>
               <div className="m-5">
-                <h1 className="mb-2 text-xl font-semibold tracking-tight text-gray-900 md:text-3xl">
+                <h3 className="mb-2 text-xl font-semibold tracking-tight text-gray-900 md:text-2xl">
                   Hello,{" "}
                   <span className="text-blue-600 light:text-blue-500">
                     {user.companyName}
                   </span>
-                </h1>
-                <p className="text-sm font-semibold md:text-xl text-gray-900">
+                </h3>
+                <p className="text-sm font-semibold md:text-md text-gray-900">
                   {new Date().toDateString()}
                 </p>
               </div>
 
               <ContentCard>
-                <div className="grid md:grid-cols-4 grid-cols-2 gap-4 mb-4">
-                  <StatsCard label="Total Applicants" content="100" />
-                  <StatsCard label="Total Applicants" content="100" />
-                  <StatsCard label="Total Applicants" content="100" />
-                  <StatsCard label="Total Applicants" content="100" />
-                </div>
                 <ElementCard>
                   <LineCh />
                 </ElementCard>

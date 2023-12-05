@@ -2,24 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
-import { dbObject } from "../Helper/Constants";
+import { dbObject, experienceList } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
 import FullScreenLoading from "../Components/FullScreenLoading";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
   const [isDropOpen, setDropOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(null);
   const [termList, setTermList] = useState([]);
+  const [roleList, setRoleList] = useState([]);
+  const [subRoleList, setSubRoleList] = useState(["Choose Sub Role"]);
   const [loading, setLoading] = useState(false);
   const [Razorpay, isLoaded] = useRazorpay();
-
-  // const razorpayInst = new Razorpay({
-  //   key: "rzp_test_WMPfCKyrzLx2p1",
-  //   key_secret: "8fS4S8hZOF3Y7XfaESLQg7K9",
-  // });
-
-  const [amount, setAmount] = useState("0");
+  const [amount, setAmount] = useState(0);
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("en-US", {
     year: "numeric",
@@ -27,27 +22,56 @@ function PostVacancy() {
     day: "numeric",
   });
   const [expireDate, setExpireDate] = useState(formattedDate);
-
-  const toggleDrop = () => {
-    setDropOpen(!isDropOpen);
+  const [dropdownData, setDropdownData] = useState({
+    role: 0,
+    subRole: "Choose Sub Role",
+    experience: "Fresher",
+    term: 0,
+  });
+  const [isDropdownOpen, setDropdownOpen] = useState({
+    role: false,
+    subRole: false,
+    experience: false,
+    term: false,
+  });
+  const handleDropdownChange = (dropdownName, value) => {
+    setDropdownOpen((prevValues) => ({
+      ...prevValues,
+      [dropdownName]: value,
+    }));
   };
 
-  const onSelectPlan = (index) => {
-    setSelectedIndex(index);
+  const handleDropdownData = (dropdownName, value) => {
+    setDropdownData((prevValues) => ({
+      ...prevValues,
+      [dropdownName]: value,
+    }));
+    if (dropdownName === "role") {
+      handleDropdownData("subRole", "Choose Sub Role");
+      setSubRoleList(JSON.parse(roleList[value].subRoles));
+    } else if (dropdownName === "term") {
+      calculateSubscription(value);
+    }
+  };
 
-    toggleDrop();
+  const calculateSubscription = (index) => {
     setAmount(termList[index].amount);
     currentDate.setDate(
       currentDate.getDate() + parseInt(termList[index].term, 10)
     );
-
-    // Format the resulting date into a string
     const formattedDate = currentDate.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
     setExpireDate(formattedDate);
+  };
+
+  const fetchRole = async () => {
+    const response = await dbObject.get("/role/fetch-roles.php");
+    if (!response.data.error) {
+      setRoleList(response.data.response);
+    }
   };
 
   const fetchSubs = async () => {
@@ -60,7 +84,7 @@ function PostVacancy() {
   async function createOrder() {
     const formData = new FormData();
     formData.append("amount", amount);
-    formData.append("receipt", termList[selectedIndex].term + " days");
+    formData.append("receipt", termList[dropdownData.term].term + " days");
     const response = await dbObject.post(
       "/razorpay/create-order.php",
       formData
@@ -79,9 +103,9 @@ function PostVacancy() {
         currency: "INR",
         name: "Medilink",
         description:
-          termList[selectedIndex].title +
+          termList[dropdownData.term].title +
           " for " +
-          termList[selectedIndex].term +
+          termList[dropdownData.term].term +
           " days",
         image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
         order_id: await createOrder(),
@@ -94,8 +118,8 @@ function PostVacancy() {
           formData.append("requirements", _id("requirements").value);
           formData.append("ppoc", _id("ppoc").value);
           formData.append("specialRemark", _id("specialRemarks").value);
-          formData.append("term", termList[selectedIndex].term);
-          formData.append("amount", termList[selectedIndex].amount);
+          formData.append("term", termList[dropdownData.term].term);
+          formData.append("amount", termList[dropdownData.term].amount);
           formData.append("orderId", response.razorpay_order_id);
           formData.append("paymentId", response.razorpay_payment_id);
           postVacancy(formData);
@@ -156,6 +180,7 @@ function PostVacancy() {
 
   useEffect(() => {
     fetchSubs();
+    fetchRole();
   }, []);
 
   return (
@@ -171,7 +196,7 @@ function PostVacancy() {
           id="post-vacancy-form"
           onSubmit={(e) => {
             e.preventDefault();
-            if (parseInt(termList[selectedIndex].amount) == 0) {
+            if (parseInt(termList[dropdownData.term].amount) == 0) {
               const formData = new FormData();
               formData.append("position", _id("position").value);
               formData.append("salary", _id("salary").value);
@@ -179,8 +204,8 @@ function PostVacancy() {
               formData.append("requirements", _id("requirements").value);
               formData.append("ppoc", _id("ppoc").value);
               formData.append("specialRemark", _id("specialRemarks").value);
-              formData.append("term", termList[selectedIndex].term);
-              formData.append("amount", termList[selectedIndex].amount);
+              formData.append("term", termList[dropdownData.term].term);
+              formData.append("amount", termList[dropdownData.term].amount);
               formData.append("orderId", "NULL");
               formData.append("paymentId", "NULL");
               postVacancy(formData);
@@ -190,120 +215,19 @@ function PostVacancy() {
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
+            {/* First Row */}
             <div className="grid md:grid-cols-3 md:gap-6">
+              {/* Role Dropdown */}
               <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="position"
-                  id="position"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="position"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Position
-                </label>
-              </div>
-              <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="salary"
-                  id="salary"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="salary"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Salary
-                </label>
-              </div>
-              <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="experience"
-                  id="experience"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="experience"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Experience
-                </label>
-              </div>
-            </div>
-            <div className="relative z-0 w-full mb-6 group">
-              <textarea
-                type="email"
-                name="requirements"
-                id="requirements"
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
-              />
-              <label
-                htmlFor="requirements"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Requirements
-              </label>
-            </div>
-
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="relative z-0 w-full mb-6 group">
-                <textarea
-                  type="text"
-                  name="ppoc"
-                  id="ppoc"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="ppoc"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Preferred Point of Contact
-                </label>
-              </div>
-              <div className="relative z-0 w-full mb-6 group">
-                <textarea
-                  type="text"
-                  name="specialRemarks"
-                  id="specialRemarks"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="specialRemarks"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Special Remarks
-                </label>
-              </div>
-            </div>
-
-            <div className="md:flex justify-between items-center">
-              <div>
                 <button
-                  id="dropdownDefaultButton"
-                  data-dropdown-toggle="dropdown"
-                  onClick={toggleDrop}
-                  className="flex justify-between items-center py-2.5 px-0 w-[160px] text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
+                  onClick={() => {
+                    handleDropdownChange("role", !isDropdownOpen.role);
+                  }}
+                  id="roleDropdownBtn"
+                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
                   type="button"
                 >
-                  {selectedIndex == null
-                    ? "Choose Plan"
-                    : termList[selectedIndex].title}
+                  {roleList[dropdownData.role]?.title}
                   <svg
                     className="w-2.5 h-2.5 ml-2.5"
                     aria-hidden="true"
@@ -321,25 +245,329 @@ function PostVacancy() {
                   </svg>
                 </button>
                 <div
-                  id="dropdown"
+                  id="roleDropdown"
+                  name="roleDropdown"
                   className={`${
-                    isDropOpen ? "absolute" : "hidden"
-                  }  z-10 bg-white divide-y divide-gray-100 rounded-lg shadow md:w-56 w-[70%]`}
+                    isDropdownOpen.role ? "absolute" : "hidden"
+                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
                 >
                   <ul
-                    className="py-2 text-sm text-gray-700 light:text-gray-200"
-                    aria-labelledby="dropdownDefaultButton"
+                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
+                    aria-labelledby="dropdownSearchButton"
+                  >
+                    {roleList.map((data, index) => (
+                      <li key={data.id}>
+                        <div
+                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
+                          onClick={() => {
+                            handleDropdownData("role", index);
+                            handleDropdownChange("role", false);
+                          }}
+                        >
+                          {data.title}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Sub Role Dropdown */}
+              <div className="relative z-0 w-full mb-6 group">
+                <button
+                  onClick={() => {
+                    handleDropdownChange("subRole", !isDropdownOpen.subRole);
+                  }}
+                  id="subRoleDropdownBtn"
+                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  type="button"
+                >
+                  {dropdownData.subRole}
+                  <svg
+                    className="w-2.5 h-2.5 ml-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id="subRoleDropdown"
+                  name="subRoleDropdown"
+                  className={`${
+                    isDropdownOpen.subRole ? "absolute" : "hidden"
+                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                >
+                  <ul
+                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
+                    aria-labelledby="dropdownSearchButton"
+                  >
+                    {subRoleList.map((data, index) => (
+                      <li key={index}>
+                        <div
+                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
+                          onClick={() => {
+                            handleDropdownData("subRole", data);
+                            handleDropdownChange("subRole", false);
+                          }}
+                        >
+                          {data}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Experience Dropdown */}
+              <div className="relative z-0 w-full mb-6 group">
+                <button
+                  onClick={() => {
+                    handleDropdownChange(
+                      "experience",
+                      !isDropdownOpen.experience
+                    );
+                  }}
+                  id="experienceDropdownBtn"
+                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  type="button"
+                >
+                  {dropdownData.experience}
+                  <svg
+                    className="w-2.5 h-2.5 ml-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id="experienceDropdown"
+                  name="experienceDropdown"
+                  className={`${
+                    isDropdownOpen.experience ? "absolute" : "hidden"
+                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                >
+                  <ul
+                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
+                    aria-labelledby="dropdownSearchButton"
+                  >
+                    {experienceList.map((data, index) => (
+                      <li key={index}>
+                        <div
+                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
+                          onClick={() => {
+                            handleDropdownData("experience", data);
+                            handleDropdownChange("experience", false);
+                          }}
+                        >
+                          {data}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Second Row */}
+            <div className="grid md:grid-cols-3 md:gap-6">
+              {/* Salary */}
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="salary"
+                  id="salary"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=""
+                  required
+                />
+                <label
+                  htmlFor="salary"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Salary
+                </label>
+              </div>
+
+              {/* Opening */}
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="text"
+                  name="opening"
+                  id="opening"
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="opening"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Opening
+                </label>
+              </div>
+
+              {/* Attachment */}
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="file"
+                  name="attachment"
+                  id="attachment"
+                  className="block  px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Thrid Row */}
+            <div className="relative z-0 w-full mb-6 group">
+              {/* Requirement */}
+              <textarea
+                name="requirements"
+                id="requirements"
+                rows={7}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                required
+              />
+              <label
+                htmlFor="requirements"
+                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >
+                Requirements
+              </label>
+            </div>
+
+            {/* Fourth Row */}
+            <div className="relative z-0 w-full mb-6 group">
+              {/* Special Remarks */}
+              <textarea
+                name="specialRemarks"
+                id="specialRemarks"
+                rows={4}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                required
+              />
+              <label
+                htmlFor="specialRemarks"
+                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >
+                Special Remarks
+              </label>
+            </div>
+
+            {/* Fifth Row */}
+            <div className="grid md:grid-cols-2 md:gap-6">
+              {/* PPOC */}
+              <div className="relative z-0 w-full mb-6 group">
+                <textarea
+                  name="ppoc"
+                  id="ppoc"
+                  rows={3}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="ppoc"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Preferred Point of Contact
+                </label>
+              </div>
+
+              {/* Tags */}
+              <div className="relative z-0 w-full mb-6 group">
+                <textarea
+                  name="tags"
+                  id="tags"
+                  rows={3}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="tags"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Tags
+                </label>
+              </div>
+            </div>
+
+            {/* Sixth Row */}
+            <div className="grid md:grid-cols-2 md:gap-6">
+              {/* Term dropdown */}
+              <div className="relative z-0 w-full mb-6 group">
+                <button
+                  onClick={() => {
+                    handleDropdownChange("term", !isDropdownOpen.term);
+                  }}
+                  id="termDropdownBtn"
+                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  type="button"
+                >
+                  {termList[dropdownData.term]?.title +
+                    " (" +
+                    termList[dropdownData.term]?.term +
+                    " days)"}
+                  <svg
+                    className="w-2.5 h-2.5 ml-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <div
+                  id="termDropdown"
+                  name="termDropdown"
+                  className={`${
+                    isDropdownOpen.term ? "absolute" : "hidden"
+                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                >
+                  <ul
+                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
+                    aria-labelledby="dropdownSearchButton"
                   >
                     {termList.map((data, index) => (
                       <li key={data.id}>
-                        <DropdownButton
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onSelectPlan(index);
+                        <div
+                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
+                          onClick={() => {
+                            handleDropdownData("term", index);
+                            handleDropdownChange("term", false);
                           }}
-                          label={data.title}
-                          term={data.term + " days"}
-                        />
+                        >
+                          {data.title + " (" + data.term + " days)"}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -387,9 +615,9 @@ function CompanyCard({ data }) {
       />
 
       <div className="">
-        <h1 className="text-lg font-medium">{data.companyName}</h1>
+        <h1 className="text-md font-bold">{data.companyName}</h1>
         <h1 className="text-sm font-medium">GSTIN: {data.gstin}</h1>
-        <h1 className="max2lines">{data.bio}</h1>
+        <h1 className="max2lines text-sm">{data.bio}</h1>
       </div>
     </div>
   );

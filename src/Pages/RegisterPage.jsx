@@ -73,7 +73,7 @@ const RegisterPage = () => {
               <p className="text-xl font-semibold text-center">Register</p>
 
               <div className="md:mx-[20px] mx-[20px] mt-[40px]">
-                <form>
+
                   <div className="relative z-0 w-full mb-6 group">
                     <input
                       type="number"
@@ -92,6 +92,7 @@ const RegisterPage = () => {
                       Phone
                     </label>
                   </div>
+
                   <div className="relative z-0 w-full mb-6 group">
                     <input
                       type="text"
@@ -108,6 +109,7 @@ const RegisterPage = () => {
                       Company Name
                     </label>
                   </div>
+
                   <div className="relative z-0 w-full mb-6 group">
                     <input
                       type="text"
@@ -124,6 +126,7 @@ const RegisterPage = () => {
                       Contact person's name
                     </label>
                   </div>
+
                   <div className="relative z-0 w-full mb-6 group">
                     <input
                       type="text"
@@ -208,7 +211,7 @@ const RegisterPage = () => {
                       Bio
                     </label>
                   </div>
-                </form>
+               
                 <button
                   type="submit"
                   className="my-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"

@@ -90,11 +90,7 @@ function ManageProfile() {
         <FullScreenLoading isLoading={loading}>
           <Sidebar activeTab={3} />
           <MainContent>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
+
               <div>
                 <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
                   Manage Profile
@@ -281,6 +277,7 @@ function ManageProfile() {
                         type="text"
                         name="bio"
                         id="bio"
+                        rows={6}
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                         placeholder=" "
                         required
@@ -305,7 +302,7 @@ function ManageProfile() {
                   </form>
                 </div>
               </div>
-            </form>
+           
           </MainContent>
         </FullScreenLoading>
       )}

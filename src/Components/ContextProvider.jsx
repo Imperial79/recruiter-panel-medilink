@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { dbObject } from "../Helper/Constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const Context = React.createContext();
 
@@ -15,7 +15,8 @@ function ContextProvider(props) {
     origin: "",
     body: {},
   });
-  const navigator = useNavigate();
+  const navigator = useNavigate(); 
+  const location = new useLocation();
 
   const auth = async () => {
     setAuthLoading(true);
@@ -23,7 +24,7 @@ function ContextProvider(props) {
       const response = await dbObject.post("/users/auth.php");
       if (!response.data["error"]) {
         setUser(response.data.response);
-        navigator("/dashboard");
+        navigator(location.pathname + location.search);
       } else {
         navigator("/");
       }
