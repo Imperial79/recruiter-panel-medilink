@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import MainContent from "../Components/MainContent";
 import gallery from "../assets/gallery.svg";
@@ -21,6 +21,19 @@ function ManageProfile() {
     address: user != null ? user.address : "",
     bio: user != null ? user.bio : "",
   });
+
+  useEffect(() => {
+    setTextField({
+      companyName: user != null ? user.companyName : "",
+      pocName: user != null ? user.pocName : "",
+      email: user != null ? user.email : "",
+      phone: user != null ? user.phone : "",
+      gstin: user != null ? user.gstin : "",
+      website: user != null ? user.website : "",
+      address: user != null ? user.address : "",
+      bio: user != null ? user.bio : "",
+    });
+  }, [user]);
 
   const handleClick = () => {
     document.getElementById("imageInput").click();

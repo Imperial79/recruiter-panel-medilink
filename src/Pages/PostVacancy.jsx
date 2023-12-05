@@ -226,7 +226,7 @@ function PostVacancy() {
             {/* First Row */}
             <div className="grid md:grid-cols-3 md:gap-6">
               {/* Role Dropdown */}
-              <div className="relative z-0 w-full mb-6 group">
+              <div className="relative z-2 w-full mb-6 group">
                 <button
                   onClick={() => {
                     handleDropdownChange("role", !isDropdownOpen.role);
@@ -281,7 +281,7 @@ function PostVacancy() {
               </div>
 
               {/* Sub Role Dropdown */}
-              <div className="relative z-0 w-full mb-6 group">
+              <div className="relative z-2 w-full mb-6 group">
                 <button
                   onClick={() => {
                     handleDropdownChange("subRole", !isDropdownOpen.subRole);
@@ -336,7 +336,7 @@ function PostVacancy() {
               </div>
 
               {/* Experience Dropdown */}
-              <div className="relative z-0 w-full mb-6 group">
+              <div className="relative z-2 w-full mb-6 group">
                 <button
                   onClick={() => {
                     handleDropdownChange(
@@ -525,7 +525,7 @@ function PostVacancy() {
             {/* Sixth Row */}
             <div className="grid md:grid-cols-2 md:gap-6">
               {/* Term dropdown */}
-              <div className="relative z-0 w-full mb-6 group">
+              <div className="relative z-2 w-full mb-6 group">
                 <button
                   onClick={() => {
                     handleDropdownChange("term", !isDropdownOpen.term);
@@ -594,7 +594,6 @@ function PostVacancy() {
                 </div>
               </div>
             </div>
-            <br />
 
             <div className="flex justify-end">
               <button
@@ -628,17 +627,5 @@ function CompanyCard({ data }) {
         <h1 className="max2lines text-sm">{data.bio}</h1>
       </div>
     </div>
-  );
-}
-
-function DropdownButton({ onClick, label, term }) {
-  return (
-    <button
-      onClick={onClick}
-      className="px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white w-full text-start flex items-center justify-between"
-    >
-      <h1>{label}</h1>
-      <h1>{term}</h1>
-    </button>
   );
 }
