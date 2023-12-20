@@ -91,7 +91,7 @@ function CandidateList() {
 
   useEffect(() => {
     fetchVacancyData();
-  }, [selectedStatus, pageNo]);
+  }, [pageNo]);
 
   return (
     <>
