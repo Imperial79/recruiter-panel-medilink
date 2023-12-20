@@ -5,9 +5,9 @@ import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-function ManageVacancy() {
+function CandidateList() {
   const { user, authLoading, _id } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
@@ -16,25 +16,55 @@ function ManageVacancy() {
   const [totalRecords, setTotalRecords] = useState("0");
   const [dataList, setDataList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const vacancyId = urlParams.get("id");
+  const roleTitle = urlParams.get("role");
+
+  const [selectAll, setSelectAll] = useState(false);
+  const [checkboxes, setCheckboxes] = useState({});
+
+  const handleSelectAll = () => {
+    // Update the state to toggle the selectAll value
+    setSelectAll(!selectAll);
+
+    // Update the state for each checkbox to match the selectAll value
+    const updatedCheckboxes = {};
+    for (const checkbox in checkboxes) {
+      updatedCheckboxes[checkbox] = !selectAll;
+    }
+    setCheckboxes(updatedCheckboxes);
+  };
+
+  const handleCheckboxChange = (checkboxName) => {
+    // Update the state for the specific checkbox
+    setCheckboxes((prevCheckboxes) => ({
+      ...prevCheckboxes,
+      [checkboxName]: !prevCheckboxes[checkboxName],
+    }));
+
+    // Check if all checkboxes are selected and update selectAll accordingly
+    const allChecked = Object.values(checkboxes).every((value) => value);
+    setSelectAll(allChecked);
+  };
 
   const toggleDrop = () => {
     setShowDrop(!showDrop);
   };
 
-  const fetchVacancies = async () => {
+  const fetchVacancyData = async () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append("status", selectedStatus);
-      formData.append("pageNo", pageNo);
-      formData.append("searchKey", searchKey);
+      formData.append("vacancyId", vacancyId);
       const response = await dbObject.post(
-        "/vacancy/list-vacancy.php",
+        "/vacancy/applied-candidates.php",
         formData
       );
+
       if (!response.data.error) {
-        setDataList(response.data.response.dataList);
-        setTotalRecords(response.data.response.totalRecords);
+        setDataList(response.data.response);
+        //     setTotalRecords(response.data.response.totalRecords);
       }
       setLoading(false);
     } catch (error) {
@@ -42,7 +72,7 @@ function ManageVacancy() {
     }
   };
   useEffect(() => {
-    fetchVacancies();
+    fetchVacancyData();
   }, [selectedStatus, pageNo]);
 
   return (
@@ -54,7 +84,10 @@ function ManageVacancy() {
           <Sidebar activeTab={2} />
           <MainContent>
             <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
-              Manage Vacancy
+              Applied Candidates
+              <p className="text-[16px] font-medium tracking-normal mt-1">
+                Role: {roleTitle}
+              </p>
             </h1>
 
             <div className="md:px-[60px] px-[20px] mt-10">
@@ -64,9 +97,9 @@ function ManageVacancy() {
                     value={selectedStatus}
                     setValue={setSelectedStatus}
                     dataList={[
-                      { value: "Active", color: "green-500" },
-                      { value: "Rejected", color: "yellow-500" },
-                      { value: "Expired", color: "red-500" },
+                      { value: "Applied", color: "yellow-500" },
+                      { value: "Selected", color: "green-500" },
+                      { value: "Rejected", color: "red-500" },
                     ]}
                     isOpen={showDrop}
                     toggleDrop={toggleDrop}
@@ -112,23 +145,34 @@ function ManageVacancy() {
                 <table className="mb-16 w-full text-sm text-left rtl:text-right text-gray-500 light:text-gray-400">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
+                      <th scope="col" className="p-4">
+                        <div className="flex items-center">
+                          <input
+                            id="selectAllCheck"
+                            type="checkbox"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <label htmlFor="selectAllCheck" className="sr-only">
+                            checkbox
+                          </label>
+                        </div>
+                      </th>
                       <th scope="col" className="px-6 py-3 text-start">
-                        Role
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-center">
-                        Profile
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-center">
-                        Amount/Term
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-center">
-                        Timeline
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-center">
-                        Status
+                        Fullname
                       </th>
                       <th scope="col" className="px-6 py-3 text-end">
-                        Action
+                        Profile
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-start">
+                        Address
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-start">
+                        Applied on
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-end">
+                        Resume
                       </th>
                     </tr>
                   </thead>
@@ -138,7 +182,11 @@ function ManageVacancy() {
                         key={index}
                         className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
                       >
-                        <TableData data={data} />
+                        <TableData
+                          data={data}
+                          checkboxes={checkboxes}
+                          handleCheckboxChange={handleCheckboxChange}
+                        />
                       </tr>
                     ))}
                   </tbody>
@@ -192,76 +240,69 @@ function ManageVacancy() {
   );
 }
 
-export default ManageVacancy;
+export default CandidateList;
 
-function TableData({ data }) {
-  const postDate = new Date(data.postDate).toLocaleDateString();
-  const expireDate = new Date(data.expireDate).toLocaleDateString();
+function TableData({ data, handleCheckboxChange, checkboxes }) {
   return (
     <>
+      <th scope="col" className="p-4">
+        <div className="flex items-center">
+          <input
+            id={data.id}
+            checked={checkboxes[data.id]}
+            onChange={() => handleCheckboxChange(data.id)}
+            type="checkbox"
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label htmlFor={data.id} className="sr-only">
+            checkbox
+          </label>
+        </div>
+      </th>
       <th
         scope="row"
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
         <div className="text-start">
-          <div className="text-base font-semibold">{data.roleTitle}</div>
-          <div className="font-normal text-gray-500">{data.subRole}</div>
+          <div className="text-base font-semibold">
+            {data.firstName} {data.lastName}
+          </div>
+          <div className="text-[13px] font-normal text-gray-500">
+            Ph: {data.phone}
+          </div>
         </div>
       </th>
       <td
         scope="row"
-        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white text-center"
+        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white text-end"
       >
-        <div className="font-normal text-gray-500">Salary: {data.salary}</div>
+        <div className="font-normal text-gray-500">Gender: {data.gender}</div>
         <div className="font-normal text-gray-500">Exp: {data.experience}</div>
-        <div className="font-normal text-gray-500">Opening: {data.opening}</div>
       </td>
       <td
         scope="row"
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
-        <div className="text-center">
-          <div className="text-sm font-medium">
-            {"Term: " + data.term + " days"}
-          </div>
-          <div className="text-sm font-medium">{"Paid: ₹ " + data.amount}</div>
+        <div className="text-sm font-normal">{data.address}</div>
+        <div className="text-sm font-normal">
+          {data.city}, {data.state}
         </div>
       </td>
+
       <td
         scope="row"
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
-        <div className="text-center">
-          <div className="text-sm font-semibold text-green-600">{postDate}</div>
-          <div className="text-sm font-normal text-red-600">{expireDate}</div>
-        </div>
+        <div className="text-sm font-normal">{data.date}</div>
       </td>
-      <td className="px-6 py-4">
-        <div className="flex items-center justify-center">
-          <div
-            className={`h-2.5 w-2.5 rounded-full me-2 ${
-              data.status == "Active"
-                ? "bg-green-500"
-                : data.status == "Expired"
-                ? "bg-red-500"
-                : "bg-yellow-600"
-            }`}
-          ></div>{" "}
-          {data.status}
-        </div>
-      </td>
+
       <td className="px-6 py-4 text-end space-x-2">
         <Link
-          to={`/manage-vacancy/candidates?id=${data.id}&role=${data.roleTitle}`}
+          to={data.resume}
+          target="_blank"
           className="font-medium text-blue-600 light:text-blue-500 hover:underline "
         >
-          View
-        </Link>
-        <Link
-          to={`/edit-vacancy?id=${data.id}`}
-          className="font-medium text-blue-600 light:text-blue-500 hover:underline "
-        >
-          Edit
+          Resume
         </Link>
       </td>
     </>

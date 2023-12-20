@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import MainContent from "../Components/MainContent";
-import gallery from "../assets/gallery.svg";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
+import KGrid from "../Components/KGrid";
+import { KTextArea, KTextField } from "../Components/TextField";
 
 function ManageProfile() {
   const [imagePreview, setImagePreview] = useState(null);
@@ -139,171 +140,112 @@ function ManageProfile() {
                     updateProfile();
                   }}
                 >
-                  <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="text"
-                        name="companyName"
-                        id="companyName"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        value={textField.companyName}
-                        onChange={(e) => {
-                          handleInputChange(e);
-                        }}
-                      />
-                      <label
-                        htmlFor="companyName"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Company name
-                      </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="text"
-                        name="pocName"
-                        id="pocName"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        value={textField.pocName}
-                        onChange={(e) => {
-                          handleInputChange(e);
-                        }}
-                      />
-                      <label
-                        htmlFor="pocName"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Contact person's name
-                      </label>
-                    </div>
-                  </div>
+                  <KGrid crossAxisCount={2} gap={6}>
+                    <KTextField
+                      label="Company Name"
+                      id="companyName"
+                      name="companyName"
+                      placeholder="Enter company name"
+                      value={textField.companyName}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
 
-                  <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        value={textField.email}
-                        onChange={(e) => {
-                          handleInputChange(e);
-                        }}
-                      />
-                      <label
-                        htmlFor="email"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Email
-                      </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="phone"
-                        name="phone"
-                        id="phone"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        readOnly
-                        value={textField.phone}
-                      />
-                      <label
-                        htmlFor="phone"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Phone
-                      </label>
-                    </div>
-                  </div>
+                    <KTextField
+                      name="pocName"
+                      id="pocName"
+                      label="Contact person's name"
+                      placeholder="Enter contact person's name"
+                      value={textField.pocName}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
+                  </KGrid>
 
-                  <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="text"
-                        name="gstin"
-                        id="gstin"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        readOnly
-                        value={textField.gstin}
-                      />
-                      <label
-                        htmlFor="gstin"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        GSTIN
-                      </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-6 group">
-                      <input
-                        type="text"
-                        name="website"
-                        id="website"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                        onChange={(e) => {
-                          handleInputChange(e);
-                        }}
-                        value={textField.website}
-                      />
-                      <label
-                        htmlFor="website"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Company Website
-                      </label>
-                    </div>
-                  </div>
-                  <div className="relative z-0 w-full mb-6 group">
-                    <textarea
+                  <KGrid crossAxisCount={2} gap={6}>
+                    <KTextField
+                      label="E-mail"
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="Enter email"
+                      required
+                      value={textField.email}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
+
+                    <KTextField
+                      label="Phone Number"
+                      type="phone"
+                      name="phone"
+                      id="phone"
+                      maxLength={10}
+                      placeholder="Enter phone number"
+                      required
+                      readOnly={true}
+                      value={textField.phone}
+                    />
+                  </KGrid>
+
+                  <KGrid crossAxisCount={2} gap={6}>
+                    <KTextField
+                      label="GSTIN"
+                      type="text"
+                      name="gstin"
+                      id="gstin"
+                      placeholder="Enter GST Number"
+                      required
+                      value={textField.gstin}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
+
+                    <KTextField
+                      label="Company Website"
+                      type="text"
+                      name="website"
+                      id="website"
+                      placeholder="Enter company website"
+                      required
+                      value={textField.website}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
+                  </KGrid>
+                  <KGrid crossAxisCount={2} gap={6}>
+                    <KTextArea
+                      label="Company Address"
                       type="text"
                       name="address"
                       id="address"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
+                      placeholder="Enter company address"
                       required
                       onChange={(e) => {
                         handleInputChange(e);
                       }}
                       value={textField.address}
-                    ></textarea>
-                    <label
-                      htmlFor="address"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Company Address
-                    </label>
-                  </div>
-                  <div className="relative z-0 w-full mb-6 group">
-                    <textarea
+                    />
+
+                    <KTextArea
+                      label="Company Bio"
                       type="text"
                       name="bio"
                       id="bio"
-                      rows={6}
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
+                      placeholder="Enter company bio"
                       required
                       onChange={(e) => {
                         handleInputChange(e);
                       }}
                       value={textField.bio}
-                    ></textarea>
-                    <label
-                      htmlFor="bio"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Bio
-                    </label>
-                  </div>
+                    />
+                  </KGrid>
+
                   <button
                     type="submit"
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center light:bg-blue-600 light:hover:bg-blue-700 light:focus:ring-blue-800"

@@ -78,7 +78,6 @@ function Sidebar(props) {
               to="/dashboard"
               index={0}
               activeTab={props.activeTab}
-              image={dashboard}
               label="Dashboard"
             />
 
@@ -86,7 +85,6 @@ function Sidebar(props) {
               to="/post-vacancy"
               index={1}
               activeTab={props.activeTab}
-              image={addVacancy}
               label="Post Vacancy"
             />
 
@@ -94,7 +92,6 @@ function Sidebar(props) {
               to="/manage-vacancy"
               index={2}
               activeTab={props.activeTab}
-              image={manageVacancies}
               label="Manage Vacancy"
             />
 
@@ -102,12 +99,11 @@ function Sidebar(props) {
               to="/manage-profile"
               index={3}
               activeTab={props.activeTab}
-              image={profile}
               label="Manage Profile"
             />
 
             <hr />
-            <li className="w-full ">
+            <li className="w-full">
               <button
                 onClick={logout}
                 className="inline-flex items-center w-full px-4 py-2 my-2 text-sm transition duration-300 ease-in-out transform rounded-lg bg-red-500 hover:bg-red-400 text-white"
@@ -133,16 +129,18 @@ function SidebarBtn(props) {
         <div
           className={`group inline-flex items-center w-full px-4 py-[8px] my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline  ${
             isActive
-              ? "bg-blue-900 border border-blue-700 text-white drop-shadow-xl"
-              : "hover:bg-blue-100 hover:text-gray-900"
+              ? "font-semibold text-blue-700"
+              : "hover:bg-gray-100 hover:text-gray-900"
           }`}
         >
-          <img
-            src={props.image}
-            alt=""
-            className={`h-6 w-6 ${isActive ? "invert" : ""}`}
-          />
-          <span className="ml-4">{props.label}</span>
+          <div
+            className={`${
+              isActive
+                ? "-translate-x-0 opacity-100"
+                : "translate-x-full opacity-0"
+            } h-6 w-1 rounded-full bg-blue-700 mr-1 transition-all ease-in-out duration-200`}
+          ></div>
+          <span className="ml-2">{props.label}</span>
         </div>
       </li>
     </Link>

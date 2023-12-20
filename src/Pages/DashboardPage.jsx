@@ -8,6 +8,7 @@ import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
+import KGrid from "../Components/KGrid";
 
 function DashboardPage() {
   const { user, authLoading } = useContext(Context);
@@ -55,79 +56,72 @@ function DashboardPage() {
                 <ElementCard>
                   <LineCh />
                 </ElementCard>
-                <div className="grid md:grid-cols-2 md:gap-4 gap-0 mb-4">
-                  <ElementCard>
-                    <div className="flex justify-between items-center mb-3">
-                      <p className="font-medium text-[15px] text-black">
-                        Recent Vacancies
-                      </p>
-                      <Link
-                        to="/post-vacancy"
-                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:text-white light:hover:bg-gray-700"
-                      >
-                        Post Vacancy
-                      </Link>
-                    </div>
-                    <div className="relative overflow-x-auto md:rounded-lg">
-                      <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-start">
-                              Role
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-center">
-                              Profile
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-center">
-                              Expires On
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-center">
-                              Status
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-end">
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dataList.map((data, index) => (
-                            <tr
-                              key={index}
-                              className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
-                            >
-                              <TableData data={data} />
+                <KGrid crossAxisCount={6} gap={4}>
+                  <div className="col-span-4">
+                    <ElementCard>
+                      <div className="flex justify-between items-center mb-3">
+                        <p className="font-medium text-[15px] text-black">
+                          Recent Vacancies
+                        </p>
+                        <Link
+                          to="/post-vacancy"
+                          className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 light:focus:ring-gray-700 light:bg-gray-800 light:text-gray-400 light:border-gray-600 light:hover:text-white light:hover:bg-gray-700"
+                        >
+                          Post Vacancy
+                        </Link>
+                      </div>
+                      <div className="relative overflow-x-auto md:rounded-lg">
+                        <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
+                          <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
+                            <tr>
+                              <th scope="col" className="px-6 py-3 text-start">
+                                Role
+                              </th>
+                              <th scope="col" className="px-6 py-3 text-center">
+                                Profile
+                              </th>
+                              <th scope="col" className="px-6 py-3 text-center">
+                                Expires On
+                              </th>
+                              <th scope="col" className="px-6 py-3 text-center">
+                                Status
+                              </th>
+                              <th scope="col" className="px-6 py-3 text-end">
+                                Action
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </ElementCard>
-
-                  <ElementCard>
-                    <p className="font-medium text-[15px] text-black mb-5 pt-4">
-                      Quick Links
-                    </p>
-
-                    <ul className="text-blue-600 cursor-pointer">
-                      <div className="md:grid md:grid-cols-2 gap-4">
-                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
-                          Website
-                        </li>
-                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
-                          Change Password
-                        </li>
+                          </thead>
+                          <tbody>
+                            {dataList.map((data, index) => (
+                              <tr
+                                key={index}
+                                className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
+                              >
+                                <TableData data={data} />
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
-                      <div className="md:grid md:grid-cols-2 gap-4">
-                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
-                          Privacy policy
-                        </li>
-                        <li className="mb-5 bg-gray-100 p-5 text-center rounded-xl hover:bg-gray-300">
-                          Terms & Conditions
-                        </li>
+                    </ElementCard>
+                  </div>
+                  <div className="col-span-2">
+                    <ElementCard>
+                      <p className="font-medium text-[15px] text-black mb-5 pt-4">
+                        Quick Links
+                      </p>
+                      <div className="rounded-full px-3 py-2 bg-white text-black cursor-pointer hover:invert border font-medium mb-2">
+                        Privacy Policy
                       </div>
-                    </ul>
-                  </ElementCard>
-                </div>
+                      <div className="rounded-full px-3 py-2 bg-white text-black cursor-pointer hover:invert border font-medium mb-2">
+                        Terms & Conditions
+                      </div>
+                      <div className="rounded-full px-3 py-2 bg-white text-black cursor-pointer hover:invert border font-medium mb-2">
+                        Website
+                      </div>
+                    </ElementCard>
+                  </div>
+                </KGrid>
               </ContentCard>
             </div>
           </MainContent>

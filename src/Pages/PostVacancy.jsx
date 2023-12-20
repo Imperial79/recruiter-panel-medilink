@@ -47,7 +47,11 @@ function PostVacancy() {
     }));
     if (dropdownName === "role") {
       handleDropdownData("subRole", "Choose Sub Role");
-      setSubRoleList(JSON.parse(roleList[value].subRoles));
+      if (roleList[value].subRoles !== "NULL") {
+        setSubRoleList(JSON.parse(roleList[value].subRoles));
+      } else {
+        setSubRoleList([]);
+      }
     } else if (dropdownName === "term") {
       calculateSubscription(value);
     }
