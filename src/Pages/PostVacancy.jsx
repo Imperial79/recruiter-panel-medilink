@@ -5,6 +5,13 @@ import { Context } from "../Components/ContextProvider";
 import { dbObject, experienceList } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
 import FullScreenLoading from "../Components/FullScreenLoading";
+import {
+  KDropDown,
+  KFilePicker,
+  KTextArea,
+  KTextField,
+} from "../Components/TextField";
+import KGrid from "../Components/KGrid";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
@@ -230,13 +237,14 @@ function PostVacancy() {
             {/* First Row */}
             <div className="grid md:grid-cols-3 md:gap-6">
               {/* Role Dropdown */}
+
               <div className="relative z-2 w-full mb-6 group">
                 <button
                   onClick={() => {
                     handleDropdownChange("role", !isDropdownOpen.role);
                   }}
                   id="roleDropdownBtn"
-                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
                   type="button"
                 >
                   {roleList[dropdownData.role]?.title}
@@ -261,7 +269,7 @@ function PostVacancy() {
                   name="roleDropdown"
                   className={`${
                     isDropdownOpen.role ? "absolute" : "hidden"
-                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
                 >
                   <ul
                     className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
@@ -291,7 +299,7 @@ function PostVacancy() {
                     handleDropdownChange("subRole", !isDropdownOpen.subRole);
                   }}
                   id="subRoleDropdownBtn"
-                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
                   type="button"
                 >
                   {dropdownData.subRole}
@@ -316,7 +324,7 @@ function PostVacancy() {
                   name="subRoleDropdown"
                   className={`${
                     isDropdownOpen.subRole ? "absolute" : "hidden"
-                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
                 >
                   <ul
                     className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
@@ -349,7 +357,7 @@ function PostVacancy() {
                     );
                   }}
                   id="experienceDropdownBtn"
-                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
                   type="button"
                 >
                   {dropdownData.experience}
@@ -374,7 +382,7 @@ function PostVacancy() {
                   name="experienceDropdown"
                   className={`${
                     isDropdownOpen.experience ? "absolute" : "hidden"
-                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
+                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
                 >
                   <ul
                     className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
@@ -398,133 +406,59 @@ function PostVacancy() {
               </div>
             </div>
 
-            {/* Second Row */}
-            <div className="grid md:grid-cols-3 md:gap-6">
-              {/* Salary */}
-              <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="salary"
-                  id="salary"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=""
-                  required
-                />
-                <label
-                  htmlFor="salary"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Salary
-                </label>
-              </div>
+            <KGrid crossAxisCount={3} gap={6}>
+              <KTextField
+                id="salary"
+                name="salary"
+                label="Salary"
+                placeholder="Salary"
+              />
+              <KTextField
+                id="opening"
+                name="opening"
+                label="Opening"
+                placeholder="Opening"
+              />
+              <KFilePicker
+                label="Choose attachment"
+                name="attachment"
+                id="attachment"
+              />
+            </KGrid>
 
-              {/* Opening */}
-              <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="text"
-                  name="opening"
-                  id="opening"
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="opening"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Opening
-                </label>
-              </div>
-
-              {/* Attachment */}
-              <div className="relative z-0 w-full mb-6 group">
-                <input
-                  type="file"
-                  name="attachment"
-                  id="attachment"
-                  className="block  px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Thrid Row */}
-            <div className="relative z-0 w-full mb-6 group">
-              {/* Requirement */}
-              <textarea
-                name="requirements"
+            <KGrid crossAxisCount={2} gap={6}>
+              <KTextArea
+                label="Requirements"
                 id="requirements"
-                rows={7}
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
+                name="requirements"
+                rows={5}
+                placeholder="Job requirements ..."
               />
-              <label
-                htmlFor="requirements"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Requirements
-              </label>
-            </div>
-
-            {/* Fourth Row */}
-            <div className="relative z-0 w-full mb-6 group">
-              {/* Special Remarks */}
-              <textarea
-                name="specialRemark"
+              <KTextArea
+                label="Special Remarks"
                 id="specialRemark"
-                rows={4}
-                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                required
+                name="specialRemark"
+                rows={5}
+                placeholder="Special Remarks ..."
               />
-              <label
-                htmlFor="specialRemark"
-                className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >
-                Special Remarks
-              </label>
-            </div>
+            </KGrid>
 
-            {/* Fifth Row */}
-            <div className="grid md:grid-cols-2 md:gap-6">
-              {/* PPOC */}
-              <div className="relative z-0 w-full mb-6 group">
-                <textarea
-                  name="ppoc"
-                  id="ppoc"
-                  rows={3}
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="ppoc"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Preferred Point of Contact
-                </label>
-              </div>
-
-              {/* Tags */}
-              <div className="relative z-0 w-full mb-6 group">
-                <textarea
-                  name="tags"
-                  id="tags"
-                  rows={3}
-                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  required
-                />
-                <label
-                  htmlFor="tags"
-                  className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                >
-                  Tags
-                </label>
-              </div>
-            </div>
+            <KGrid crossAxisCount={2} gap={6}>
+              <KTextArea
+                label="Preferred Point of Contact"
+                id="ppoc"
+                name="ppoc"
+                rows={5}
+                placeholder="Point of Contact ..."
+              />
+              <KTextArea
+                label="Tags"
+                id="tags"
+                name="tags"
+                rows={5}
+                placeholder="Tags..."
+              />
+            </KGrid>
 
             {/* Sixth Row */}
             <div className="grid md:grid-cols-2 md:gap-6">
@@ -535,7 +469,7 @@ function PostVacancy() {
                     handleDropdownChange("term", !isDropdownOpen.term);
                   }}
                   id="termDropdownBtn"
-                  className="inline-flex justify-between py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer items-center"
+                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
                   type="button"
                 >
                   {termList[dropdownData.term]?.title +

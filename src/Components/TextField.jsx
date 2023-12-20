@@ -77,11 +77,10 @@ export function KDropDown({
   dropdownId,
   label,
   value,
-  handleDropdownChange,
+  onClick,
   isDropDownOpen,
   children,
 }) {
-  // const [isDropOpen, setisDropOpen] = useState(false);
   return (
     <div>
       <label
@@ -91,10 +90,7 @@ export function KDropDown({
         {label}
       </label>
       <button
-        onClick={() => {
-          // setisDropOpen(!isDropOpen);
-          handleDropdownChange(id, !isDropDownOpen[id]);
-        }}
+        onClick={onClick}
         id={id}
         className={`shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between`}
         type="button"
@@ -120,7 +116,7 @@ export function KDropDown({
       <div
         id={dropdownId}
         className={`${
-          isDropDownOpen[id] ? "hidden" : "absolute"
+          isDropDownOpen ? "hidden" : "absolute"
         } max-h-[250px] overflow-auto z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44`}
       >
         <ul className="py-2 text-sm text-gray-700">{children}</ul>

@@ -6,7 +6,7 @@ import ManageVacancy from "./Pages/ManageVacancy";
 import ManageProfile from "./Pages/ManageProfile";
 import Alert from "./Components/Alert";
 import RegisterPage from "./Pages/RegisterPage";
-import CandidateList from "./Pages/CadidateList";
+import CandidateList from "./Pages/CandidateList";
 import EditVacancy from "./Pages/EditVacancy";
 
 function App() {

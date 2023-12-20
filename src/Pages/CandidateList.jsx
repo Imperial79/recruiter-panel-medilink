@@ -64,13 +64,31 @@ function CandidateList() {
 
       if (!response.data.error) {
         setDataList(response.data.response);
-        //     setTotalRecords(response.data.response.totalRecords);
+
+        response.data.response.map((data, index) => {
+          setCheckboxes((prevCheckboxes) => ({
+            ...prevCheckboxes,
+            [data.id]: false,
+          }));
+        });
       }
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
   };
+
+  function handleStatusSelection(status) {
+    const entries = Object.entries(checkboxes);
+
+    // Use filter to get IDs where the corresponding boolean value is true
+    const trueIds = entries
+      .filter(([id, value]) => value === true)
+      .map(([id]) => id);
+    console.log(status);
+    console.log(trueIds);
+  }
+
   useEffect(() => {
     fetchVacancyData();
   }, [selectedStatus, pageNo]);
@@ -101,6 +119,7 @@ function CandidateList() {
                       { value: "Selected", color: "green-500" },
                       { value: "Rejected", color: "red-500" },
                     ]}
+                    handleStatusSelection={handleStatusSelection}
                     isOpen={showDrop}
                     toggleDrop={toggleDrop}
                   />
@@ -309,7 +328,14 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
   );
 }
 
-function KDropdown({ value, setValue, toggleDrop, isOpen, dataList }) {
+function KDropdown({
+  value,
+  setValue,
+  toggleDrop,
+  isOpen,
+  dataList,
+  handleStatusSelection,
+}) {
   return (
     <div>
       <button
@@ -363,6 +389,7 @@ function KDropdown({ value, setValue, toggleDrop, isOpen, dataList }) {
               <button
                 onClick={() => {
                   setValue(data.value);
+                  handleStatusSelection(data.value);
                   toggleDrop();
                 }}
                 className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-100 light:hover:bg-gray-600 light:hover:text-white"
