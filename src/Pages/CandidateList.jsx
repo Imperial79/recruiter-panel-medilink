@@ -8,10 +8,10 @@ import FullScreenLoading from "../Components/FullScreenLoading";
 import { Link, useLocation } from "react-router-dom";
 
 function CandidateList() {
-  const { user, authLoading, _id } = useContext(Context);
+  const { user, authLoading, _id, setAlert } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("Active");
+  const [selectedStatus, setSelectedStatus] = useState("Choose Action");
   const [pageNo, setPageNo] = useState("0");
   const [totalRecords, setTotalRecords] = useState("0");
   const [dataList, setDataList] = useState([]);
@@ -78,6 +78,30 @@ function CandidateList() {
     }
   };
 
+  async function candidateAction(action, idList) {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("candidateIdList", JSON.stringify(idList));
+      formData.append("action", action);
+      formData.append("vacancyId", vacancyId);
+
+      const response = await dbObject.post(
+        "/vacancy/candidate-action.php",
+        formData
+      );
+      console.log(response.data);
+      setAlert({
+        content: response.data.message,
+        isDanger: response.data.error,
+      });
+      if (!response.data.error) {
+        fetchVacancyData();
+      }
+      setLoading(false);
+    } catch (error) {}
+  }
+
   function handleStatusSelection(status) {
     const entries = Object.entries(checkboxes);
 
@@ -87,6 +111,8 @@ function CandidateList() {
       .map(([id]) => id);
     console.log(status);
     console.log(trueIds);
+
+    candidateAction(status, trueIds);
   }
 
   useEffect(() => {
@@ -116,6 +142,7 @@ function CandidateList() {
                     setValue={setSelectedStatus}
                     dataList={[
                       { value: "Applied", color: "yellow-500" },
+                      { value: "In-Review", color: "purple-500" },
                       { value: "Selected", color: "green-500" },
                       { value: "Rejected", color: "red-500" },
                     ]}
@@ -188,7 +215,7 @@ function CandidateList() {
                         Address
                       </th>
                       <th scope="col" className="px-6 py-3 text-start">
-                        Applied on
+                        Applied
                       </th>
                       <th scope="col" className="px-6 py-3 text-end">
                         Resume
@@ -312,7 +339,24 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
         scope="row"
         className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
       >
-        <div className="text-sm font-normal">{data.date}</div>
+        <div className="font-medium text-gray-500">Date: {data.date}</div>
+
+        <div className="inline-flex items-center gap-1">
+          Status:{" "}
+          <span
+            className={`font-medium text-${
+              data.status === "Applied"
+                ? "yellow-500"
+                : data.status === "In-Review"
+                ? "purple-500"
+                : data.status === "Selected"
+                ? "green-500"
+                : "red-500"
+            }`}
+          >
+            {data.status}
+          </span>
+        </div>
       </td>
 
       <td className="px-6 py-4 text-end space-x-2">
@@ -321,8 +365,17 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
           target="_blank"
           className="font-medium text-blue-600 light:text-blue-500 hover:underline "
         >
-          Resume
+          Uploaded
         </Link>
+        <div>
+          <Link
+            to={"/medilink-resume?id=" + data.rbid}
+            target="_blank"
+            className="font-medium text-blue-600 light:text-blue-500 hover:underline "
+          >
+            Medilink
+          </Link>
+        </div>
       </td>
     </>
   );
@@ -347,15 +400,21 @@ function KDropdown({
       >
         <span className="sr-only">Action button</span>
         <div className="flex items-center justify-center">
-          <div
-            className={`h-2.5 w-2.5 rounded-full me-2 ${
-              value == "Active"
-                ? "bg-green-500"
-                : value == "Expired"
-                ? "bg-red-500"
-                : "bg-yellow-600"
-            }`}
-          ></div>{" "}
+          {value === "Choose Action" ? (
+            <></>
+          ) : (
+            <div
+              className={`h-2.5 w-2.5 rounded-full me-2 ${
+                value == "Applied"
+                  ? "bg-yellow-500"
+                  : value == "In-Review"
+                  ? "bg-purple-500"
+                  : value == "Selected"
+                  ? "bg-green-500"
+                  : "bg-yellow-600"
+              }`}
+            ></div>
+          )}
           {value}
         </div>
         <svg

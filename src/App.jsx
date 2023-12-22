@@ -8,6 +8,7 @@ import Alert from "./Components/Alert";
 import RegisterPage from "./Pages/RegisterPage";
 import CandidateList from "./Pages/CandidateList";
 import EditVacancy from "./Pages/EditVacancy";
+import MedilinkResume from "./Pages/MedilinkResume";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/manage-vacancy" element={<ManageVacancy />} />
         <Route path="/manage-vacancy/candidates" element={<CandidateList />} />
         <Route path="/manage-profile" element={<ManageProfile />} />
+        <Route path="/medilink-resume" element={<MedilinkResume />} />
       </Routes>
     </>
   );
