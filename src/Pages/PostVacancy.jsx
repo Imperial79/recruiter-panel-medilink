@@ -6,12 +6,11 @@ import { dbObject, experienceList } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import {
-  KDropDown,
   KFilePicker,
+  KGrid,
   KTextArea,
   KTextField,
-} from "../Components/TextField";
-import KGrid from "../Components/KGrid";
+} from "../Components/components";
 
 function PostVacancy() {
   const { user, _id, setAlert } = useContext(Context);
@@ -86,7 +85,6 @@ function PostVacancy() {
 
   const fetchSubs = async () => {
     const response = await dbObject.get("/vacancy/fetch-subscriptions.php");
-    console.log(response.data);
     if (!response.data.error) {
       setTermList(response.data.response);
     }
@@ -101,7 +99,6 @@ function PostVacancy() {
       formData
     );
 
-    console.log(response);
     return response.data.response;
   }
 
@@ -121,7 +118,6 @@ function PostVacancy() {
         image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
         order_id: await createOrder(),
         handler: function (response) {
-          // console.log(response.razorpay_signature);
           const formData = new FormData();
           formData.append("mediaFile", _id("attachment").files[0]);
           formData.append("roleId", roleList[dropdownData.role].id);

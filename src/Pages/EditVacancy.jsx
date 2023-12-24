@@ -5,8 +5,7 @@ import { Context } from "../Components/ContextProvider";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { useLocation } from "react-router-dom";
-import { KFilePicker, KTextArea, KTextField } from "../Components/TextField";
-import KGrid from "../Components/KGrid";
+import { KGrid, KTextArea, KTextField } from "../Components/components";
 
 function EditVacancy() {
   const { user, _id, setAlert } = useContext(Context);

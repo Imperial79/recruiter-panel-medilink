@@ -5,13 +5,23 @@ import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
-import KGrid from "../Components/KGrid";
-import { KTextArea, KTextField } from "../Components/TextField";
+import {
+  KDropDown,
+  KDropdownItem,
+  KGrid,
+  KTextArea,
+  KTextField,
+} from "../Components/components";
 
 function ManageProfile() {
   const [imagePreview, setImagePreview] = useState(null);
   const { user, authLoading, _id, setAlert, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
+  const [statesList, setstatesList] = useState([]);
+  const [isStateDropOpen, setisStateDropOpen] = useState(false);
+  const [selectedState, setselectedState] = useState("Arunachal Pradesh");
+  const [city, setcity] = useState("");
+
   const [textField, setTextField] = useState({
     companyName: user != null ? user.companyName : "",
     pocName: user != null ? user.pocName : "",
@@ -19,22 +29,39 @@ function ManageProfile() {
     phone: user != null ? user.phone : "",
     gstin: user != null ? user.gstin : "",
     website: user != null ? user.website : "",
+    state: user != null ? user.state : "",
+    city: user != null ? user.city : "",
     address: user != null ? user.address : "",
     bio: user != null ? user.bio : "",
   });
 
   useEffect(() => {
-    setTextField({
-      companyName: user != null ? user.companyName : "",
-      pocName: user != null ? user.pocName : "",
-      email: user != null ? user.email : "",
-      phone: user != null ? user.phone : "",
-      gstin: user != null ? user.gstin : "",
-      website: user != null ? user.website : "",
-      address: user != null ? user.address : "",
-      bio: user != null ? user.bio : "",
-    });
+    if (user !== null) {
+      setTextField({
+        companyName: user != null ? user.companyName : "",
+        pocName: user != null ? user.pocName : "",
+        email: user != null ? user.email : "",
+        phone: user != null ? user.phone : "",
+        gstin: user != null ? user.gstin : "",
+        website: user != null ? user.website : "",
+        address: user != null ? user.address : "",
+        state: user != null ? user.state : "",
+        city: user != null ? user.city : "",
+        bio: user != null ? user.bio : "",
+      });
+
+      setselectedState(user.state);
+    }
   }, [user]);
+
+  async function fetchStates() {
+    try {
+      const response = await dbObject.get("/states/fetch-states.php");
+      if (!response.data.error) {
+        setstatesList(response.data.response);
+      }
+    } catch (error) {}
+  }
 
   const handleClick = () => {
     document.getElementById("imageInput").click();
@@ -82,6 +109,8 @@ function ManageProfile() {
     formData.append("email", _id("email").value);
     formData.append("website", _id("website").value);
     formData.append("address", _id("address").value);
+    formData.append("state", selectedState);
+    formData.append("city", _id("city").value);
     formData.append("bio", _id("bio").value);
 
     const response = await dbObject.post("/users/update-profile.php", formData);
@@ -94,6 +123,10 @@ function ManageProfile() {
     });
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
 
   return (
     <>
@@ -213,6 +246,40 @@ function ManageProfile() {
                       placeholder="Enter company website"
                       required
                       value={textField.website}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                    />
+                  </KGrid>
+                  <KGrid>
+                    <KDropDown
+                      value={selectedState}
+                      id={"state"}
+                      onClick={() => {
+                        setisStateDropOpen(!isStateDropOpen);
+                      }}
+                      isDropDownOpen={isStateDropOpen}
+                      label={"Select State"}
+                    >
+                      {statesList.map((data, index) => (
+                        <div key={index}>
+                          <KDropdownItem
+                            label={data.stateName}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setselectedState(data.stateName);
+                              setisStateDropOpen(!isStateDropOpen);
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </KDropDown>
+
+                    <KTextField
+                      id="city"
+                      label="City"
+                      placeholder="Enter city"
+                      value={textField.city}
                       onChange={(e) => {
                         handleInputChange(e);
                       }}

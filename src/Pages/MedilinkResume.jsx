@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../Components/ContextProvider";
 import Scaffold from "../Components/Scaffold";
-import KGrid from "../Components/KGrid";
+import { KGrid } from "../Components/components";
 
 function MedilinkResume() {
   const { user, authLoading } = useContext(Context);

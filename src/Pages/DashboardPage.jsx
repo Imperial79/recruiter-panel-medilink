@@ -8,7 +8,7 @@ import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
-import KGrid from "../Components/KGrid";
+import { KGrid } from "../Components/components";
 
 function DashboardPage() {
   const { user, authLoading } = useContext(Context);

@@ -1,15 +1,26 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import recruiter from "../assets/recruiter.svg";
 import logo from "../assets/logo.jpg";
 import { dbObject } from "../Helper/Constants.jsx";
 import { Context } from "../Components/ContextProvider.jsx";
 import Loading from "../Components/Loading.jsx";
+import {
+  KDropDown,
+  KDropdownItem,
+  KGrid,
+  KTextArea,
+  KTextField,
+} from "../Components/components.jsx";
 
 const RegisterPage = () => {
   const { _id, setAlert, parameter, setParameter, setUser } =
     useContext(Context);
   const [loading, setLoading] = useState(false);
+  const [statesList, setstatesList] = useState([]);
+  const [isStateDropOpen, setisStateDropOpen] = useState(false);
+  const [selectedState, setselectedState] = useState("Arunachal Pradesh");
+  const [city, setcity] = useState("");
 
   const navigator = useNavigate();
   const register = async () => {
@@ -22,6 +33,8 @@ const RegisterPage = () => {
       formData.append("phone", _id("phone").value);
       formData.append("email", _id("email").value);
       formData.append("address", _id("address").value);
+      formData.append("state", selectedState);
+      formData.append("city", _id("city").value);
       formData.append("website", _id("website").value);
       formData.append("bio", _id("bio").value);
       formData.append("otp", parameter.body.otp);
@@ -40,6 +53,19 @@ const RegisterPage = () => {
       setLoading(false);
     }
   };
+
+  async function fetchStates() {
+    try {
+      const response = await dbObject.get("/states/fetch-states.php");
+      if (!response.data.error) {
+        setstatesList(response.data.response);
+      }
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    fetchStates();
+  }, []);
 
   return (
     <div className="relative">
@@ -64,7 +90,7 @@ const RegisterPage = () => {
               className="md:w-[40%] my-20 mx-20 hidden md:block"
             />
 
-            <div className="bg-white border-gray-100 border rounded-[20px] items-center justify-center md:w-1/2">
+            <div className="bg-white border-gray-100 border rounded-[20px] items-center justify-center md:w-1/2 p-5">
               <img
                 src={logo}
                 alt=""
@@ -72,149 +98,110 @@ const RegisterPage = () => {
               />
               <p className="text-xl font-semibold text-center">Register</p>
 
-              <div className="md:mx-[20px] mx-[20px] mt-[40px]">
+              <div className="relative z-0 w-full mb-6 group">
+                <KTextField
+                  type="number"
+                  label="Phone"
+                  name="phone"
+                  id="phone"
+                  placeholder="Enter phone number"
+                  required
+                  readOnly
+                  value={parameter.body.phone}
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="number"
-                      name="phone"
-                      id="phone"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                      readOnly
-                      value={parameter.body.phone}
-                    />
-                    <label
-                      htmlFor="phone"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Phone
-                    </label>
-                  </div>
+                <div className="relative z-0 w-full mb-6 group">
+                  <KTextField
+                    type="text"
+                    name="companyName"
+                    id="companyName"
+                    label="Company Name"
+                    placeholder="Enter Company Name"
+                    required
+                  />
+                </div>
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="text"
-                      name="companyName"
-                      id="companyName"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    />
-                    <label
-                      htmlFor="companyName"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Company Name
-                    </label>
-                  </div>
+                <KTextField
+                  type="text"
+                  name="poc"
+                  id="poc"
+                  label="Contact person's name"
+                  placeholder="Enter contact person's name"
+                  required
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="text"
-                      name="poc"
-                      id="poc"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    />
-                    <label
-                      htmlFor="poc"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Contact person's name
-                    </label>
-                  </div>
+                <KTextField
+                  type="text"
+                  name="gstin"
+                  id="gstin"
+                  label="GSTIN"
+                  placeholder="Enter GST Number"
+                  required
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="text"
-                      name="gstin"
-                      id="gstin"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    />
-                    <label
-                      htmlFor="gstin"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      GSTIN
-                    </label>
-                  </div>
+                <KTextField
+                  type="email"
+                  name="email"
+                  id="email"
+                  label="E-mail"
+                  placeholder="Enter email"
+                  required
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    />
-                    <label
-                      htmlFor="email"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Email
-                    </label>
-                  </div>
+                <KTextField
+                  type="text"
+                  name="website"
+                  id="website"
+                  label="Website"
+                  placeholder="Enter official website link"
+                  required
+                />
+                <KGrid>
+                  <KDropDown
+                    value={selectedState}
+                    id={"state"}
+                    onClick={() => {
+                      setisStateDropOpen(!isStateDropOpen);
+                    }}
+                    isDropDownOpen={isStateDropOpen}
+                    label={"Select State"}
+                  >
+                    {statesList.map((data, index) => (
+                      <div key={index}>
+                        <KDropdownItem
+                          label={data.stateName}
+                          onClick={() => {
+                            setselectedState(data.stateName);
+                            setisStateDropOpen(!isStateDropOpen);
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </KDropDown>
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <input
-                      type="text"
-                      name="website"
-                      id="website"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    />
-                    <label
-                      htmlFor="website"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Website
-                    </label>
-                  </div>
+                  <KTextField id="city" label="City" placeholder="Enter city" />
+                </KGrid>
+                <KTextArea
+                  type="text"
+                  name="address"
+                  id="address"
+                  label="Address"
+                  placeholder="Enter company address"
+                  required
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <textarea
-                      type="text"
-                      name="address"
-                      id="address"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    ></textarea>
-                    <label
-                      htmlFor="address"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Address
-                    </label>
-                  </div>
+                <KTextArea
+                  type="text"
+                  name="bio"
+                  id="bio"
+                  label="Bio"
+                  placeholder="Enter Company Bio"
+                  required
+                />
 
-                  <div className="relative z-0 w-full mb-6 group">
-                    <textarea
-                      type="text"
-                      name="bio"
-                      id="bio"
-                      className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none light:text-white light:border-gray-600 light:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                      required
-                    ></textarea>
-                    <label
-                      htmlFor="bio"
-                      className="peer-focus:font-medium absolute text-sm text-gray-500 light:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:light:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                      Bio
-                    </label>
-                  </div>
-               
                 <button
                   type="submit"
-                  className="my-10 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+                  className="my-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
                 >
                   Register
                 </button>
