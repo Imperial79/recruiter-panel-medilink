@@ -5,7 +5,12 @@ import { Context } from "../Components/ContextProvider";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { useLocation } from "react-router-dom";
-import { KGrid, KTextArea, KTextField } from "../Components/components";
+import {
+  KFilePicker,
+  KGrid,
+  KTextArea,
+  KTextField,
+} from "../Components/components";
 
 function EditVacancy() {
   const { user, _id, setAlert } = useContext(Context);
@@ -28,20 +33,6 @@ function EditVacancy() {
   const UrlParams = new URLSearchParams(location.search);
   const vacancyId = UrlParams.get("id");
 
-  const fetchRole = async () => {
-    const response = await dbObject.get("/role/fetch-roles.php");
-    if (!response.data.error) {
-      setRoleList(response.data.response);
-    }
-  };
-
-  const fetchSubs = async () => {
-    const response = await dbObject.get("/vacancy/fetch-subscriptions.php");
-    if (!response.data.error) {
-      setTermList(response.data.response);
-    }
-  };
-
   const fetchVacancyData = async () => {
     try {
       setLoading(true);
@@ -51,7 +42,6 @@ function EditVacancy() {
         "/vacancy/vacancy-details.php",
         formData
       );
-      console.log(response.data.response);
       if (!response.data.error) {
         setvacancyData(response.data.response);
       }
@@ -61,9 +51,46 @@ function EditVacancy() {
     }
   };
 
+  async function updateVacancyData() {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+
+      formData.append("vacancyId", vacancyId);
+      formData.append("experience", textField.experience);
+      formData.append("salary", textField.salary);
+      formData.append("opening", textField.opening);
+      formData.append("requirements", textField.requirements);
+      formData.append("specialRemark", textField.specialRemark);
+      formData.append("ppoc", textField.ppoc);
+      formData.append("tags", textField.tags);
+
+      if (_id("attachment").files.length > 0) {
+        formData.append("mediaFile", _id("attachment").files[0]);
+      }
+
+      const response = await dbObject.post(
+        "/vacancy/edit-vacancy.php",
+        formData
+      );
+      setAlert({
+        content: response.data.message,
+        isDanger: response.data.error,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  const handleInputChange = (e) => {
+    settextField({
+      ...textField, // Preserve existing values
+      [e.target.name]: e.target.value,
+    });
+  };
+
   useEffect(() => {
-    fetchSubs();
-    fetchRole();
     fetchVacancyData();
   }, []);
 
@@ -79,8 +106,6 @@ function EditVacancy() {
       ppoc: vacancyData?.ppoc ?? "",
       tags: vacancyData?.tags ?? "",
     });
-
-    // console.log(textField);
   }, [vacancyData]);
 
   return (
@@ -96,28 +121,7 @@ function EditVacancy() {
           id="edit-vacancy-form"
           onSubmit={(e) => {
             e.preventDefault();
-            // if (parseInt(termList[dropdownData.term].amount) == 0) {
-            //   const formData = new FormData();
-            //   formData.append("mediaFile", _id("attachment").files[0]);
-            //   formData.append("roleId", roleList[dropdownData.role].id);
-            //   formData.append("subRole", dropdownData.subRole);
-            //   formData.append("experience", dropdownData.experience);
-            //   formData.append("salary", _id("salary").value);
-            //   formData.append("opening", _id("opening").value);
-            //   formData.append("requirements", _id("requirements").value);
-            //   formData.append("ppoc", _id("ppoc").value);
-            //   formData.append("specialRemark", _id("specialRemark").value);
-            //   formData.append("tags", _id("tags").value);
-            //   formData.append("term", termList[dropdownData.term].term);
-            //   formData.append("amount", termList[dropdownData.term].amount);
-            //   formData.append("orderId", "NULL");
-            //   formData.append("paymentId", "NULL");
-            //   postVacancy(formData);
-            // }
-
-            // else {
-            //   handlePayment();
-            // }
+            updateVacancyData();
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
@@ -128,7 +132,7 @@ function EditVacancy() {
                 label="Role"
                 placeholder="Role"
                 value={textField?.role}
-                onChange={(e) => {}}
+                readOnly
               />
               <KTextField
                 id="subRole"
@@ -136,7 +140,7 @@ function EditVacancy() {
                 label="Sub-Role"
                 placeholder="Sub-Role"
                 value={textField?.subRole}
-                onChange={(e) => {}}
+                readOnly
               />
               <KTextField
                 id="experience"
@@ -144,7 +148,9 @@ function EditVacancy() {
                 label="Experience"
                 placeholder="Experience"
                 value={textField?.experience}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
             </KGrid>
 
@@ -155,7 +161,9 @@ function EditVacancy() {
                 label="Salary"
                 placeholder="Salary"
                 value={textField?.salary}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
               <KTextField
                 id="opening"
@@ -163,12 +171,17 @@ function EditVacancy() {
                 label="Opening"
                 placeholder="Opening"
                 value={textField?.opening}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
               <KFilePicker
                 label="Choose attachment"
                 name="attachment"
                 id="attachment"
+                onChange={() => {
+                  console.log(_id("attachment").files[0]);
+                }}
               />
             </KGrid>
 
@@ -180,7 +193,9 @@ function EditVacancy() {
                 rows={5}
                 placeholder="Job requirements ..."
                 value={textField?.requirements}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
               <KTextArea
                 label="Special Remarks"
@@ -189,7 +204,9 @@ function EditVacancy() {
                 rows={5}
                 placeholder="Special Remarks ..."
                 value={textField?.specialRemark}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
             </KGrid>
 
@@ -201,7 +218,9 @@ function EditVacancy() {
                 rows={5}
                 placeholder="Point of Contact ..."
                 value={textField?.ppoc}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
               <KTextArea
                 label="Tags"
@@ -210,7 +229,9 @@ function EditVacancy() {
                 rows={5}
                 placeholder="Tags..."
                 value={textField?.tags}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               />
             </KGrid>
 

@@ -170,7 +170,8 @@ const RegisterPage = () => {
                       <div key={index}>
                         <KDropdownItem
                           label={data.stateName}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
                             setselectedState(data.stateName);
                             setisStateDropOpen(!isStateDropOpen);
                           }}

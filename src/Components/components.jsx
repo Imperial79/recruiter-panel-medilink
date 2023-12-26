@@ -194,12 +194,12 @@ export function KGrid({
   );
 }
 
-export function KFilePicker({ id, name, label }) {
+export function KFilePicker({ id, name, label, onChange }) {
   return (
     <div>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm font-medium text-gray-900"
+        className="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap"
       >
         {label}
       </label>
@@ -208,6 +208,7 @@ export function KFilePicker({ id, name, label }) {
         name={name}
         id={id}
         className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full mb-5"
+        onChange={onChange}
       />
     </div>
   );
