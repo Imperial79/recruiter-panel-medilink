@@ -1,11 +1,31 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ApexCharts from "apexcharts";
+import { dbObject } from "../Helper/Constants";
 
 function LineCh() {
   const chartRef = useRef(null);
+  const [monthList, setmonthList] = useState([]);
+  const [recordList, setrecordList] = useState([]);
 
-  useEffect(() => {
-    if (chartRef.current && chartRef.current.children.length === 0) {
+  async function fetchGraphData() {
+    const response = await dbObject.get("/graph/fetch-analytics.php");
+    if (!response.data.error) {
+      // console.log(response.data.response);
+      let temp1 = [];
+      let temp2 = [];
+      response.data.response.map((data, index) => {
+        temp1.push(data.month_year);
+        temp2.push(parseInt(data.record_count));
+      });
+      setmonthList(temp1);
+      setrecordList(temp2);
+      populateGraph();
+    }
+  }
+
+  function populateGraph() {
+    if (recordList.length > 0 && monthList.length > 0) {
+      // if (chartRef.current && chartRef.current.children.length === 0) {
       var options = {
         chart: {
           height: 280,
@@ -17,7 +37,7 @@ function LineCh() {
         series: [
           {
             name: "Series 1",
-            data: [45, 52, 38, 45, 19, 23, 2],
+            data: recordList,
             color: "#1A56DB",
           },
         ],
@@ -31,15 +51,7 @@ function LineCh() {
           },
         },
         xaxis: {
-          categories: [
-            "01 Jan",
-            "02 Jan",
-            "03 Jan",
-            "04 Jan",
-            "05 Jan",
-            "06 Jan",
-            "07 Jan",
-          ],
+          categories: monthList,
         },
       };
 
@@ -47,7 +59,18 @@ function LineCh() {
       chart.render();
     } else {
     }
+  }
+
+  useEffect(() => {
+    fetchGraphData();
   }, []);
+
+  useEffect(() => {
+    console.log(monthList, recordList);
+    if (chartRef.current && chartRef.current.children.length === 0) {
+      populateGraph();
+    }
+  }, [monthList, recordList]);
 
   return <div ref={chartRef}></div>;
 }

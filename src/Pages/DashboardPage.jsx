@@ -9,6 +9,8 @@ import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { KGrid } from "../Components/components";
+import noData from "../assets/no-data.svg";
+import Scaffold from "../Components/Scaffold";
 
 function DashboardPage() {
   const { user, authLoading } = useContext(Context);
@@ -36,7 +38,7 @@ function DashboardPage() {
       {authLoading ? (
         <AuthLoading />
       ) : (
-        <FullScreenLoading isLoading={loading}>
+        <Scaffold isLoading={loading}>
           <Sidebar activeTab={0} />
           <MainContent>
             <div>
@@ -56,7 +58,7 @@ function DashboardPage() {
                 <ElementCard>
                   <LineCh />
                 </ElementCard>
-                <KGrid crossAxisCount={6} gap={4}>
+                <KGrid crossAxisCount={6} gap={4} alignment="start">
                   <div className="col-span-4">
                     <ElementCard>
                       <div className="flex justify-between items-center mb-3">
@@ -70,39 +72,63 @@ function DashboardPage() {
                           Post Vacancy
                         </Link>
                       </div>
-                      <div className="relative overflow-x-auto md:rounded-lg">
-                        <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
-                          <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
-                            <tr>
-                              <th scope="col" className="px-6 py-3 text-start">
-                                Role
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-center">
-                                Profile
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-center">
-                                Expires On
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-center">
-                                Status
-                              </th>
-                              <th scope="col" className="px-6 py-3 text-end">
-                                Action
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {dataList.map((data, index) => (
-                              <tr
-                                key={index}
-                                className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
-                              >
-                                <TableData data={data} />
+                      {dataList.length > 0 ? (
+                        <div className="relative overflow-x-auto md:rounded-lg">
+                          <table className="w-full text-sm text-left text-gray-500 light:text-gray-400">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-200 light:bg-gray-700 light:text-gray-400 text-center">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-start"
+                                >
+                                  Role
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-center"
+                                >
+                                  Profile
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-center"
+                                >
+                                  Expires On
+                                </th>
+                                <th
+                                  scope="col"
+                                  className="px-6 py-3 text-center"
+                                >
+                                  Status
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-end">
+                                  Action
+                                </th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {dataList.map((data, index) => (
+                                <tr
+                                  key={index}
+                                  className="bg-white border-b light:bg-gray-800 light:border-gray-700 hover:bg-gray-50 light:hover:bg-gray-600"
+                                >
+                                  <TableData data={data} />
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="text-gray-500 text-xl font-bold mx-auto flex flex-col text-center">
+                          <img
+                            src={noData}
+                            alt="no-data"
+                            className="h-[200px] mb-10"
+                          />
+
+                          <p>Sorry! No data</p>
+                        </div>
+                      )}
                     </ElementCard>
                   </div>
                   <div className="col-span-2">
@@ -125,7 +151,7 @@ function DashboardPage() {
               </ContentCard>
             </div>
           </MainContent>
-        </FullScreenLoading>
+        </Scaffold>
       )}
     </>
   );
