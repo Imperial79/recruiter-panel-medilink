@@ -10,7 +10,6 @@ function LineCh() {
   async function fetchGraphData() {
     const response = await dbObject.get("/graph/fetch-analytics.php");
     if (!response.data.error) {
-      // console.log(response.data.response);
       let temp1 = [];
       let temp2 = [];
       response.data.response.map((data, index) => {

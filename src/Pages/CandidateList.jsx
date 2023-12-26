@@ -12,7 +12,7 @@ function CandidateList() {
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Choose Action");
-  const [pageNo, setPageNo] = useState("0");
+  const [pageNo, setPageNo] = useState(0);
   const [totalRecords, setTotalRecords] = useState("0");
   const [dataList, setDataList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
@@ -57,6 +57,7 @@ function CandidateList() {
       setLoading(true);
       const formData = new FormData();
       formData.append("vacancyId", vacancyId);
+      formData.append("pageNo", pageNo);
       const response = await dbObject.post(
         "/vacancy/applied-candidates.php",
         formData
@@ -248,9 +249,9 @@ function CandidateList() {
                   <span className="font-semibold text-gray-900 light:text-white">
                     {dataList.length}
                   </span>{" "}
-                  of{" "}
+                  of Page{" "}
                   <span className="font-semibold text-gray-900 light:text-white">
-                    {totalRecords}
+                    {pageNo + 1}
                   </span>
                 </span>
                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
@@ -327,7 +328,7 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
       </td>
       <td
         scope="row"
-        className="px-6 py-4 text-gray-900 whitespace-nowrap light:text-white"
+        className="px-6 py-4 text-gray-900 whitespace-pre-wrap light:text-white"
       >
         <div className="text-sm font-normal">{data.address}</div>
         <div className="text-sm font-normal">
@@ -360,22 +361,23 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
       </td>
 
       <td className="px-6 py-4 text-end space-x-2">
-        <Link
-          to={data.resume}
-          target="_blank"
-          className="font-medium text-blue-600 light:text-blue-500 hover:underline "
-        >
-          Uploaded
-        </Link>
-        <div>
+        {data.optedResumeBuilder == "true" ? (
           <Link
-            to={"/medilink-resume?id=" + data.rbid}
+            to={"/medilink-resume?id=" + data.jobFinderId}
             target="_blank"
             className="font-medium text-blue-600 light:text-blue-500 hover:underline "
           >
             Medilink
           </Link>
-        </div>
+        ) : (
+          <Link
+            to={data.resume}
+            target="_blank"
+            className="font-medium text-blue-600 light:text-blue-500 hover:underline "
+          >
+            Uploaded
+          </Link>
+        )}
       </td>
     </>
   );

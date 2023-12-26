@@ -1,32 +1,87 @@
-import React, { useContext } from "react";
-import { Context } from "../Components/ContextProvider";
+import React, { useEffect, useState } from "react";
 import Scaffold from "../Components/Scaffold";
 import { KGrid } from "../Components/components";
+import { useLocation } from "react-router-dom";
+import logo from "../assets/logo.jpg";
+import { dbObject } from "../Helper/Constants";
 
 function MedilinkResume() {
-  const { user, authLoading } = useContext(Context);
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const id = urlParams.get("id");
+
+  const [resumeData, setresumeData] = useState({
+    image: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    bio: "",
+    expertiseDescription: "",
+    workDescription: "",
+    educationDescription: "",
+  });
+
+  const [loading, setloading] = useState(false);
+  const [expertiseList, setexpertiseList] = useState([]);
+  const [educationList, seteducationList] = useState([]);
+  const [workList, setworkList] = useState([]);
+
+  async function fetchResumeData() {
+    try {
+      setloading(true);
+      const formData = new FormData();
+      formData.append("jobFinderId", id);
+      const response = await dbObject.post(
+        "/resume/fetch-medilink-resume.php",
+        formData
+      );
+      console.log(response.data);
+
+      if (!response.data.error) {
+        setresumeData(response.data.response);
+
+        setexpertiseList(
+          JSON.parse(response.data.response.expertiseDescription)
+        );
+        seteducationList(
+          JSON.parse(response.data.response.educationDescription)
+        );
+        setworkList(JSON.parse(response.data.response.workDescription));
+      }
+      setloading(false);
+    } catch (error) {
+      console.log(error);
+      setloading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchResumeData();
+  }, []);
 
   return (
-    <Scaffold isLoading={authLoading}>
+    <Scaffold isLoading={loading}>
       <div className="my-20">
         <FormCard
           header={
-            <div className="md:flex gap-10 items-start w-full">
-              <div className="mx-auto md:mb-0 mb-5 w-1/6">
-                <img
-                  src={user?.image}
-                  alt="user-image"
-                  className="object-contain"
-                />
-              </div>
-              <div className="text-white md:text-start text-center w-full">
-                <h1 className="font-medium md:text-4xl text-2xl tracking-wide">
-                  {user?.firstName} {user?.lastName}
-                </h1>
-                <h3 className="font-normal md:text-2xl text-xl uppercase">
-                  Doctor
-                </h3>
-                <div className="text-start">
+            <div>
+              <div className="md:flex gap-10 items-start w-full">
+                <div className="mx-auto md:mb-0 mb-5 md:w-1/6 w-[100px]">
+                  <img
+                    src={resumeData?.image}
+                    alt="user-image"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="text-white md:text-start text-center w-full">
+                  <h1 className="font-medium md:text-4xl text-2xl tracking-wide">
+                    {resumeData?.firstName} {resumeData?.lastName}
+                  </h1>
+                  <h3 className="font-normal md:text-xl text-lg uppercase tracking-widest">
+                    {resumeData?.subRole}
+                  </h3>
+
                   <KGrid margin="mt-10" alignment="start">
                     <Element
                       icon={
@@ -37,7 +92,7 @@ function MedilinkResume() {
                           strokeWidth={1.5}
                           stroke="currentColor"
                           dataslot="icon"
-                          className="w-6 h-6 text-white object-fill"
+                          className="md:h-6 h-5 md:w-6 w-5 text-white"
                         >
                           <path
                             strokeLinecap="round"
@@ -51,7 +106,7 @@ function MedilinkResume() {
                           />
                         </svg>
                       }
-                      content={user?.address}
+                      content={resumeData?.address}
                     />
                     <Element
                       icon={
@@ -62,7 +117,7 @@ function MedilinkResume() {
                           strokeWidth={1.5}
                           stroke="currentColor"
                           dataslot="icon"
-                          className="w-6 h-6 text-white"
+                          className="md:h-6 h-5 md:w-6 w-5 text-white"
                         >
                           <path
                             strokeLinecap="round"
@@ -71,7 +126,7 @@ function MedilinkResume() {
                           />
                         </svg>
                       }
-                      content={user?.email}
+                      content={resumeData?.email}
                     />
 
                     <Element
@@ -83,7 +138,7 @@ function MedilinkResume() {
                           strokeWidth={1.5}
                           stroke="currentColor"
                           dataslot="icon"
-                          className="w-6 h-6 text-white"
+                          className="md:h-6 h-5 md:w-6 w-5 text-white"
                         >
                           <path
                             strokeLinecap="round"
@@ -92,7 +147,7 @@ function MedilinkResume() {
                           />
                         </svg>
                       }
-                      content={"+91 " + user?.phone.replace("+91", "")}
+                      content={"+91 " + resumeData?.phone.replace("+91", "")}
                     />
 
                     <Element
@@ -104,7 +159,7 @@ function MedilinkResume() {
                           strokeWidth={1.5}
                           stroke="currentColor"
                           dataslot="icon"
-                          className="w-6 h-6 text-white"
+                          className="md:h-6 h-5 md:w-6 w-5 text-white"
                         >
                           <path
                             strokeLinecap="round"
@@ -123,36 +178,64 @@ function MedilinkResume() {
         >
           <KGrid alignment="start">
             <div>
-              <DetailBlock
-                heading="Profile"
-                content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias,explicabo aspernatur. Corporis, sed sapiente nobis porro officia
-                  velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus."
-              />
+              <DetailBlock heading="Profile" content={resumeData?.bio} />
               <DetailBlock
                 heading="Expertise"
-                content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, explicabo aspernatur. Corporis, sed sapiente nobis porro officia velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus."
-              />
-              <DetailBlock
-                margin="mb-0"
-                heading="Skills"
-                content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, explicabo aspernatur. Corporis, sed sapiente nobis porro officia velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus."
+                content={
+                  <ul className="list-disc">
+                    {expertiseList.map((data, index) => (
+                      <li key={index} className="mb-1.5">
+                        {data}
+                      </li>
+                    ))}
+                  </ul>
+                }
               />
             </div>
             <div>
               <DetailBlock
                 heading="Education"
-                content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias,explicabo aspernatur. Corporis, sed sapiente nobis porro officia
-                  velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias,explicabo aspernatur. 
-                  Corporis, sed sapiente nobis porro officia
-                  velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus."
+                content={
+                  <div>
+                    {educationList.map((data, index) => (
+                      <div key={index} className="mb-5">
+                        <h2 className="font-bold uppercase text-lg leading-tight">
+                          {data.courseName}
+                        </h2>
+                        <h2 className="font-bold uppercase text-lg">
+                          {data.year}
+                        </h2>
+                        <p className="font-medium text-sm text-gray-400">
+                          {data.courseDescription}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                }
               />
               <DetailBlock
                 margin="mb-0"
                 heading="Experience"
-                content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, explicabo aspernatur. Corporis, sed sapiente nobis porro officia velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus.sed sapiente nobis porro officia
-                  velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias,explicabo aspernatur. 
-                  Corporis, sed sapiente nobis porro officia
-                  velit dolor excepturi quibusdam ea quaerat minima non magninatus inventore sit accusamus."
+                content={
+                  <div>
+                    {workList.map((data, index) => (
+                      <div key={index} className="mb-5">
+                        <h2 className="font-bold uppercase text-lg leading-tight">
+                          {data.companyName}
+                        </h2>
+                        <h2 className="font-bold uppercase text-lg">
+                          {data.year}
+                        </h2>
+                        <p className="font-medium text-sm text-gray-400">
+                          {data.designation}
+                        </p>
+                        <p className="font-medium text-sm text-gray-400">
+                          {data.workDescription}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                }
               />
             </div>
           </KGrid>
@@ -170,7 +253,7 @@ function DetailBlock({ heading, content, margin = "mb-10" }) {
       <h1 className="font-bold text-2xl text-blue-900 uppercase tracking-wider">
         {">"} {heading}
       </h1>
-      <p className="text-sm mt-5 text-gray-500">{content}</p>
+      <div className="text-sm mt-5 text-gray-500 ml-5">{content}</div>
     </div>
   );
 }
@@ -185,6 +268,9 @@ function FormCard({ header, children }) {
           </div>
 
           <div className="md:p-7 p-5 md:m-14 m-5">{children}</div>
+          <p className="m-5 inline-flex items-center gap-2">
+            Created by <img src={logo} alt="logo" className="w-32" />
+          </p>
         </div>
       </div>
     </>
@@ -193,9 +279,9 @@ function FormCard({ header, children }) {
 
 function Element({ icon, content }) {
   return (
-    <div className="inline-flex items-start md:mb-0 mb-4">
-      <div className="w-[5px] h-[5px] md:mr-10 mr-10">{icon}</div>
-      <p className="text-white text-sm min-w-[300px] ">{content}</p>
+    <div className="flex text-start items-start md:mb-0 mb-4 md:gap-5 gap-3">
+      <div className="flex-shrink-0">{icon}</div>
+      <p className="text-white text-sm text-start">{content}</p>
     </div>
   );
 }

@@ -12,7 +12,7 @@ function ManageVacancy() {
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Active");
-  const [pageNo, setPageNo] = useState("0");
+  const [pageNo, setPageNo] = useState(0);
   const [totalRecords, setTotalRecords] = useState("0");
   const [dataList, setDataList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
@@ -33,8 +33,7 @@ function ManageVacancy() {
         formData
       );
       if (!response.data.error) {
-        setDataList(response.data.response.dataList);
-        setTotalRecords(response.data.response.totalRecords);
+        setDataList(response.data.response);
       }
       setLoading(false);
     } catch (error) {
@@ -154,9 +153,9 @@ function ManageVacancy() {
                   <span className="font-semibold text-gray-900 light:text-white">
                     {dataList.length}
                   </span>{" "}
-                  of{" "}
+                  of Page{" "}
                   <span className="font-semibold text-gray-900 light:text-white">
-                    {totalRecords}
+                    {pageNo + 1}
                   </span>
                 </span>
                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
@@ -255,7 +254,7 @@ function TableData({ data }) {
           to={`/manage-vacancy/candidates?id=${data.id}&role=${data.roleTitle}`}
           className="font-medium text-blue-600 light:text-blue-500 hover:underline "
         >
-          View
+          View ({data.totalApplicants})
         </Link>
         <Link
           to={`/edit-vacancy?id=${data.id}`}
