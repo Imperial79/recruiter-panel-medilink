@@ -171,7 +171,7 @@ function LoginPage() {
                   name="otp"
                   id="otp"
                   type="text"
-                  placeholder=""
+                  placeholder="XXXXX"
                   maxLength={5}
                   spacing="[10px]"
                 />

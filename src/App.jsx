@@ -23,7 +23,7 @@ function App() {
         <Route path="/manage-vacancy" element={<ManageVacancy />} />
         <Route path="/manage-vacancy/candidates" element={<CandidateList />} />
         <Route path="/manage-profile" element={<ManageProfile />} />
-        <Route path="/medilink-resume" element={<MedilinkResume />} />
+        <Route path="/hirehelix-resume" element={<MedilinkResume />} />
       </Routes>
     </>
   );

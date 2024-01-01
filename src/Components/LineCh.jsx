@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ApexCharts from "apexcharts";
 import { dbObject } from "../Helper/Constants";
+import NoData from "./NoData";
 
 function LineCh() {
   const chartRef = useRef(null);
@@ -24,7 +25,6 @@ function LineCh() {
 
   function populateGraph() {
     if (recordList.length > 0 && monthList.length > 0) {
-      // if (chartRef.current && chartRef.current.children.length === 0) {
       var options = {
         chart: {
           height: 280,
@@ -71,7 +71,7 @@ function LineCh() {
     }
   }, [monthList, recordList]);
 
-  return <div ref={chartRef}></div>;
+  return <>{monthList.length > 0 ? <div ref={chartRef}></div> : <NoData />}</>;
 }
 
 export default LineCh;

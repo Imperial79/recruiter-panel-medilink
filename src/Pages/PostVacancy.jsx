@@ -109,13 +109,13 @@ function PostVacancy() {
         key: "rzp_test_AI98lLWhXjQG7i",
         amount: amount,
         currency: "INR",
-        name: "Medilink",
+        name: "Hirehelix",
         description:
           termList[dropdownData.term].title +
           " for " +
           termList[dropdownData.term].term +
           " days",
-        image: "https://recruiter.shapon.tech/assets/logo-97c3ce9b.jpg",
+        image: "https://hirehelix.in/logo-transparent.png",
         order_id: await createOrder(),
         handler: function (response) {
           const formData = new FormData();
@@ -205,6 +205,7 @@ function PostVacancy() {
         <CompanyCard data={user ?? {}} />
         <form
           id="post-vacancy-form"
+          method="POST"
           onSubmit={(e) => {
             e.preventDefault();
             if (parseInt(termList[dropdownData.term].amount) == 0) {
@@ -419,6 +420,8 @@ function PostVacancy() {
                 label="Choose attachment"
                 name="attachment"
                 id="attachment"
+                accept={".pdf, .docx, .doc"}
+                required={true}
               />
             </KGrid>
 

@@ -324,11 +324,11 @@ function TableData({ data, handleCheckboxChange, checkboxes }) {
       <td className="px-6 py-4 text-end space-x-2">
         {data.optedResumeBuilder == "true" ? (
           <Link
-            to={"/medilink-resume?id=" + data.jobFinderId}
+            to={"/hirehelix-resume?id=" + data.jobFinderId}
             target="_blank"
             className="font-medium text-blue-600 light:text-blue-500 hover:underline "
           >
-            Medilink
+            Hirehelix
           </Link>
         ) : (
           <Link

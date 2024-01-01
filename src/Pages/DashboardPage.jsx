@@ -7,10 +7,9 @@ import LineCh from "../Components/LineCh";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
-import FullScreenLoading from "../Components/FullScreenLoading";
 import { KGrid } from "../Components/components";
-import noData from "../assets/no-data.svg";
 import Scaffold from "../Components/Scaffold";
+import NoData from "../Components/NoData";
 
 function DashboardPage() {
   const { user, authLoading } = useContext(Context);
@@ -119,15 +118,7 @@ function DashboardPage() {
                           </table>
                         </div>
                       ) : (
-                        <div className="text-gray-500 text-xl font-bold mx-auto flex flex-col text-center">
-                          <img
-                            src={noData}
-                            alt="no-data"
-                            className="h-[200px] mb-10"
-                          />
-
-                          <p>Sorry! No data</p>
-                        </div>
+                        <NoData />
                       )}
                     </ElementCard>
                   </div>

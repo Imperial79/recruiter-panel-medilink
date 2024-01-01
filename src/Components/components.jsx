@@ -194,7 +194,14 @@ export function KGrid({
   );
 }
 
-export function KFilePicker({ id, name, label, onChange }) {
+export function KFilePicker({
+  id,
+  name,
+  label,
+  onChange,
+  required = false,
+  accept,
+}) {
   return (
     <div>
       <label
@@ -207,8 +214,10 @@ export function KFilePicker({ id, name, label, onChange }) {
         type="file"
         name={name}
         id={id}
+        accept={accept}
         className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full mb-5"
         onChange={onChange}
+        required={required}
       />
     </div>
   );
