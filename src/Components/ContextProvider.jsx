@@ -15,7 +15,7 @@ function ContextProvider(props) {
     origin: "",
     body: {},
   });
-  const navigator = useNavigate(); 
+  const navigator = useNavigate();
   const location = new useLocation();
 
   const auth = async () => {
@@ -24,10 +24,8 @@ function ContextProvider(props) {
       const response = await dbObject.post("/users/auth.php");
       if (!response.data["error"]) {
         setUser(response.data.response);
-        navigator(location.pathname + location.search);
-      } else {
-        navigator("/");
       }
+      navigator(location.pathname + location.search);
     } catch (error) {}
     setAuthLoading(false);
   };
