@@ -13,7 +13,7 @@ import {
 } from "../Components/components";
 
 function PostVacancy() {
-  const { user, _id, setAlert } = useContext(Context);
+  const { user, _id, showAlert } = useContext(Context);
   const [termList, setTermList] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [subRoleList, setSubRoleList] = useState(["Choose Sub Role"]);
@@ -28,7 +28,7 @@ function PostVacancy() {
   });
   const [expireDate, setExpireDate] = useState(formattedDate);
   const [dropdownData, setDropdownData] = useState({
-    role: 0,
+    role: -1,
     subRole: "Choose Sub Role",
     experience: "Fresher",
     term: 0,
@@ -119,6 +119,7 @@ function PostVacancy() {
         order_id: await createOrder(),
         handler: function (response) {
           const formData = new FormData();
+
           formData.append("mediaFile", _id("attachment").files[0]);
           formData.append("roleId", roleList[dropdownData.role].id);
           formData.append("subRole", dropdownData.subRole);
@@ -176,16 +177,12 @@ function PostVacancy() {
         _id("post-vacancy-form").reset();
       }
       setLoading(false);
-      setAlert({
-        content: response.data.message,
-        isDanger: response.data.error,
-      });
+
+      showAlert(response.data.message, response.data.error);
     } catch (error) {
       setLoading(false);
-      setAlert({
-        content: "Fields are empty",
-        isDanger: true,
-      });
+
+      showAlert("Fields are empty", response.data.error);
     }
   };
 
@@ -208,25 +205,29 @@ function PostVacancy() {
           method="POST"
           onSubmit={(e) => {
             e.preventDefault();
-            if (parseInt(termList[dropdownData.term].amount) == 0) {
-              const formData = new FormData();
-              formData.append("mediaFile", _id("attachment").files[0]);
-              formData.append("roleId", roleList[dropdownData.role].id);
-              formData.append("subRole", dropdownData.subRole);
-              formData.append("experience", dropdownData.experience);
-              formData.append("salary", _id("salary").value);
-              formData.append("opening", _id("opening").value);
-              formData.append("requirements", _id("requirements").value);
-              formData.append("ppoc", _id("ppoc").value);
-              formData.append("specialRemark", _id("specialRemark").value);
-              formData.append("tags", _id("tags").value);
-              formData.append("term", termList[dropdownData.term].term);
-              formData.append("amount", termList[dropdownData.term].amount);
-              formData.append("orderId", "NULL");
-              formData.append("paymentId", "NULL");
-              postVacancy(formData);
+            if (dropdownData.role !== -1) {
+              if (parseInt(termList[dropdownData.term].amount) == 0) {
+                const formData = new FormData();
+                formData.append("mediaFile", _id("attachment").files[0]);
+                formData.append("roleId", roleList[dropdownData.role].id);
+                formData.append("subRole", dropdownData.subRole);
+                formData.append("experience", dropdownData.experience);
+                formData.append("salary", _id("salary").value);
+                formData.append("opening", _id("opening").value);
+                formData.append("requirements", _id("requirements").value);
+                formData.append("ppoc", _id("ppoc").value);
+                formData.append("specialRemark", _id("specialRemark").value);
+                formData.append("tags", _id("tags").value);
+                formData.append("term", termList[dropdownData.term].term);
+                formData.append("amount", termList[dropdownData.term].amount);
+                formData.append("orderId", "NULL");
+                formData.append("paymentId", "NULL");
+                postVacancy(formData);
+              } else {
+                handlePayment();
+              }
             } else {
-              handlePayment();
+              showAlert("Please select role", true);
             }
           }}
         >
@@ -244,7 +245,9 @@ function PostVacancy() {
                   className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
                   type="button"
                 >
-                  {roleList[dropdownData.role]?.title}
+                  {dropdownData.role === -1
+                    ? "Choose Role"
+                    : roleList[dropdownData.role]?.title}
                   <svg
                     className="w-2.5 h-2.5 ml-2.5"
                     aria-hidden="true"
@@ -290,59 +293,63 @@ function PostVacancy() {
               </div>
 
               {/* Sub Role Dropdown */}
-              <div className="relative z-2 w-full mb-6 group">
-                <button
-                  onClick={() => {
-                    handleDropdownChange("subRole", !isDropdownOpen.subRole);
-                  }}
-                  id="subRoleDropdownBtn"
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
-                  type="button"
-                >
-                  {dropdownData.subRole}
-                  <svg
-                    className="w-2.5 h-2.5 ml-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
+              {subRoleList.length > 0 ? (
+                <div className="relative z-2 w-full mb-6 group">
+                  <button
+                    onClick={() => {
+                      handleDropdownChange("subRole", !isDropdownOpen.subRole);
+                    }}
+                    id="subRoleDropdownBtn"
+                    className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
+                    type="button"
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="subRoleDropdown"
-                  name="subRoleDropdown"
-                  className={`${
-                    isDropdownOpen.subRole ? "absolute" : "hidden"
-                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
-                >
-                  <ul
-                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
-                    aria-labelledby="dropdownSearchButton"
+                    {dropdownData.subRole}
+                    <svg
+                      className="w-2.5 h-2.5 ml-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    id="subRoleDropdown"
+                    name="subRoleDropdown"
+                    className={`${
+                      isDropdownOpen.subRole ? "absolute" : "hidden"
+                    } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
                   >
-                    {subRoleList.map((data, index) => (
-                      <li key={index}>
-                        <div
-                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
-                          onClick={() => {
-                            handleDropdownData("subRole", data);
-                            handleDropdownChange("subRole", false);
-                          }}
-                        >
-                          {data}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul
+                      className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
+                      aria-labelledby="dropdownSearchButton"
+                    >
+                      {subRoleList.map((data, index) => (
+                        <li key={index}>
+                          <div
+                            className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
+                            onClick={() => {
+                              handleDropdownData("subRole", data);
+                              handleDropdownChange("subRole", false);
+                            }}
+                          >
+                            {data}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <></>
+              )}
 
               {/* Experience Dropdown */}
               <div className="relative z-2 w-full mb-6 group">

@@ -1,24 +1,37 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "./ContextProvider";
 
 function Alert() {
-  const { alert, setAlert } = useContext(Context);
+  const { alert, isAlertShow, setisAlertShow } = useContext(Context);
   const label = alert["isDanger"] ? "Oops!" : "Success!";
   const content = alert["content"];
   const isDanger = alert["isDanger"];
 
-  if (content !== "") {
+  // if (isAlertShow) {
+  //   setTimeout(() => {
+  //     setisAlertShow(false);
+  //     // setAlert({
+  //     //   content: "",
+  //     //   isDanger: alert["isDanger"],
+  //     // });
+  //   }, 2000);
+  // }
+
+  useEffect(() => {
+    if (isAlertShow) {
+      console.log("Alert is On");
+    } else {
+      console.log("Alert is Off");
+    }
     setTimeout(() => {
-      setAlert({
-        content: "",
-        isDanger: alert["isDanger"],
-      });
+      setisAlertShow(false);
     }, 2000);
-  }
+  }, [isAlertShow]);
+
   return (
     <div
       className={`z-50 fixed top-0 right-0 transition-opacity duration-300 max-w-[400px] ${
-        content === "" ? "opacity-0 pointer-events-none" : "opacity-100"
+        !isAlertShow ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
       <div

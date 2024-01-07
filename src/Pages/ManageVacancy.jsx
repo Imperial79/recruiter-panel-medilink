@@ -64,7 +64,7 @@ function ManageVacancy() {
                     setValue={setSelectedStatus}
                     dataList={[
                       { value: "Active", color: "green-500" },
-                      { value: "Rejected", color: "yellow-500" },
+                      { value: "Cancelled", color: "yellow-500" },
                       { value: "Expired", color: "red-500" },
                     ]}
                     isOpen={showDrop}

@@ -7,6 +7,7 @@ export const Context = React.createContext();
 function ContextProvider(props) {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [isAlertShow, setisAlertShow] = useState(false);
   const [alert, setAlert] = useState({
     content: "",
     isDanger: false,
@@ -17,6 +18,15 @@ function ContextProvider(props) {
   });
   const navigator = useNavigate();
   const location = new useLocation();
+
+  const showAlert = (message, isDanger) => {
+    console.log(message + ": " + isDanger);
+    setisAlertShow(true);
+    setAlert({
+      content: message,
+      isDanger: isDanger,
+    });
+  };
 
   const auth = async () => {
     setAuthLoading(true);
@@ -50,6 +60,9 @@ function ContextProvider(props) {
         setParameter,
         auth,
         authLoading,
+        showAlert,
+        isAlertShow,
+        setisAlertShow,
       }}
     >
       {props.children}

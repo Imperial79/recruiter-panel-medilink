@@ -8,7 +8,7 @@ import FullScreenLoading from "../Components/FullScreenLoading";
 import { Link, useLocation } from "react-router-dom";
 
 function CandidateList() {
-  const { user, authLoading, _id, setAlert } = useContext(Context);
+  const { user, authLoading, _id, showAlert } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [showDrop, setShowDrop] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Choose Action");
@@ -90,10 +90,8 @@ function CandidateList() {
         formData
       );
       console.log(response.data);
-      setAlert({
-        content: response.data.message,
-        isDanger: response.data.error,
-      });
+      showAlert(response.data.message, response.data.error);
+
       if (!response.data.error) {
         fetchVacancyData();
       }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import recruiter from "../assets/recruiter.svg";
 import logo from "../assets/logo.jpg";
@@ -7,14 +7,44 @@ import { Context } from "../Components/ContextProvider.jsx";
 import AuthLoading from "../Components/AuthLoading.jsx";
 import Loading from "../Components/Loading.jsx";
 import { KTextField } from "../Components/components.jsx";
+import CircularProgressIndicator from "../Components/CircularProgressIndicator.jsx";
 
 function LoginPage() {
-  const { setAlert, setParameter, _id, setUser, authLoading } =
+  const { showAlert, setParameter, _id, setUser, authLoading } =
     useContext(Context);
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(60); // Initial timer value in seconds
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const [action, setAction] = useState("");
   const navigator = useNavigate();
+
+  // Function to start the timer
+  const startTimer = () => {
+    setTimer(60);
+    setIsTimerRunning(true);
+  };
+
+  // Effect to handle the timer countdown
+  useEffect(() => {
+    let countdown;
+    if (isTimerRunning && timer > 0) {
+      countdown = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(countdown);
+    };
+  }, [isTimerRunning, timer]);
+
+  // Effect to handle the timer reaching zero
+  useEffect(() => {
+    if (timer === 0) {
+      setIsTimerRunning(false);
+    }
+  }, [timer]);
 
   const sendOTP = async () => {
     try {
@@ -29,17 +59,10 @@ function LoginPage() {
       );
 
       if (!response.data["error"]) {
+        startTimer();
         setAction(response.data["response"]);
-        setAlert({
-          content: response.data["message"],
-          isDanger: response.data["error"],
-        });
-      } else {
-        setAlert({
-          content: response.data["message"],
-          isDanger: response.data["error"],
-        });
       }
+      showAlert(response.data.message, response.data.error);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -57,21 +80,10 @@ function LoginPage() {
       if (!response.data.error) {
         setUser(response.data.response);
         navigator("/dashboard");
-        setAlert({
-          content: response.data["message"],
-          isDanger: response.data.error,
-        });
-      } else {
-        setAlert({
-          content: response.data["message"],
-          isDanger: response.data.error,
-        });
       }
+      showAlert(response.data.message, response.data.error);
     } else {
-      setAlert({
-        content: "Enter OTP to proceed",
-        isDanger: true,
-      });
+      showAlert("Enter OTP to proceed", true);
     }
   };
 
@@ -95,10 +107,7 @@ function LoginPage() {
         });
         navigator("/register");
       } else {
-        setAlert({
-          content: response.data.message,
-          isDanger: true,
-        });
+        showAlert(response.data.message, response.data.error);
       }
       setLoading(false);
     } catch (error) {
@@ -130,10 +139,7 @@ function LoginPage() {
                 } else if (action === "Login") {
                   login();
                 } else {
-                  setAlert({
-                    content: "Get OTP to verify",
-                    isDanger: true,
-                  });
+                  showAlert("Get OTP to verify", true);
                 }
               }}
             >
@@ -176,21 +182,29 @@ function LoginPage() {
                   spacing="[10px]"
                 />
 
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    sendOTP();
-                  }}
-                  type="button"
-                  className="text-blue-700 font-medium hover:text-blue-400 hover:underline rounded-full"
-                >
-                  Send OTP
-                </button>
+                {isTimerRunning ? (
+                  <div className="flex items-center">
+                    <CircularProgressIndicator size={5} margin="mr-2" />
+                    <h1 className="text-sm text-gray-500 font-medium">
+                      Resend OTP in {timer} secs
+                    </h1>
+                  </div>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      sendOTP();
+                    }}
+                    type="button"
+                    className="text-blue-700 font-medium hover:text-blue-400 hover:underline rounded-full"
+                  >
+                    Send OTP
+                  </button>
+                )}
 
                 <button
-                  // onClick={() => {}}
                   type="submit"
-                  className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center"
+                  className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center disabled:bg-gray-300"
                 >
                   Proceed
                 </button>

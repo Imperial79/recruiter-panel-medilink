@@ -14,8 +14,7 @@ import {
 } from "../Components/components.jsx";
 
 const RegisterPage = () => {
-  const { _id, setAlert, parameter, setParameter, setUser } =
-    useContext(Context);
+  const { _id, showAlert, parameter, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [statesList, setstatesList] = useState([]);
   const [isStateDropOpen, setisStateDropOpen] = useState(false);
@@ -45,10 +44,8 @@ const RegisterPage = () => {
       }
 
       setLoading(false);
-      setAlert({
-        content: response.data["message"],
-        isDanger: response.data["error"],
-      });
+
+      showAlert(response.data.message, response.data.error);
     } catch (error) {
       setLoading(false);
     }

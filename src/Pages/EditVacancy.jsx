@@ -13,7 +13,7 @@ import {
 } from "../Components/components";
 
 function EditVacancy() {
-  const { user, _id, setAlert } = useContext(Context);
+  const { user, _id, showAlert } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [textField, settextField] = useState({
     role: "",
@@ -73,10 +73,8 @@ function EditVacancy() {
         "/vacancy/edit-vacancy.php",
         formData
       );
-      setAlert({
-        content: response.data.message,
-        isDanger: response.data.error,
-      });
+      showAlert(response.data.message, response.data.error);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);

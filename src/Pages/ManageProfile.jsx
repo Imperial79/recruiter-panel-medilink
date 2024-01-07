@@ -14,8 +14,8 @@ import {
 } from "../Components/components";
 
 function ManageProfile() {
+  const { user, authLoading, _id, showAlert, setUser } = useContext(Context);
   const [imagePreview, setImagePreview] = useState(null);
-  const { user, authLoading, _id, setAlert, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [statesList, setstatesList] = useState([]);
   const [isStateDropOpen, setisStateDropOpen] = useState(false);
@@ -74,16 +74,14 @@ function ManageProfile() {
       formData.append("mediaFile", _id("imageInput").files[0]);
       const response = await dbObject.post("/users/update-dp.php", formData);
       setLoading(false);
-      setAlert({
-        content: response.data.message,
-        isDanger: response.data.error,
-      });
+
+      showAlert(response.data.message, response.data.error);
     } catch (error) {
       setLoading(false);
-      setAlert({
-        content: "Sorry for inconvenience! Please try again.",
-        isDanger: true,
-      });
+      showAlert(
+        "Sorry for inconvenience! Please try again.",
+        response.data.error
+      );
     }
   }
 
@@ -117,10 +115,8 @@ function ManageProfile() {
     if (!response.data.error) {
       setUser(response.data.response);
     }
-    setAlert({
-      content: response.data.message,
-      isDanger: response.data.error,
-    });
+
+    showAlert(response.data.message, response.data.error);
     setLoading(false);
   };
 
