@@ -7,22 +7,7 @@ function Alert() {
   const content = alert["content"];
   const isDanger = alert["isDanger"];
 
-  // if (isAlertShow) {
-  //   setTimeout(() => {
-  //     setisAlertShow(false);
-  //     // setAlert({
-  //     //   content: "",
-  //     //   isDanger: alert["isDanger"],
-  //     // });
-  //   }, 2000);
-  // }
-
   useEffect(() => {
-    if (isAlertShow) {
-      console.log("Alert is On");
-    } else {
-      console.log("Alert is Off");
-    }
     setTimeout(() => {
       setisAlertShow(false);
     }, 2000);

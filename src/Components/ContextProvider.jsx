@@ -32,10 +32,15 @@ function ContextProvider(props) {
     setAuthLoading(true);
     try {
       const response = await dbObject.post("/users/auth.php");
+
       if (!response.data["error"]) {
         setUser(response.data.response);
+        if (location.pathname !== "/")
+          navigator(location.pathname + location.search);
+        else navigator("/dashboard");
+      } else {
+        navigator("/");
       }
-      navigator(location.pathname + location.search);
     } catch (error) {}
     setAuthLoading(false);
   };
