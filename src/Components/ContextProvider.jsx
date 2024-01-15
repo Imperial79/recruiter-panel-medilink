@@ -20,7 +20,6 @@ function ContextProvider(props) {
   const location = new useLocation();
 
   const showAlert = (message, isDanger) => {
-    console.log(message + ": " + isDanger);
     setisAlertShow(true);
     setAlert({
       content: message,
