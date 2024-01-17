@@ -7,7 +7,6 @@ import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import {
   KDropDown,
-  KDropdownItem,
   KGrid,
   KTextArea,
   KTextField,
@@ -248,26 +247,11 @@ function ManageProfile() {
                     />
                   </KGrid>
                   <KGrid>
-                    <KDropDown
-                      value={selectedState}
-                      id={"state"}
-                      onClick={() => {
-                        setisStateDropOpen(!isStateDropOpen);
-                      }}
-                      isDropDownOpen={isStateDropOpen}
-                      label={"Select State"}
-                    >
+                    <KDropDown id="state" name="state" label="Select State">
                       {statesList.map((data, index) => (
-                        <div key={index}>
-                          <KDropdownItem
-                            label={data.stateName}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setselectedState(data.stateName);
-                              setisStateDropOpen(!isStateDropOpen);
-                            }}
-                          />
-                        </div>
+                        <option key={index} value={data.stateName}>
+                          {data.stateName}
+                        </option>
                       ))}
                     </KDropDown>
 

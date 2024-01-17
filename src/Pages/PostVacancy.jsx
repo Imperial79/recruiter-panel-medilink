@@ -6,6 +6,7 @@ import { dbObject, experienceList } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import {
+  KDropDown,
   KFilePicker,
   KGrid,
   KTextArea,
@@ -14,9 +15,9 @@ import {
 
 function PostVacancy() {
   const { user, _id, showAlert } = useContext(Context);
-  const [termList, setTermList] = useState([]);
+  const [subscriptionList, setSubscriptionList] = useState([]);
   const [roleList, setRoleList] = useState([]);
-  const [subRoleList, setSubRoleList] = useState(["Choose Sub Role"]);
+  const [subRoleList, setSubRoleList] = useState(["Select Sub-Role"]);
   const [loading, setLoading] = useState(false);
   const [Razorpay, isLoaded] = useRazorpay();
   const [amount, setAmount] = useState(0);
@@ -27,46 +28,12 @@ function PostVacancy() {
     day: "numeric",
   });
   const [expireDate, setExpireDate] = useState(formattedDate);
-  const [dropdownData, setDropdownData] = useState({
-    role: -1,
-    subRole: "Choose Sub Role",
-    experience: "Fresher",
-    term: 0,
-  });
-  const [isDropdownOpen, setDropdownOpen] = useState({
-    role: false,
-    subRole: false,
-    experience: false,
-    term: false,
-  });
-  const handleDropdownChange = (dropdownName, value) => {
-    setDropdownOpen((prevValues) => ({
-      ...prevValues,
-      [dropdownName]: value,
-    }));
-  };
 
-  const handleDropdownData = (dropdownName, value) => {
-    setDropdownData((prevValues) => ({
-      ...prevValues,
-      [dropdownName]: value,
-    }));
-    if (dropdownName === "role") {
-      handleDropdownData("subRole", "Choose Sub Role");
-      if (roleList[value].subRoles !== "NULL") {
-        setSubRoleList(JSON.parse(roleList[value].subRoles));
-      } else {
-        setSubRoleList([]);
-      }
-    } else if (dropdownName === "term") {
-      calculateSubscription(value);
-    }
-  };
-
-  const calculateSubscription = (index) => {
-    setAmount(termList[index].amount);
+  const calculateSubscription = () => {
+    setAmount(subscriptionList[_id("term").value].amount);
     currentDate.setDate(
-      currentDate.getDate() + parseInt(termList[index].term, 10)
+      currentDate.getDate() +
+        parseInt(subscriptionList[_id("term").value].term, 10)
     );
     const formattedDate = currentDate.toLocaleDateString("en-US", {
       year: "numeric",
@@ -76,6 +43,14 @@ function PostVacancy() {
     setExpireDate(formattedDate);
   };
 
+  const changeSubCategory = (index) => {
+    if (roleList[index].subRoles !== "NULL") {
+      setSubRoleList(JSON.parse(roleList[index].subRoles));
+    } else {
+      setSubRoleList([]);
+    }
+  };
+
   const fetchRole = async () => {
     const response = await dbObject.get("/role/fetch-roles.php");
     if (!response.data.error) {
@@ -83,17 +58,20 @@ function PostVacancy() {
     }
   };
 
-  const fetchSubs = async () => {
+  const fetchSubscriptions = async () => {
     const response = await dbObject.get("/vacancy/fetch-subscriptions.php");
     if (!response.data.error) {
-      setTermList(response.data.response);
+      setSubscriptionList(response.data.response);
     }
   };
 
   async function createOrder() {
     const formData = new FormData();
     formData.append("amount", amount);
-    formData.append("receipt", termList[dropdownData.term].term + " days");
+    formData.append(
+      "receipt",
+      subscriptionList[_id("term").value].term + " days"
+    );
     const response = await dbObject.post(
       "/razorpay/create-order.php",
       formData
@@ -111,9 +89,9 @@ function PostVacancy() {
         currency: "INR",
         name: "Hirehelix",
         description:
-          termList[dropdownData.term].title +
+          subscriptionList[_id("term").value].title +
           " for " +
-          termList[dropdownData.term].term +
+          subscriptionList[_id("term").value].term +
           " days",
         image: "https://hirehelix.in/logo-transparent.png",
         order_id: await createOrder(),
@@ -121,17 +99,17 @@ function PostVacancy() {
           const formData = new FormData();
 
           formData.append("mediaFile", _id("attachment").files[0]);
-          formData.append("roleId", roleList[dropdownData.role].id);
-          formData.append("subRole", dropdownData.subRole);
-          formData.append("experience", dropdownData.experience);
+          formData.append("roleId", roleList[_id("role").value].id);
+          formData.append("subRole", _id("subRole").value);
+          formData.append("experience", _id("experience").value);
           formData.append("salary", _id("salary").value);
           formData.append("opening", _id("opening").value);
           formData.append("requirements", _id("requirements").value);
           formData.append("ppoc", _id("ppoc").value);
           formData.append("specialRemark", _id("specialRemark").value);
           formData.append("tags", _id("tags").value);
-          formData.append("term", termList[dropdownData.term].term);
-          formData.append("amount", termList[dropdownData.term].amount);
+          formData.append("term", subscriptionList[_id("term").value].term);
+          formData.append("amount", subscriptionList[_id("term").value].amount);
           formData.append("orderId", response.razorpay_order_id);
           formData.append("paymentId", response.razorpay_payment_id);
           postVacancy(formData);
@@ -187,7 +165,7 @@ function PostVacancy() {
   };
 
   useEffect(() => {
-    fetchSubs();
+    fetchSubscriptions();
     fetchRole();
   }, []);
 
@@ -205,212 +183,85 @@ function PostVacancy() {
           method="POST"
           onSubmit={(e) => {
             e.preventDefault();
-            if (dropdownData.role !== -1) {
-              if (parseInt(termList[dropdownData.term].amount) == 0) {
-                const formData = new FormData();
-                formData.append("mediaFile", _id("attachment").files[0]);
-                formData.append("roleId", roleList[dropdownData.role].id);
-                formData.append("subRole", dropdownData.subRole);
-                formData.append("experience", dropdownData.experience);
-                formData.append("salary", _id("salary").value);
-                formData.append("opening", _id("opening").value);
-                formData.append("requirements", _id("requirements").value);
-                formData.append("ppoc", _id("ppoc").value);
-                formData.append("specialRemark", _id("specialRemark").value);
-                formData.append("tags", _id("tags").value);
-                formData.append("term", termList[dropdownData.term].term);
-                formData.append("amount", termList[dropdownData.term].amount);
-                formData.append("orderId", "NULL");
-                formData.append("paymentId", "NULL");
-                postVacancy(formData);
-              } else {
-                handlePayment();
-              }
+            if (
+              subRoleList.length > 0 &&
+              _id("subRole").value === "Select Sub-Role"
+            ) {
+              showAlert("Select Sub-Role", true);
+              return;
+            }
+
+            if (parseInt(subscriptionList[_id("term").value].amount) == 0) {
+              const formData = new FormData();
+              formData.append("mediaFile", _id("attachment").files[0]);
+              formData.append("roleId", roleList[_id("role").value].id);
+              formData.append(
+                "subRole",
+                _id("subRole") ? _id("subRole").value : ""
+              );
+              formData.append("experience", _id("experience").value);
+              formData.append("salary", _id("salary").value);
+              formData.append("opening", _id("opening").value);
+              formData.append("requirements", _id("requirements").value);
+              formData.append("ppoc", _id("ppoc").value);
+              formData.append("specialRemark", _id("specialRemark").value);
+              formData.append("tags", _id("tags").value);
+              formData.append("term", subscriptionList[_id("term").value].term);
+              formData.append(
+                "amount",
+                subscriptionList[_id("term").value].amount
+              );
+              formData.append("orderId", "NULL");
+              formData.append("paymentId", "NULL");
+              postVacancy(formData);
             } else {
-              showAlert("Please select role", true);
+              handlePayment();
             }
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
-            {/* First Row */}
-            <div className="grid md:grid-cols-3 md:gap-6">
-              {/* Role Dropdown */}
+            <KGrid crossAxisCount={3} gap={5}>
+              <KDropDown
+                id="role"
+                name="role"
+                label="Select Role"
+                onChange={(e) => {
+                  changeSubCategory(e.target.value);
+                }}
+              >
+                {roleList.map((data, index) => (
+                  <option key={index} value={index}>
+                    {data.title}
+                  </option>
+                ))}
+              </KDropDown>
 
-              <div className="relative z-2 w-full mb-6 group">
-                <button
-                  onClick={() => {
-                    handleDropdownChange("role", !isDropdownOpen.role);
-                  }}
-                  id="roleDropdownBtn"
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
-                  type="button"
-                >
-                  {dropdownData.role === -1
-                    ? "Choose Role"
-                    : roleList[dropdownData.role]?.title}
-                  <svg
-                    className="w-2.5 h-2.5 ml-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="roleDropdown"
-                  name="roleDropdown"
-                  className={`${
-                    isDropdownOpen.role ? "absolute" : "hidden"
-                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
-                >
-                  <ul
-                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
-                    aria-labelledby="dropdownSearchButton"
-                  >
-                    {roleList.map((data, index) => (
-                      <li key={data.id}>
-                        <div
-                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
-                          onClick={() => {
-                            handleDropdownData("role", index);
-                            handleDropdownChange("role", false);
-                          }}
-                        >
-                          {data.title}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Sub Role Dropdown */}
               {subRoleList.length > 0 ? (
-                <div className="relative z-2 w-full mb-6 group">
-                  <button
-                    onClick={() => {
-                      handleDropdownChange("subRole", !isDropdownOpen.subRole);
-                    }}
-                    id="subRoleDropdownBtn"
-                    className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
-                    type="button"
-                  >
-                    {dropdownData.subRole}
-                    <svg
-                      className="w-2.5 h-2.5 ml-2.5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 10 6"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m1 1 4 4 4-4"
-                      />
-                    </svg>
-                  </button>
-                  <div
-                    id="subRoleDropdown"
-                    name="subRoleDropdown"
-                    className={`${
-                      isDropdownOpen.subRole ? "absolute" : "hidden"
-                    } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
-                  >
-                    <ul
-                      className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
-                      aria-labelledby="dropdownSearchButton"
-                    >
-                      {subRoleList.map((data, index) => (
-                        <li key={index}>
-                          <div
-                            className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
-                            onClick={() => {
-                              handleDropdownData("subRole", data);
-                              handleDropdownChange("subRole", false);
-                            }}
-                          >
-                            {data}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                <KDropDown id="subRole" name="subRole" label="Select Sub-Role">
+                  {subRoleList.map((data, index) => (
+                    <option key={index} value={data}>
+                      {data}
+                    </option>
+                  ))}
+                </KDropDown>
               ) : (
                 <></>
               )}
 
-              {/* Experience Dropdown */}
-              <div className="relative z-2 w-full mb-6 group">
-                <button
-                  onClick={() => {
-                    handleDropdownChange(
-                      "experience",
-                      !isDropdownOpen.experience
-                    );
-                  }}
-                  id="experienceDropdownBtn"
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
-                  type="button"
-                >
-                  {dropdownData.experience}
-                  <svg
-                    className="w-2.5 h-2.5 ml-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="experienceDropdown"
-                  name="experienceDropdown"
-                  className={`${
-                    isDropdownOpen.experience ? "absolute" : "hidden"
-                  } max-h-[250px] overflow-auto z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
-                >
-                  <ul
-                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
-                    aria-labelledby="dropdownSearchButton"
-                  >
-                    {experienceList.map((data, index) => (
-                      <li key={index}>
-                        <div
-                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
-                          onClick={() => {
-                            handleDropdownData("experience", data);
-                            handleDropdownChange("experience", false);
-                          }}
-                        >
-                          {data}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+              <KDropDown
+                id="experience"
+                name="experience"
+                label="Select Experience"
+              >
+                {experienceList.map((data, index) => (
+                  <option key={index} value={data}>
+                    {data}
+                  </option>
+                ))}
+              </KDropDown>
+            </KGrid>
 
-            <KGrid crossAxisCount={3} gap={6}>
+            <KGrid crossAxisCount={3} gap={5}>
               <KTextField
                 id="salary"
                 name="salary"
@@ -432,7 +283,7 @@ function PostVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Requirements"
                 id="requirements"
@@ -449,7 +300,7 @@ function PostVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Preferred Point of Contact"
                 id="ppoc"
@@ -469,62 +320,18 @@ function PostVacancy() {
             {/* Sixth Row */}
             <div className="grid md:grid-cols-2 md:gap-6">
               {/* Term dropdown */}
-              <div className="relative z-2 w-full mb-6 group">
-                <button
-                  onClick={() => {
-                    handleDropdownChange("term", !isDropdownOpen.term);
-                  }}
-                  id="termDropdownBtn"
-                  className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between"
-                  type="button"
-                >
-                  {termList[dropdownData.term]?.title +
-                    " (" +
-                    termList[dropdownData.term]?.term +
-                    " days)"}
-                  <svg
-                    className="w-2.5 h-2.5 ml-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 4 4 4-4"
-                    />
-                  </svg>
-                </button>
-                <div
-                  id="termDropdown"
-                  name="termDropdown"
-                  className={`${
-                    isDropdownOpen.term ? "absolute" : "hidden"
-                  } z-10 bg-white rounded-lg shadow md:w-[230px] w-[65%] light:bg-gray-700 pt-5`}
-                >
-                  <ul
-                    className="px-3 pb-3 overflow-y-auto text-sm text-gray-700"
-                    aria-labelledby="dropdownSearchButton"
-                  >
-                    {termList.map((data, index) => (
-                      <li key={data.id}>
-                        <div
-                          className="flex cursor-pointer items-center pl-2 rounded hover:bg-gray-100 py-2"
-                          onClick={() => {
-                            handleDropdownData("term", index);
-                            handleDropdownChange("term", false);
-                          }}
-                        >
-                          {data.title + " (" + data.term + " days)"}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <KDropDown
+                id="term"
+                name="term"
+                label="Select Subscription"
+                onChange={calculateSubscription}
+              >
+                {subscriptionList.map((data, index) => (
+                  <option key={index} value={index}>
+                    {data.title + " (" + data.term + " days)"}
+                  </option>
+                ))}
+              </KDropDown>
 
               <div className="grid grid-cols-2 gap-10 md:mt-0 mt-5">
                 <div>

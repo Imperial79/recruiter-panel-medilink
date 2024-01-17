@@ -35,16 +35,18 @@ export function KTextField({
   type = "text",
   id = "",
   name = id,
+  pattern = "",
   placeholder = "placeholder",
   required = true,
   value,
   onChange,
   readOnly = false,
   spacing = "[0px]",
+  margin = "mb-5",
   actionElement,
 }) {
   return (
-    <div className="mb-5">
+    <div className={margin}>
       <label
         htmlFor={id}
         className={`${
@@ -61,6 +63,7 @@ export function KTextField({
           maxLength={maxLength}
           className={`shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 tracking-${spacing}`}
           placeholder={placeholder}
+          pattern={pattern}
           required={required}
           value={value}
           onChange={onChange}
@@ -116,65 +119,34 @@ export function KTextArea({
 
 export function KDropDown({
   id,
-  dropdownId,
-  label,
-  value,
-  onClick,
-  isDropDownOpen,
+  name,
+  label = "label",
   children,
+  onChange,
+  defaultValue = "Fresher",
+  margin = "mb-5",
 }) {
   return (
-    <div>
+    <div className={margin}>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm font-medium text-gray-900"
+        className={`${
+          label === "" ? "hidden" : ""
+        } block mb-2 text-sm font-medium text-gray-900`}
       >
         {label}
       </label>
-      <button
-        onClick={onClick}
+
+      <select
         id={id}
-        className={`shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 mb-5 inline-flex items-center justify-between`}
-        type="button"
+        name={name}
+        onChange={onChange}
+        defaultValue={defaultValue}
+        className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 inline-flex items-center justify-between w-full text-nowrap"
       >
-        {value}
-        <svg
-          className="w-2.5 h-2.5 ms-3"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m1 1 4 4 4-4"
-          />
-        </svg>
-      </button>
-
-      <div
-        id={id + "drop"}
-        className={`${
-          isDropDownOpen ? "absolute" : "hidden"
-        } max-h-[250px] overflow-auto z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44`}
-      >
-        <ul className="py-2 text-sm text-gray-700">{children}</ul>
-      </div>
+        {children}
+      </select>
     </div>
-  );
-}
-
-export function KDropdownItem({ label, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-full hover:bg-gray-50 py-2 px-4 text-start"
-    >
-      {label}
-    </button>
   );
 }
 

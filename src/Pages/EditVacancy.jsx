@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
-import { dbObject } from "../Helper/Constants";
+import { dbObject, experienceList } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { useLocation } from "react-router-dom";
 import {
+  KDropDown,
   KFilePicker,
   KGrid,
   KTextArea,
@@ -123,7 +124,7 @@ function EditVacancy() {
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
-            <KGrid crossAxisCount={3} gap={6}>
+            <KGrid crossAxisCount={3} gap={5}>
               <KTextField
                 id="role"
                 name="role"
@@ -140,19 +141,22 @@ function EditVacancy() {
                 value={textField?.subRole}
                 readOnly
               />
-              <KTextField
+
+              <KDropDown
                 id="experience"
                 name="experience"
-                label="Experience"
-                placeholder="Experience"
-                value={textField?.experience}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-              />
+                label="Select Experience"
+                defaultValue={vacancyData["experience"] || "1 years"}
+              >
+                {experienceList.map((data, index) => (
+                  <option key={index} value={data}>
+                    {data}
+                  </option>
+                ))}
+              </KDropDown>
             </KGrid>
 
-            <KGrid crossAxisCount={3} gap={6}>
+            <KGrid crossAxisCount={3} gap={5}>
               <KTextField
                 id="salary"
                 name="salary"
@@ -183,7 +187,7 @@ function EditVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Requirements"
                 id="requirements"
@@ -208,7 +212,7 @@ function EditVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Preferred Point of Contact"
                 id="ppoc"
