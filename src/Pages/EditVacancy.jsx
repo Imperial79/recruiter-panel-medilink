@@ -131,7 +131,7 @@ function EditVacancy() {
                 label="Role"
                 placeholder="Role"
                 value={textField?.role}
-                readOnly
+                readOnly={true}
               />
               <KTextField
                 id="subRole"
@@ -139,7 +139,7 @@ function EditVacancy() {
                 label="Sub-Role"
                 placeholder="Sub-Role"
                 value={textField?.subRole}
-                readOnly
+                readOnly={true}
               />
 
               <KDropDown

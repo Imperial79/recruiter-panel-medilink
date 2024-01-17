@@ -35,7 +35,7 @@ export function KTextField({
   type = "text",
   id = "",
   name = id,
-  pattern = "",
+  pattern = null,
   placeholder = "placeholder",
   required = true,
   value,
