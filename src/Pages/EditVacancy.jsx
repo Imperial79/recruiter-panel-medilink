@@ -19,7 +19,7 @@ function EditVacancy() {
   const [textField, settextField] = useState({
     role: "",
     subRole: "",
-    experience: "",
+    experience: "Fresher",
     salary: "",
     opening: "",
     requirements: "",
@@ -146,7 +146,10 @@ function EditVacancy() {
                 id="experience"
                 name="experience"
                 label="Select Experience"
-                defaultValue={vacancyData["experience"] || "1 years"}
+                value={textField.experience}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
               >
                 {experienceList.map((data, index) => (
                   <option key={index} value={data}>

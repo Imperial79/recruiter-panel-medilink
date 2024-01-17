@@ -123,7 +123,7 @@ export function KDropDown({
   label = "label",
   children,
   onChange,
-  defaultValue = "Fresher",
+  value = "",
   margin = "mb-5",
 }) {
   return (
@@ -141,7 +141,7 @@ export function KDropDown({
         id={id}
         name={name}
         onChange={onChange}
-        defaultValue={defaultValue}
+        value={value}
         className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 inline-flex items-center justify-between w-full text-nowrap"
       >
         {children}
