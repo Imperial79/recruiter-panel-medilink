@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import MainContent from "../Components/MainContent";
 import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
-import { dbObject } from "../Helper/Constants";
+import { dbObject, experienceList } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { useLocation } from "react-router-dom";
 import {
+  KDropDown,
   KFilePicker,
   KGrid,
   KTextArea,
@@ -18,7 +19,7 @@ function EditVacancy() {
   const [textField, settextField] = useState({
     role: "",
     subRole: "",
-    experience: "",
+    experience: "Fresher",
     salary: "",
     opening: "",
     requirements: "",
@@ -123,14 +124,14 @@ function EditVacancy() {
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
-            <KGrid crossAxisCount={3} gap={6}>
+            <KGrid crossAxisCount={3} gap={5}>
               <KTextField
                 id="role"
                 name="role"
                 label="Role"
                 placeholder="Role"
                 value={textField?.role}
-                readOnly
+                readOnly={true}
               />
               <KTextField
                 id="subRole"
@@ -138,21 +139,27 @@ function EditVacancy() {
                 label="Sub-Role"
                 placeholder="Sub-Role"
                 value={textField?.subRole}
-                readOnly
+                readOnly={true}
               />
-              <KTextField
+
+              <KDropDown
                 id="experience"
                 name="experience"
-                label="Experience"
-                placeholder="Experience"
-                value={textField?.experience}
+                label="Select Experience"
+                value={textField.experience}
                 onChange={(e) => {
                   handleInputChange(e);
                 }}
-              />
+              >
+                {experienceList.map((data, index) => (
+                  <option key={index} value={data}>
+                    {data}
+                  </option>
+                ))}
+              </KDropDown>
             </KGrid>
 
-            <KGrid crossAxisCount={3} gap={6}>
+            <KGrid crossAxisCount={3} gap={5}>
               <KTextField
                 id="salary"
                 name="salary"
@@ -183,7 +190,7 @@ function EditVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Requirements"
                 id="requirements"
@@ -208,7 +215,7 @@ function EditVacancy() {
               />
             </KGrid>
 
-            <KGrid crossAxisCount={2} gap={6}>
+            <KGrid crossAxisCount={2} gap={5}>
               <KTextArea
                 label="Preferred Point of Contact"
                 id="ppoc"

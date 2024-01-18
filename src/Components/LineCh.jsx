@@ -65,7 +65,6 @@ function LineCh() {
   }, []);
 
   useEffect(() => {
-    console.log(monthList, recordList);
     if (chartRef.current && chartRef.current.children.length === 0) {
       populateGraph();
     }
