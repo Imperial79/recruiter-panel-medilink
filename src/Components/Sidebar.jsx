@@ -1,11 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import logo from "../assets/logo.jpg";
-import dashboard from "../assets/dashboard.svg";
-import addVacancy from "../assets/add-vacancy.svg";
-import manageVacancies from "../assets/manage-vacancies.svg";
-import profile from "../assets/profile.svg";
 import logoutIco from "../assets/logout.svg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { dbObject } from "../Helper/Constants";
 import { Context } from "./ContextProvider";
 
