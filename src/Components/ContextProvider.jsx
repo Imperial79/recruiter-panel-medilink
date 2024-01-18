@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 export const Context = React.createContext();
 
 function ContextProvider(props) {
+  const [activeTab, setActiveTab] = useState(0);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAlertShow, setisAlertShow] = useState(false);
@@ -67,6 +68,8 @@ function ContextProvider(props) {
         showAlert,
         isAlertShow,
         setisAlertShow,
+        activeTab,
+        setActiveTab,
       }}
     >
       {props.children}

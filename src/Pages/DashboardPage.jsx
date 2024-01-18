@@ -38,7 +38,6 @@ function DashboardPage() {
         <AuthLoading />
       ) : (
         <Scaffold isLoading={loading}>
-          <Sidebar activeTab={0} />
           <MainContent>
             <div>
               <div className="m-5">

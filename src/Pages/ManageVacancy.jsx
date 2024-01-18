@@ -6,6 +6,7 @@ import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
 import FullScreenLoading from "../Components/FullScreenLoading";
 import { Link } from "react-router-dom";
+import Scaffold from "../Components/Scaffold";
 
 function ManageVacancy() {
   const { user, authLoading, _id } = useContext(Context);
@@ -49,10 +50,9 @@ function ManageVacancy() {
       {authLoading ? (
         <AuthLoading />
       ) : (
-        <FullScreenLoading isLoading={loading}>
-          <Sidebar activeTab={2} />
+        <Scaffold isLoading={loading}>
           <MainContent>
-            <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
+            <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
               Manage Vacancy
             </h1>
 
@@ -185,7 +185,7 @@ function ManageVacancy() {
               </nav>
             </div>
           </MainContent>
-        </FullScreenLoading>
+        </Scaffold>
       )}
     </>
   );

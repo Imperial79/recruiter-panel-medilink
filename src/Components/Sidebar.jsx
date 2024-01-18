@@ -1,16 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import logo from "../assets/logo.jpg";
 import logoutIco from "../assets/logout.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { dbObject } from "../Helper/Constants";
 import { Context } from "./ContextProvider";
 
-function Sidebar(props) {
+function Sidebar() {
+  const { activeTab, setActiveTab } = useContext(Context);
+  const [showSidebar, setshowSidebar] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { setUser } = useContext(Context);
   const navigator = useNavigate();
+  const location = useLocation();
 
-  const toggleSidebar = (e) => {
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setshowSidebar(false);
+    }
+  }, [location]);
+
+  const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
@@ -36,7 +45,7 @@ function Sidebar(props) {
     }
   };
   return (
-    <div>
+    <div className={`${showSidebar ? "" : "hidden"}`}>
       <button
         onClick={toggleSidebar}
         data-drawer-target="logo-sidebar"
@@ -60,42 +69,59 @@ function Sidebar(props) {
           ></path>
         </svg>
       </button>
+
       <aside
         id="logo-sidebar"
         className={`${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform bg-white sm:translate-x-0 light:bg-gray-800 light:border-gray-700`}
+        } border-gray-100 fixed top-0 left-0 z-40 w-64 h-screen pt-5 transition-transform sm:translate-x-0 bg-white drop-shadow-2xl md:drop-shadow-none`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 pb-4 overflow-y-auto bg-white light:bg-gray-800">
+        <div className="h-full px-3 pb-4 overflow-y-auto  light:bg-gray-800">
           <img src={logo} alt="" className="w-[150px] mx-auto" />
-          <ul className="space-y-2 font-medium mt-[20px]">
+          <ul className="space-y-2 font-medium mt-10">
             <SidebarBtn
               to="/dashboard"
               index={0}
-              activeTab={props.activeTab}
+              activeTab={activeTab}
               label="Dashboard"
+              onClick={() => {
+                setActiveTab(0);
+                setIsSidebarOpen(false);
+              }}
             />
 
             <SidebarBtn
               to="/post-vacancy"
               index={1}
-              activeTab={props.activeTab}
+              activeTab={activeTab}
               label="Post Vacancy"
+              onClick={() => {
+                setActiveTab(1);
+                setIsSidebarOpen(false);
+              }}
             />
 
             <SidebarBtn
               to="/manage-vacancy"
               index={2}
-              activeTab={props.activeTab}
+              activeTab={activeTab}
               label="Manage Vacancy"
+              onClick={() => {
+                setActiveTab(2);
+                setIsSidebarOpen(false);
+              }}
             />
 
             <SidebarBtn
               to="/manage-profile"
               index={3}
-              activeTab={props.activeTab}
+              activeTab={activeTab}
               label="Manage Profile"
+              onClick={() => {
+                setActiveTab(3);
+                setIsSidebarOpen(false);
+              }}
             />
 
             <hr />
@@ -117,26 +143,19 @@ function Sidebar(props) {
 
 export default Sidebar;
 
-function SidebarBtn(props) {
-  let isActive = props.activeTab === props.index;
+function SidebarBtn({ to, label, activeTab, index, onClick }) {
+  let isActive = activeTab === index;
   return (
-    <Link to={props.to}>
+    <Link to={to} onClick={onClick}>
       <li>
         <div
-          className={`group inline-flex items-center w-full px-4 py-[8px] my-2 text-sm transition duration-300 ease-in-out transform rounded-lg focus:shadow-outline  ${
+          className={`px-5 py-3 w-full mb-5 rounded-lg text-black transition-all border-l-8  ${
             isActive
-              ? "font-semibold text-blue-700"
-              : "hover:bg-gray-100 hover:text-gray-900"
+              ? "bg-gray-100 border-gray-700"
+              : "hover:bg-gray-600 hover:text-white border-white hover:border-gray-600"
           }`}
         >
-          <div
-            className={`${
-              isActive
-                ? "-translate-x-0 opacity-100"
-                : "translate-x-full opacity-0"
-            } h-6 w-1 rounded-full bg-blue-700 mr-1 transition-all ease-in-out duration-200`}
-          ></div>
-          <span className="ml-2">{props.label}</span>
+          {label}
         </div>
       </li>
     </Link>

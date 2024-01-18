@@ -12,6 +12,7 @@ import {
   KTextArea,
   KTextField,
 } from "../Components/components";
+import Scaffold from "../Components/Scaffold";
 
 function PostVacancy() {
   const { user, _id, showAlert } = useContext(Context);
@@ -170,11 +171,9 @@ function PostVacancy() {
   }, []);
 
   return (
-    <FullScreenLoading isLoading={loading}>
-      <Sidebar activeTab={1} />
-
+    <Scaffold isLoading={loading}>
       <MainContent>
-        <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
+        <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
           Post Vacancy
         </h1>
         <CompanyCard data={user ?? {}} />
@@ -357,7 +356,7 @@ function PostVacancy() {
           </div>
         </form>
       </MainContent>
-    </FullScreenLoading>
+    </Scaffold>
   );
 }
 

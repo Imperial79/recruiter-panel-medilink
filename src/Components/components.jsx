@@ -38,8 +38,8 @@ export function KTextField({
   pattern = null,
   placeholder = "placeholder",
   required = true,
-  value,
-  onChange,
+  value = undefined,
+  onChange = undefined,
   readOnly = false,
   spacing = "[0px]",
   margin = "mb-5",
@@ -122,8 +122,8 @@ export function KDropDown({
   name,
   label = "label",
   children,
-  onChange,
-  value = "",
+  onChange = undefined,
+  value = undefined,
   margin = "mb-5",
 }) {
   return (

@@ -11,6 +11,7 @@ import {
   KTextArea,
   KTextField,
 } from "../Components/components";
+import Scaffold from "../Components/Scaffold";
 
 function ManageProfile() {
   const { user, authLoading, _id, showAlert, setUser } = useContext(Context);
@@ -128,8 +129,7 @@ function ManageProfile() {
       {authLoading || user == null ? (
         <AuthLoading />
       ) : (
-        <FullScreenLoading isLoading={loading}>
-          <Sidebar activeTab={3} />
+        <Scaffold isLoading={loading}>
           <MainContent>
             <div>
               <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
@@ -303,7 +303,7 @@ function ManageProfile() {
               </div>
             </div>
           </MainContent>
-        </FullScreenLoading>
+        </Scaffold>
       )}
     </>
   );

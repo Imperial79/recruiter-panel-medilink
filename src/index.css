@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.small-visible {
+  @apply hidden md:block
+}
+
 :root {
   font-family: 'Poppins', sans-serif;
   line-height: 1.5;

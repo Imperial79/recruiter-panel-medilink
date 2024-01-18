@@ -5,7 +5,7 @@ function Scaffold({ isLoading, children }) {
   return (
     <div className="relative">
       <FullScreenLoading isLoading={isLoading} />
-      {children}
+      <div className="flex flex-col">{children}</div>
     </div>
   );
 }

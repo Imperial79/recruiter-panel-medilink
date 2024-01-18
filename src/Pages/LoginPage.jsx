@@ -5,9 +5,9 @@ import logo from "../assets/logo.jpg";
 import { dbObject } from "../Helper/Constants.jsx";
 import { Context } from "../Components/ContextProvider.jsx";
 import AuthLoading from "../Components/AuthLoading.jsx";
-import Loading from "../Components/Loading.jsx";
 import { KTextField } from "../Components/components.jsx";
 import CircularProgressIndicator from "../Components/CircularProgressIndicator.jsx";
+import Scaffold from "../Components/Scaffold.jsx";
 
 function LoginPage() {
   const { showAlert, setParameter, _id, setUser, authLoading } =
@@ -120,98 +120,95 @@ function LoginPage() {
       {authLoading ? (
         <AuthLoading />
       ) : (
-        <div className="relative">
-          <div
-            className={`w-full z-50 h-screen bg-white opacity-75 ${
-              loading ? "absolute" : "hidden"
-            }`}
-          >
-            <Loading />
-          </div>
+        <Scaffold isLoading={loading}>
+          <div className="flex flex-col justify-center h-screen px-2">
+            <div className="bg-gray-100 pr-2 md:pl-10 pl-2 py-2 max-w-5xl mx-auto rounded-xl w-full">
+              <div className="md:flex justify-between gap-10 items-center">
+                <div className="h-[300px] w-[300px] flex-shrink-0 hidden md:block mx-auto">
+                  <img src={recruiter} alt="recruiter-image" />
+                </div>
 
-          <div className="pt-10 md:px-10 md:pb-10 text-black ">
-            <FormCard
-              onSubmit={(e) => {
-                e.preventDefault();
-
-                if (action === "Register") {
-                  verifyOtp();
-                } else if (action === "Login") {
-                  login();
-                } else {
-                  showAlert("Get OTP to verify", true);
-                }
-              }}
-            >
-              <img
-                src={recruiter}
-                alt="loginImage"
-                className="md:w-[40%] my-20 mx-20 hidden md:block"
-              />
-
-              <div className="bg-white border-gray-100 border rounded-[20px] py-10 px-10 items-center">
-                <img
-                  src={logo}
-                  alt="logo"
-                  className="md:w-full w-[200px] mx-auto"
-                />
-
-                <p className="text-sm text-center">For recruiters</p>
-                <h1 className="mt-10 text-[25px] font-semibold mx-auto text-center">
-                  Welcome back!
-                </h1>
-                <h1 className="text-[15px] text-gray-500 font-normal text-center">
-                  Enter your details
-                </h1>
-
-                <KTextField
-                  label="Phone"
-                  name="phone"
-                  id="phone"
-                  type="phone"
-                  placeholder="Enter phone number"
-                  maxLength={10}
-                />
-                <KTextField
-                  label="OTP"
-                  name="otp"
-                  id="otp"
-                  type="text"
-                  placeholder="XXXXX"
-                  maxLength={5}
-                  spacing="[10px]"
-                />
-
-                {isTimerRunning ? (
-                  <div className="flex items-center">
-                    <CircularProgressIndicator size={5} margin="mr-2" />
-                    <h1 className="text-sm text-gray-500 font-medium">
-                      Resend OTP in {timer} secs
-                    </h1>
-                  </div>
-                ) : (
-                  <button
-                    onClick={(e) => {
+                <div className="bg-white md:p-10 p-5 rounded-xl md:w-[500px]">
+                  <form
+                    onSubmit={(e) => {
                       e.preventDefault();
-                      sendOTP();
-                    }}
-                    type="button"
-                    className="text-blue-700 font-medium hover:text-blue-400 hover:underline rounded-full"
-                  >
-                    Send OTP
-                  </button>
-                )}
 
-                <button
-                  type="submit"
-                  className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center disabled:bg-gray-300"
-                >
-                  Proceed
-                </button>
+                      if (action === "Register") {
+                        verifyOtp();
+                      } else if (action === "Login") {
+                        login();
+                      } else {
+                        showAlert("Get OTP to verify", true);
+                      }
+                    }}
+                  >
+                    <div>
+                      <img
+                        src={logo}
+                        alt="logo"
+                        className="w-[200px] mx-auto"
+                      />
+
+                      <p className="text-sm text-center">For recruiters</p>
+                      <h1 className="mt-10 text-[25px] font-semibold mx-auto text-center">
+                        Welcome back!
+                      </h1>
+                      <h1 className="text-[15px] text-gray-500 font-normal text-center">
+                        Enter your details
+                      </h1>
+
+                      <KTextField
+                        label="Phone"
+                        name="phone"
+                        id="phone"
+                        type="phone"
+                        pattern="^[0-9]{1,10}$"
+                        placeholder="Enter phone number"
+                        maxLength={10}
+                      />
+                      <KTextField
+                        label="OTP"
+                        name="otp"
+                        id="otp"
+                        type="text"
+                        placeholder="XXXXX"
+                        maxLength={5}
+                        spacing="[10px]"
+                      />
+
+                      {isTimerRunning ? (
+                        <div className="flex items-center">
+                          <CircularProgressIndicator size={5} margin="mr-2" />
+                          <h1 className="text-sm text-gray-500 font-medium">
+                            Resend OTP in {timer} secs
+                          </h1>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sendOTP();
+                          }}
+                          type="button"
+                          className="text-blue-700 font-medium hover:text-blue-400 hover:underline rounded-full"
+                        >
+                          Send OTP
+                        </button>
+                      )}
+
+                      <button
+                        type="submit"
+                        className="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center disabled:bg-gray-300"
+                      >
+                        Proceed
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
-            </FormCard>
+            </div>
           </div>
-        </div>
+        </Scaffold>
       )}
     </>
   );
