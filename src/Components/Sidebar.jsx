@@ -7,7 +7,7 @@ import { Context } from "./ContextProvider";
 
 function Sidebar() {
   const { activeTab, setActiveTab } = useContext(Context);
-  const [showSidebar, setshowSidebar] = useState(false);
+  const [showSidebar, setshowSidebar] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { setUser } = useContext(Context);
   const navigator = useNavigate();
@@ -16,6 +16,8 @@ function Sidebar() {
   useEffect(() => {
     if (location.pathname === "/") {
       setshowSidebar(false);
+    } else {
+      setshowSidebar(true);
     }
   }, [location]);
 
