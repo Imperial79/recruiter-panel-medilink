@@ -10,6 +10,7 @@ function LineCh() {
 
   async function fetchGraphData() {
     const response = await dbObject.get("/graph/fetch-analytics.php");
+    console.log(response.data);
     if (!response.data.error) {
       let temp1 = [];
       let temp2 = [];
@@ -17,6 +18,7 @@ function LineCh() {
         temp1.push(data.month_year);
         temp2.push(parseInt(data.record_count));
       });
+
       setmonthList(temp1);
       setrecordList(temp2);
       populateGraph();

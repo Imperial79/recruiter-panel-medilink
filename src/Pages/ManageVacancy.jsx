@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import Sidebar from "../Components/Sidebar";
 import MainContent from "../Components/MainContent";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
-import FullScreenLoading from "../Components/FullScreenLoading";
 import { Link } from "react-router-dom";
 import Scaffold from "../Components/Scaffold";
 
@@ -249,20 +247,26 @@ function TableData({ data }) {
           {data.status}
         </div>
       </td>
-      <td className="px-6 py-4 text-end space-x-2">
-        <Link
-          to={`/manage-vacancy/candidates?id=${data.id}&role=${data.roleTitle}`}
-          className="font-medium text-blue-600 light:text-blue-500 hover:underline "
-        >
-          View ({data.totalApplicants})
-        </Link>
-        <Link
-          to={`/edit-vacancy?id=${data.id}`}
-          className="font-medium text-blue-600 light:text-blue-500 hover:underline "
-        >
-          Edit
-        </Link>
-      </td>
+      {data.status !== "Active" ? (
+        <td className="px-6 py-4 text-end space-x-2">
+          <h1>NA</h1>
+        </td>
+      ) : (
+        <td className="px-6 py-4 text-end space-x-2">
+          <Link
+            to={`/manage-vacancy/candidates?id=${data.id}&role=${data.roleTitle}`}
+            className="font-medium text-blue-600 light:text-blue-500 hover:underline "
+          >
+            View ({data.totalApplicants})
+          </Link>
+          <Link
+            to={`/edit-vacancy?id=${data.id}`}
+            className="font-medium text-blue-600 light:text-blue-500 hover:underline "
+          >
+            Edit
+          </Link>
+        </td>
+      )}
     </>
   );
 }

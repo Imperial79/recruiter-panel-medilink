@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import MainContent from "../Components/MainContent";
-import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
 import { dbObject, experienceList } from "../Helper/Constants";
 import useRazorpay from "react-razorpay";
-import FullScreenLoading from "../Components/FullScreenLoading";
 import {
   KDropDown,
   KFilePicker,
@@ -83,7 +81,7 @@ function PostVacancy() {
 
   const handlePayment = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const options = {
         key: "rzp_test_AI98lLWhXjQG7i",
         amount: amount,
@@ -138,15 +136,16 @@ function PostVacancy() {
         alert(response.error.metadata.payment_id);
       });
       rzp1.open();
-      setLoading(false);
+      // setLoading(false);
     } catch (error) {
-      setLoading(false);
+      console.log("handle payment error: " + error);
+      // setLoading(false);
     }
   };
 
   const postVacancy = async (formData) => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const response = await dbObject.post(
         "/vacancy/post-vacancy.php",
@@ -155,13 +154,14 @@ function PostVacancy() {
       if (!response.data.error) {
         _id("post-vacancy-form").reset();
       }
-      setLoading(false);
+      // setLoading(false);
 
       showAlert(response.data.message, response.data.error);
     } catch (error) {
-      setLoading(false);
+      // setLoading(false);
+      console.log("post vacancy error: " + error);
 
-      showAlert("Fields are empty", response.data.error);
+      showAlert("Fields are empty", true);
     }
   };
 
@@ -169,7 +169,6 @@ function PostVacancy() {
     fetchSubscriptions();
     fetchRole();
   }, []);
-
   return (
     <Scaffold isLoading={loading}>
       <MainContent>
@@ -180,7 +179,8 @@ function PostVacancy() {
         <form
           id="post-vacancy-form"
           method="POST"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
+            setLoading(true);
             e.preventDefault();
             if (
               subRoleList.length > 0 &&
@@ -214,8 +214,9 @@ function PostVacancy() {
               formData.append("paymentId", "NULL");
               postVacancy(formData);
             } else {
-              handlePayment();
+              await handlePayment();
             }
+            setLoading(false);
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
@@ -278,7 +279,7 @@ function PostVacancy() {
                 name="attachment"
                 id="attachment"
                 accept={".pdf, .docx, .doc"}
-                required={true}
+                required={false}
               />
             </KGrid>
 
@@ -317,7 +318,7 @@ function PostVacancy() {
             </KGrid>
 
             {/* Sixth Row */}
-            <div className="grid md:grid-cols-2 md:gap-6">
+            <div className="grid md:grid-cols-2 md:gap-6 items-center">
               {/* Term dropdown */}
               <KDropDown
                 id="term"

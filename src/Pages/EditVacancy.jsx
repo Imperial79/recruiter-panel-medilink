@@ -184,9 +184,8 @@ function EditVacancy() {
                 label="Choose attachment"
                 name="attachment"
                 id="attachment"
-                onChange={() => {
-                  console.log(_id("attachment").files[0]);
-                }}
+                required={false}
+                accept={".pdf, .docx, .doc"}
               />
             </KGrid>
 
