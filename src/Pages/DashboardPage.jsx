@@ -3,7 +3,7 @@ import Sidebar from "../Components/Sidebar";
 import { Link } from "react-router-dom";
 import ContentCard from "../Components/ContentCard";
 import MainContent from "../Components/MainContent";
-import LineCh from "../Components/LineCh";
+import LineChart from "../Components/LineCh";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";
@@ -57,7 +57,7 @@ function DashboardPage() {
                   <p className="font-medium text-[15px] text-black mb-5 pt-4">
                     Monthly Candidate Graph
                   </p>
-                  <LineCh />
+                  <LineChart />
                 </ElementCard>
                 <KGrid crossAxisCount={6} gap={4} alignment="start">
                   <div className="col-span-4">

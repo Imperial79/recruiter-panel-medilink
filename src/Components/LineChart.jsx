@@ -3,7 +3,7 @@ import ApexCharts from "apexcharts";
 import { dbObject } from "../Helper/Constants";
 import NoData from "./NoData";
 
-function LineCh() {
+function LineChart() {
   const chartRef = useRef(null);
   const [monthList, setmonthList] = useState([]);
   const [recordList, setrecordList] = useState([]);
@@ -74,4 +74,4 @@ function LineCh() {
   return <>{monthList.length > 0 ? <div ref={chartRef}></div> : <NoData />}</>;
 }
 
-export default LineCh;
+export default LineChart;
