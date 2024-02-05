@@ -259,7 +259,15 @@ function ManageProfile() {
                     />
                   </KGrid>
                   <KGrid>
-                    <KDropDown id="state" name="state" label="Select State">
+                    <KDropDown
+                      id="state"
+                      name="state"
+                      label="Select State"
+                      onChange={(e) => {
+                        setselectedState(e.target.value);
+                      }}
+                      value={selectedState}
+                    >
                       {statesList.map((data, index) => (
                         <option key={index} value={data.stateName}>
                           {data.stateName}
