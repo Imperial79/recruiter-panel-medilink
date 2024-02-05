@@ -141,7 +141,6 @@ function EditVacancy() {
                 value={textField?.subRole}
                 readOnly={true}
               />
-
               <KDropDown
                 id="experience"
                 name="experience"
@@ -164,7 +163,7 @@ function EditVacancy() {
                 id="salary"
                 name="salary"
                 label="Salary"
-                placeholder="Salary"
+                placeholder="4 lpa or 50 lpa or 78 lpa"
                 value={textField?.salary}
                 onChange={(e) => {
                   handleInputChange(e);
@@ -174,7 +173,7 @@ function EditVacancy() {
                 id="opening"
                 name="opening"
                 label="Opening"
-                placeholder="Opening"
+                placeholder="10 or 120 or 500"
                 value={textField?.opening}
                 onChange={(e) => {
                   handleInputChange(e);
@@ -233,7 +232,7 @@ function EditVacancy() {
                 id="tags"
                 name="tags"
                 rows={5}
-                placeholder="Tags..."
+                placeholder="Insert tags Eg. #job #hirehelix"
                 value={textField?.tags}
                 onChange={(e) => {
                   handleInputChange(e);

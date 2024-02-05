@@ -266,16 +266,16 @@ function PostVacancy() {
                 id="salary"
                 name="salary"
                 label="Salary"
-                placeholder="Salary"
+                placeholder="4 lpa or 50 lpa or 78 lpa"
               />
               <KTextField
                 id="opening"
                 name="opening"
                 label="Opening"
-                placeholder="Opening"
+                placeholder="10 or 120 or 500"
               />
               <KFilePicker
-                label="Choose attachment"
+                label="Choose attachment (optional)"
                 name="attachment"
                 id="attachment"
                 accept={".pdf, .docx, .doc"}
@@ -314,7 +314,7 @@ function PostVacancy() {
                 id="tags"
                 name="tags"
                 rows={5}
-                placeholder="Tags..."
+                placeholder="Insert tags Eg. #job #hirehelix"
               />
             </KGrid>
 
