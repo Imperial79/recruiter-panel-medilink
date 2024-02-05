@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export function KButton({
   id,
@@ -51,7 +51,7 @@ export function KTextField({
         htmlFor={id}
         className={`${
           label === "" ? "hidden" : ""
-        } block mb-2 text-sm font-medium text-gray-900`}
+        } block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap`}
       >
         {label}
       </label>
@@ -132,7 +132,7 @@ export function KDropDown({
         htmlFor={id}
         className={`${
           label === "" ? "hidden" : ""
-        } block mb-2 text-sm font-medium text-gray-900`}
+        } block mb-2 text-sm font-medium text-gray-900 truncate`}
       >
         {label}
       </label>
@@ -167,18 +167,19 @@ export function KGrid({
 }
 
 export function KFilePicker({
-  id,
   name,
+  id,
   label,
-  onChange,
   required = false,
   accept,
+  fileName = "No file choosen",
 }) {
+  const [file, setFile] = useState(fileName);
   return (
     <div>
       <label
         htmlFor={id}
-        className="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap"
+        className="block mb-2 text-sm font-medium text-gray-900 truncate"
       >
         {label}
       </label>
@@ -187,10 +188,26 @@ export function KFilePicker({
         name={name}
         id={id}
         accept={accept}
-        className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full mb-5"
-        onChange={onChange}
+        placeholder="kasjaksja"
+        className="hidden shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full"
+        onChange={() => {
+          setFile(document.getElementById(name).files[0].name);
+        }}
         required={required}
       />
+
+      <div className="shadow-sm bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full mb-5 flex items-center whitespace-nowrap">
+        <button
+          type="button"
+          onClick={() => {
+            document.getElementById(id).click();
+          }}
+          className="bg-black text-white rounded-l-lg p-2.5"
+        >
+          Choose File
+        </button>
+        <div className="p-2.5 text-gray-700 truncate">{file}</div>
+      </div>
     </div>
   );
 }

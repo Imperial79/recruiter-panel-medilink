@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import MainContent from "../Components/MainContent";
-import Sidebar from "../Components/Sidebar";
 import { Context } from "../Components/ContextProvider";
 import { dbObject, experienceList } from "../Helper/Constants";
-import FullScreenLoading from "../Components/FullScreenLoading";
 import { useLocation } from "react-router-dom";
 import {
   KDropDown,
@@ -12,10 +10,12 @@ import {
   KTextArea,
   KTextField,
 } from "../Components/components";
+import Scaffold from "../Components/Scaffold";
 
 function EditVacancy() {
   const { user, _id, showAlert } = useContext(Context);
   const [loading, setLoading] = useState(false);
+
   const [textField, settextField] = useState({
     role: "",
     subRole: "",
@@ -33,6 +33,7 @@ function EditVacancy() {
   const location = useLocation();
   const UrlParams = new URLSearchParams(location.search);
   const vacancyId = UrlParams.get("id");
+  const [fileName, setfileName] = useState("No file choosen");
 
   const fetchVacancyData = async () => {
     try {
@@ -105,12 +106,11 @@ function EditVacancy() {
       ppoc: vacancyData?.ppoc ?? "",
       tags: vacancyData?.tags ?? "",
     });
+    setfileName(vacancyData.attachmentName);
   }, [vacancyData]);
 
   return (
-    <FullScreenLoading isLoading={loading}>
-      <Sidebar activeTab={-1} />
-
+    <Scaffold isLoading={loading}>
       <MainContent>
         <h1 className="md:mx-[60px] mx-[20px] mb-2 text-lg font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
           Edit Vacancy
@@ -180,12 +180,14 @@ function EditVacancy() {
                   handleInputChange(e);
                 }}
               />
+              {/* TODO: */}
               <KFilePicker
                 label="Choose attachment"
                 name="attachment"
                 id="attachment"
                 required={false}
                 accept={".pdf, .docx, .doc"}
+                fileName={fileName}
               />
             </KGrid>
 
@@ -252,7 +254,7 @@ function EditVacancy() {
           </div>
         </form>
       </MainContent>
-    </FullScreenLoading>
+    </Scaffold>
   );
 }
 

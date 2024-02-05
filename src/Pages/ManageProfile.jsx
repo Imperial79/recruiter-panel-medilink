@@ -135,31 +135,43 @@ function ManageProfile() {
               <h1 className="md:mx-[60px] mx-[20px] mb-2 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-3xl light:text-white">
                 Manage Profile
               </h1>
-              <input
-                id="imageInput"
-                className="hidden"
-                type="file"
-                accept=".jpeg, .jpg, .png, .webp"
-                onChange={handleImageChange}
-              />
-              <button
-                onClick={handleClick}
-                className="md:mx-[60px] justify-center flex mx-auto mt-10 bg-gray-100 h-[100px] w-[100px] rounded-lg"
-              >
+
+              <div className="mt-10 mx-5 max-w-full rounded-2xl h-[200px] bg-gray-500 overflow-hidden brightness-95 relative">
                 <img
                   id="imagePreview"
                   src={imagePreview ?? user.image}
-                  className="h-full object-cover rounded-lg"
+                  className="h-full w-full object-cover rounded-lg blur-md"
                 />
-              </button>
-              <div>
-                <button
-                  onClick={handleClick}
-                  className="md:mx-[60px] justify-center flex mx-auto mt-2 font-semibold rounded-xl text-sm text-blue-700 "
-                >
-                  Choose Image
-                </button>
+                <div className="absolute top-0 left-0">
+                  <input
+                    id="imageInput"
+                    className="hidden"
+                    type="file"
+                    accept=".jpeg, .jpg, .png, .webp"
+                    onChange={handleImageChange}
+                  />
+                  <div className="p-2 bg-white absolute left-10 top-10 rounded-lg">
+                    <button
+                      onClick={handleClick}
+                      className="justify-center flex h-[100px] w-[100px] rounded-lg"
+                    >
+                      <img
+                        id="imagePreview"
+                        src={imagePreview ?? user.image}
+                        className="h-full w-full object-cover rounded-lg"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              {/* <div className="w-full rounded-2xl h-[300px] bg-gray-500 overflow-hidden brightness-95 relative flex justify-center">
+                <img
+                  id="imagePreview"
+                  src={imagePreview ?? user.image}
+                  className="h-full w-full object-cover rounded-lg blur-md"
+                />
+              </div> */}
 
               <div className="md:mx-[60px] mx-[20px] mt-[40px]">
                 <form

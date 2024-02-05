@@ -18,6 +18,17 @@ function Sidebar() {
       setshowSidebar(false);
     } else {
       setshowSidebar(true);
+      if (location.pathname === "/dashboard") {
+        setActiveTab(0);
+      } else if (location.pathname === "/post-vacancy") {
+        setActiveTab(1);
+      } else if (location.pathname === "/manage-vacancy") {
+        setActiveTab(2);
+      } else if (location.pathname === "/manage-profile") {
+        setActiveTab(3);
+      } else {
+        setActiveTab(4);
+      }
     }
   }, [location]);
 

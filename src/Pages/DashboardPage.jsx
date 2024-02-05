@@ -248,12 +248,12 @@ function TableData({ data }) {
         </div>
       </td>
       <td className="px-6 py-4 text-end">
-        <a
-          href="#"
+        <Link
+          to={`/edit-vacancy?id=${data.id}`}
           className="font-medium text-blue-600 light:text-blue-500 hover:underline"
         >
           Edit
-        </a>
+        </Link>
       </td>
     </>
   );

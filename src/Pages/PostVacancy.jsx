@@ -20,6 +20,7 @@ function PostVacancy() {
   const [loading, setLoading] = useState(false);
   const [Razorpay, isLoaded] = useRazorpay();
   const [amount, setAmount] = useState(0);
+  const [fileName, setfileName] = useState("No file choosen");
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("en-US", {
     year: "numeric",
@@ -81,7 +82,7 @@ function PostVacancy() {
 
   const handlePayment = async () => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const options = {
         key: "rzp_test_AI98lLWhXjQG7i",
         amount: amount,
@@ -136,16 +137,16 @@ function PostVacancy() {
         alert(response.error.metadata.payment_id);
       });
       rzp1.open();
-      // setLoading(false);
+      setLoading(false);
     } catch (error) {
       console.log("handle payment error: " + error);
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   const postVacancy = async (formData) => {
     try {
-      // setLoading(true);
+      setLoading(true);
 
       const response = await dbObject.post(
         "/vacancy/post-vacancy.php",
@@ -153,14 +154,13 @@ function PostVacancy() {
       );
       if (!response.data.error) {
         _id("post-vacancy-form").reset();
+        setfileName("No file choosen");
       }
-      // setLoading(false);
-
+      setLoading(false);
       showAlert(response.data.message, response.data.error);
     } catch (error) {
-      // setLoading(false);
+      setLoading(false);
       console.log("post vacancy error: " + error);
-
       showAlert("Fields are empty", true);
     }
   };
@@ -280,6 +280,7 @@ function PostVacancy() {
                 id="attachment"
                 accept={".pdf, .docx, .doc"}
                 required={false}
+                fileName={fileName}
               />
             </KGrid>
 
