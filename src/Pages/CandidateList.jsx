@@ -78,25 +78,28 @@ function CandidateList() {
   };
 
   async function candidateAction(action, idList) {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("candidateIdList", JSON.stringify(idList));
-      formData.append("action", action);
-      formData.append("vacancyId", vacancyId);
+    if (idList.length <= 20) {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("candidateIdList", JSON.stringify(idList));
+        formData.append("action", action);
+        formData.append("vacancyId", vacancyId);
 
-      const response = await dbObject.post(
-        "/vacancy/candidate-action.php",
-        formData
-      );
-      console.log(response.data);
-      showAlert(response.data.message, response.data.error);
+        const response = await dbObject.post(
+          "/vacancy/candidate-action.php",
+          formData
+        );
+        showAlert(response.data.message, response.data.error);
 
-      if (!response.data.error) {
-        fetchVacancyData();
-      }
-      setLoading(false);
-    } catch (error) {}
+        if (!response.data.error) {
+          fetchVacancyData();
+        }
+        setLoading(false);
+      } catch (error) {}
+    } else {
+      showAlert("Please select max 20 candidates at a time", true);
+    }
   }
 
   function handleStatusSelection(status) {
@@ -106,8 +109,6 @@ function CandidateList() {
     const trueIds = entries
       .filter(([id, value]) => value === true)
       .map(([id]) => id);
-    console.log(status);
-    console.log(trueIds);
 
     candidateAction(status, trueIds);
   }

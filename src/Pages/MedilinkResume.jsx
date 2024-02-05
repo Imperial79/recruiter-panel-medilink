@@ -36,7 +36,6 @@ function MedilinkResume() {
         "/resume/fetch-medilink-resume.php",
         formData
       );
-      console.log(response.data);
 
       if (!response.data.error) {
         setresumeData(response.data.response);
@@ -51,7 +50,6 @@ function MedilinkResume() {
       }
       setloading(false);
     } catch (error) {
-      console.log(error);
       setloading(false);
     }
   }

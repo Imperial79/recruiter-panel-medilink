@@ -54,6 +54,9 @@ function DashboardPage() {
 
               <ContentCard>
                 <ElementCard>
+                  <p className="font-medium text-[15px] text-black mb-5 pt-4">
+                    Monthly Candidate Graph
+                  </p>
                   <LineCh />
                 </ElementCard>
                 <KGrid crossAxisCount={6} gap={4} alignment="start">

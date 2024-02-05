@@ -10,7 +10,6 @@ function LineCh() {
 
   async function fetchGraphData() {
     const response = await dbObject.get("/graph/fetch-analytics.php");
-    console.log(response.data);
     if (!response.data.error) {
       let temp1 = [];
       let temp2 = [];
@@ -37,7 +36,7 @@ function LineCh() {
         },
         series: [
           {
-            name: "Series 1",
+            name: "Candidates",
             data: recordList,
             color: "#1A56DB",
           },
