@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import Sidebar from "../Components/Sidebar";
 import { Link } from "react-router-dom";
 import ContentCard from "../Components/ContentCard";
 import MainContent from "../Components/MainContent";
-import LineChart from "../Components/LineCh";
+import LineChart from "../Components/LineChart";
 import { Context } from "../Components/ContextProvider";
 import AuthLoading from "../Components/AuthLoading";
 import { dbObject } from "../Helper/Constants";

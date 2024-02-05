@@ -4,7 +4,7 @@
 
 
 .small-visible {
-  @apply hidden md:block
+  @apply hidden md:block;
 }
 
 
