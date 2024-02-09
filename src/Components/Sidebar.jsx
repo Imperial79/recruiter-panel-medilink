@@ -14,7 +14,10 @@ function Sidebar() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/hirehelix-resume"
+    ) {
       setshowSidebar(false);
     } else {
       setshowSidebar(true);

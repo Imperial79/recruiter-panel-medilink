@@ -101,7 +101,10 @@ function PostVacancy() {
 
           formData.append("mediaFile", _id("attachment").files[0]);
           formData.append("roleId", roleList[_id("role").value].id);
-          formData.append("subRole", _id("subRole").value);
+          formData.append(
+            "subRole",
+            _id("subRole") ? _id("subRole").value : ""
+          );
           formData.append("experience", _id("experience").value);
           formData.append("salary", _id("salary").value);
           formData.append("opening", _id("opening").value);
@@ -129,18 +132,18 @@ function PostVacancy() {
       };
       const rzp1 = new Razorpay(options);
       rzp1.on("payment.failed", function (response) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+        showAlert("Payment Failed: " + response.error.description, true);
       });
       rzp1.open();
       setLoading(false);
     } catch (error) {
-      console.log("handle payment error: " + error);
       setLoading(false);
     }
   };
@@ -161,7 +164,6 @@ function PostVacancy() {
       showAlert(response.data.message, response.data.error);
     } catch (error) {
       setLoading(false);
-      console.log("post vacancy error: " + error);
       showAlert("Fields are empty", true);
     }
   };
@@ -181,7 +183,6 @@ function PostVacancy() {
           id="post-vacancy-form"
           method="POST"
           onSubmit={async (e) => {
-            setLoading(true);
             e.preventDefault();
             if (
               subRoleList.length > 0 &&
@@ -217,7 +218,6 @@ function PostVacancy() {
             } else {
               await handlePayment();
             }
-            setLoading(false);
           }}
         >
           <div className="md:mx-[60px] mx-[20px] mt-[40px]">
@@ -267,16 +267,16 @@ function PostVacancy() {
                 id="salary"
                 name="salary"
                 label="Salary"
-                placeholder="Salary"
+                placeholder="4 lpa or 50 lpa or 78 lpa"
               />
               <KTextField
                 id="opening"
                 name="opening"
                 label="Opening"
-                placeholder="Opening"
+                placeholder="10 or 120 or 500"
               />
               <KFilePicker
-                label="Choose attachment"
+                label="Choose attachment (optional)"
                 name="attachment"
                 id="attachment"
                 accept={".pdf, .docx, .doc"}
@@ -315,7 +315,7 @@ function PostVacancy() {
                 id="tags"
                 name="tags"
                 rows={5}
-                placeholder="Tags..."
+                placeholder="Insert tags Eg. #job #hirehelix"
               />
             </KGrid>
 

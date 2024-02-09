@@ -3,14 +3,13 @@ import ApexCharts from "apexcharts";
 import { dbObject } from "../Helper/Constants";
 import NoData from "./NoData";
 
-function LineCh() {
+function LineChart() {
   const chartRef = useRef(null);
   const [monthList, setmonthList] = useState([]);
   const [recordList, setrecordList] = useState([]);
 
   async function fetchGraphData() {
     const response = await dbObject.get("/graph/fetch-analytics.php");
-    console.log(response.data);
     if (!response.data.error) {
       let temp1 = [];
       let temp2 = [];
@@ -37,7 +36,7 @@ function LineCh() {
         },
         series: [
           {
-            name: "Series 1",
+            name: "Candidates",
             data: recordList,
             color: "#1A56DB",
           },
@@ -75,4 +74,4 @@ function LineCh() {
   return <>{monthList.length > 0 ? <div ref={chartRef}></div> : <NoData />}</>;
 }
 
-export default LineCh;
+export default LineChart;
