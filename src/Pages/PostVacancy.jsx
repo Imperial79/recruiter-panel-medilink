@@ -84,7 +84,8 @@ function PostVacancy() {
     try {
       setLoading(true);
       const options = {
-        key: "rzp_test_AI98lLWhXjQG7i",
+        key: "rzp_live_cSpzBiUCLijQBh",
+        // key: "rzp_test_AI98lLWhXjQG7i",
         amount: amount,
         currency: "INR",
         name: "Hirehelix",
