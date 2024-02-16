@@ -16,6 +16,7 @@ function Sidebar() {
   useEffect(() => {
     if (
       location.pathname === "/" ||
+      location.pathname === "/register" ||
       location.pathname === "/hirehelix-resume"
     ) {
       setshowSidebar(false);
