@@ -16,9 +16,7 @@ const RegisterPage = () => {
   const { _id, showAlert, parameter, setUser } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [statesList, setstatesList] = useState([]);
-  const [isStateDropOpen, setisStateDropOpen] = useState(false);
   const [selectedState, setselectedState] = useState("Arunachal Pradesh");
-  const [city, setcity] = useState("");
 
   const navigator = useNavigate();
   const register = async () => {
@@ -153,7 +151,9 @@ const RegisterPage = () => {
                   required
                 />
                 <KGrid>
-                  <KDropDown id="state" name="state" label="Select State">
+                  <KDropDown id="state" name="state" label="Select State" value={selectedState} onChange={(e)=>{
+                    setselectedState(e.target.value);
+                  }}>
                     {statesList.map((data, index) => (
                       <option key={index} value={data.stateName}>
                         {data.stateName}
