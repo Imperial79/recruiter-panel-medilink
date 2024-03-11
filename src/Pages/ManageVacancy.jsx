@@ -55,15 +55,17 @@ function ManageVacancy() {
             </h1>
 
             <div className="md:px-[60px] px-[20px] mt-10">
-              <div className="relative overflow-x-auto sm:rounded-lg">
-                <div className="p-2 flex items-center justify-between flex-column flex-wrap md:flex-row pb-4 bg-white light:bg-gray-900">
+              <div className="relative overflow-x-auto sm:rounded-lg min-h-screen">
+                <div className="p-2 flex items-center justify-between flex-column flex-wrap md:flex-row pb-10 bg-white light:bg-gray-900">
                   <KDropdown
                     value={selectedStatus}
                     setValue={setSelectedStatus}
                     dataList={[
+                      { value: "Pending", color: "yellow-500" },
                       { value: "Active", color: "green-500" },
-                      { value: "Cancelled", color: "yellow-500" },
+                      { value: "Rejected", color: "purple-500" },
                       { value: "Expired", color: "red-500" },
+                      { value: "Deleted", color: "orange-500" },
                     ]}
                     isOpen={showDrop}
                     toggleDrop={toggleDrop}
@@ -241,17 +243,18 @@ function TableData({ data }) {
                 ? "bg-green-500"
                 : data.status == "Expired"
                 ? "bg-red-500"
+                : data.status == "Rejected"
+                ? "bg-purple-600"
+                : data.status == "Deleted"
+                ? "bg-orange-600"
                 : "bg-yellow-600"
             }`}
-          ></div>{" "}
+          ></div>
           {data.status}
         </div>
       </td>
-      {data.status !== "Active" ? (
-        <td className="px-6 py-4 text-end space-x-2">
-          <h1>NA</h1>
-        </td>
-      ) : (
+
+      {data.status === "Active" || data.status === "Rejected" ? (
         <td className="px-6 py-4 text-end space-x-2">
           <Link
             to={`/manage-vacancy/candidates?id=${data.id}&role=${data.roleTitle}`}
@@ -265,6 +268,10 @@ function TableData({ data }) {
           >
             Edit
           </Link>
+        </td>
+      ) : (
+        <td className="px-6 py-4 text-end space-x-2">
+          <h1>NA</h1>
         </td>
       )}
     </>
@@ -289,6 +296,10 @@ function KDropdown({ value, setValue, toggleDrop, isOpen, dataList }) {
                 ? "bg-green-500"
                 : value == "Expired"
                 ? "bg-red-500"
+                : value == "Rejected"
+                ? "bg-purple-600"
+                : value == "Deleted"
+                ? "bg-orange-600"
                 : "bg-yellow-600"
             }`}
           ></div>{" "}
